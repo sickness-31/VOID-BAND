@@ -1,12 +1,20 @@
 # VO!D — Band Website
 
-Official site for VO!D. Built as a single HTML file, hosted free on GitHub Pages.
+Official site for VO!D. Three static HTML pages sharing one stylesheet, hosted free on GitHub Pages. No build step.
+
+- `index.html` — fan-facing homepage
+- `shows.html` — upcoming + past shows (with video where available)
+- `epk.html`   — electronic press kit for bookers / promoters, with a one-sheet PDF button
 
 ---
 
 ## How to update the site
 
-Open `index.html` in VS Code. Every piece of content you'd want to change is marked with a `<!-- CHANGE: -->` comment. Search for `CHANGE:` to jump between them.
+Every piece of content you'd want to change is marked with a `<!-- CHANGE: -->` comment in the HTML. Search for `CHANGE:` to jump between them.
+
+**Shows are the exception** — they live in `data/shows.js`, not in any HTML file. See below.
+
+Styles live in `assets/css/site.css` (shared by all three pages).
 
 Save the file, commit, push — the site updates within about 60 seconds.
 
@@ -14,13 +22,33 @@ Save the file, commit, push — the site updates within about 60 seconds.
 
 ## Common updates
 
-### Add a show date
-Find `<!-- COPY FROM HERE -->` in the Live section.
-Copy the entire `<div class="show-row">` block beneath it.
-Paste it below, update the date, venue, city, and ticket link.
+### Add a show
+Open `data/shows.js`. Copy one `{ ... },` block, paste it anywhere in the list, fill in the fields:
+
+```js
+{
+  date: "2026-11-07",          // YYYY-MM-DD
+  venue: "Venue Name",
+  city: "Calgary, AB",
+  bill: ["Band A", "Band B"], // other acts, or []
+  ticketUrl: "",              // leave "" to show CONTACT US
+  youtubeId: ""               // past shows only, once the video is up
+},
+```
+
+That's it. The homepage shows the next 3 upcoming, `shows.html` shows everything, `epk.html` lists past shows as history. Upcoming vs Past is decided automatically from the date.
+
+### Attach a live video to a past show
+Set `youtubeId` on that show in `data/shows.js`. It's the part of the YouTube URL after `v=`. The player embeds under the show's row on `shows.html`.
 
 ### Remove a show
-Delete the `<div class="show-row">...</div>` block for that show.
+Delete its `{ ... },` block from `data/shows.js`.
+
+### Update the press kit
+Open `epk.html`. Anything still needed is in a `<div class="todo">` box — search for `TODO`. Delete each box once the real content is in.
+
+### Export the one-sheet PDF
+Open `epk.html` in a browser → **Download One-Sheet (PDF)** (or Ctrl+P → Save as PDF). The print stylesheet strips the nav, flips to black-on-white, and swaps embeds for their URLs.
 
 ### Add a new release
 In the Music section, duplicate the `release-block` div.
@@ -40,10 +68,18 @@ Find the merch grid. Copy one `<div class="merch-card">` block, paste it, update
 
 ```
 void-band/
-├── index.html              ← entire site
+├── index.html              ← homepage
+├── shows.html              ← upcoming + past shows
+├── epk.html                ← press kit / one-sheet
 ├── CNAME                   ← custom domain (add your domain name here)
 ├── README.md               ← this file
+├── data/
+│   └── shows.js            ← THE show list. Edit this to add shows.
 └── assets/
+    ├── css/
+    │   └── site.css        ← all styles, shared by every page
+    ├── js/
+    │   └── shows.js        ← reads data/shows.js and draws the rows (don't edit)
     └── images/
         ├── logo-hero.png       ← shrapnel explosion logo (voidalt_01)
         ├── logo-footer.png     ← block logo (voidalt_02)
@@ -51,7 +87,7 @@ void-band/
         ├── photo-silhouette.jpg ← fluorescent silhouette shot
         ├── photo-guitar.jpg    ← 8-string close-up
         ├── photo-vocalist.jpg  ← vocalist from behind
-        ├── photo-drums.jpg     ← drummer B&W
+        ├── photo-drums.JPG     ← drummer B&W (note: capital .JPG — GitHub Pages is case-sensitive)
         └── release-residual.jpg ← RESIDUAL album art
 ```
 
@@ -80,8 +116,8 @@ void-band/
 
 ## Changing colors
 
-Open `index.html`, find the `:root {` block near the top of the `<style>` section.
-The color variables are all there with comments explaining each one.
+Open `assets/css/site.css`, find the `:root {` block near the top.
+The color variables are all there with comments explaining each one. Changing them restyles all three pages.
 
 ---
 

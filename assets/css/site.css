@@ -1,0 +1,1133 @@
+/*
+  ====================================================================
+  VO!D — site.css
+  Shared stylesheet for every page: index.html, shows.html, epk.html
+
+  This used to live inline in index.html. It was moved here so the
+  three pages share one design system instead of three copies.
+
+  TO CHANGE COLORS: edit the :root variables at the top.
+  Everything below the "SHOWS PAGE" banner is new (Shows + EPK pages).
+  ====================================================================
+*/
+/*
+================================================================
+CSS — CASCADING STYLE SHEETS
+This block controls everything visual: colors, sizes, spacing,
+fonts, layout. It doesn't DO anything, it just DESCRIBES how
+things look.
+
+Syntax: selector { property: value; }
+Example: body { background: black; } means "make the page background black"
+================================================================
+*/
+
+/* 
+  CSS VARIABLES — think of these like constants in C#.
+  Define a value once here, use it everywhere below.
+  To change the site's color scheme, edit these values.
+  Format: --variable-name: value;
+  Usage:  color: var(--blood);
+*/
+:root {
+  --black:    #0A0A0A;  /* near-black background — slightly warm, not pure */
+  --dirty:    #E8E0D0;  /* off-white text — aged paper feel, not harsh white */
+  --blood:    #8B0000;  /* dark blood red — used sparingly as the accent */
+  --dark:     #1A1A1A;  /* secondary dark for cards and section backgrounds */
+  --mid:      #4A4A4A;  /* mid-grey for secondary text and borders */
+  --dim:      #2A2A2A;  /* very dark grey for subtle backgrounds */
+
+  /* font families stored as variables for easy swapping */
+  --display:  'Bebas Neue', sans-serif;   /* headers, labels, nav */
+  --body:     'Space Mono', monospace;    /* paragraphs, descriptions */
+}
+
+/* 
+  RESET — browsers add their own default padding/margin to elements.
+  This removes all of that so we start from zero and control everything.
+  * means "apply to every element on the page"
+*/
+*, *::before, *::after {
+  box-sizing: border-box; /* makes sizing predictable — padding included in width */
+  margin: 0;
+  padding: 0;
+}
+
+/* BASE PAGE STYLES */
+html {
+  scroll-behavior: auto; /* no smooth scroll — keeps it raw */
+}
+
+body {
+  background: var(--black);
+  color: var(--dirty);          /* default text color for the whole page */
+  font-family: var(--body);
+  font-size: 13px;
+  line-height: 1.7;             /* space between lines of text */
+  overflow-x: hidden;           /* prevents horizontal scrollbar */
+}
+
+/* 
+  THE HORIZONTAL RULE — the single blood-red line between sections.
+  <hr> is an HTML element that draws a horizontal line.
+  We're overriding its default look completely.
+*/
+.rule {
+  border: none;
+  border-top: 1px solid var(--blood); /* 1px line, blood red */
+  margin: 0;
+}
+
+/*
+================================================================
+NAVIGATION — fixed bar at the top of the page
+position: fixed means it stays visible as you scroll
+================================================================
+*/
+#nav {
+  position: fixed;              /* stays at top even when scrolling */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;                 /* sits above everything else on the page */
+  padding: 1.25rem 6vw;         /* 6vw = 6% of viewport width — scales with screen */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(10,10,10,0.92); /* slightly transparent black */
+  backdrop-filter: blur(8px);      /* blurs content behind the nav */
+  border-bottom: 1px solid var(--dim);
+}
+
+.nav-logo {
+  font-family: var(--display);
+  font-size: 22px;
+  color: var(--dirty);
+  text-decoration: none;        /* removes underline from links */
+  letter-spacing: 0.1em;        /* space between letters */
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;                  /* space between each nav item */
+  list-style: none;             /* removes bullet points from the list */
+}
+
+.nav-links a {
+  font-family: var(--display);
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  color: var(--mid);
+  text-decoration: none;
+  transition: color 0.15s;      /* smooth color change on hover (0.15 seconds) */
+}
+
+/* :hover applies styles when the mouse is over an element */
+.nav-links a:hover {
+  color: var(--dirty);
+}
+
+/*
+================================================================
+HERO — the first full-screen section the visitor sees
+================================================================
+*/
+#hero {
+  min-height: 100vh;            /* 100vh = 100% of the visible screen height */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;    /* pushes content to the bottom */
+  padding: 0 6vw 8rem;
+  position: relative;
+  overflow: hidden;             /* clips the logo image to this section */
+}
+
+/* 
+  HERO BACKGROUND — the shrapnel logo sits behind the text.
+  position: absolute takes it out of normal flow and lets us
+  layer it behind the text content.
+*/
+.hero-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url('../images/logo-hero.png');
+  background-size: 70%;             /* logo takes up 70% of the hero width */
+  background-position: center 40%;  /* horizontal center, 40% down */
+  background-repeat: no-repeat;
+  opacity: 0.31;                    /* very faint — 0=invisible, 1=solid */
+  /* increase this number to make the logo more visible in the background */
+}
+
+/* dark gradient that fades from transparent at top to black at bottom */
+.hero-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 30%,        /* top 30% is see-through */
+    var(--black) 100%       /* fades to solid black at the bottom */
+  );
+}
+
+/* z-index controls layering — higher number = in front */
+.hero-content {
+  position: relative;
+  z-index: 2;               /* sits above the background and overlay */
+}
+
+.hero-eyebrow {
+  font-family: var(--display);
+  font-size: 12px;
+  letter-spacing: 0.5em;
+  color: var(--blood);
+  margin-bottom: 1rem;
+}
+
+/* 
+  THE BIG VO!D TITLE
+  clamp(min, preferred, max) — scales the font between a min and max
+  based on screen width. clamp(80px, 18vw, 260px) means:
+  never smaller than 80px, never bigger than 260px, tries for 18vw
+*/
+.hero-name {
+  font-family: var(--display);
+  font-size: clamp(80px, 18vw, 260px);
+  line-height: 0.85;
+  color: var(--dirty);
+  margin-bottom: 2rem;
+  user-select: none;            /* prevents text selection on drag */
+}
+
+/* 
+  Each letter of VO!D is wrapped in a <span> for the glitch animation.
+  They start invisible (opacity: 0) and the JS reveals them one by one.
+*/
+.hero-name span {
+  display: inline-block;
+  opacity: 0;
+  transition: opacity 0.05s;
+}
+
+.hero-name span.resolved {
+  opacity: 1;
+}
+
+.hero-tagline {
+  font-family: var(--body);
+  font-size: clamp(11px, 1.2vw, 13px);
+  color: var(--mid);
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
+/*
+================================================================
+PHOTO DIVIDER — full-width atmospheric image between sections
+================================================================
+*/
+.photo-divider {
+  width: 100%;
+  height: 60vh;                 /* 60% of the screen height */
+  position: relative;
+  overflow: hidden;
+}
+
+.photo-divider img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;            /* fills the space, crops if needed */
+  object-position: center;
+  opacity: 0.4;                 /* dim the photo — increase for brighter */
+  filter: grayscale(60%);       /* partially desaturated — 100% = full B&W */
+}
+
+/* gradient overlay on the photo so it fades into the sections above/below */
+.photo-divider::before,
+.photo-divider::after {
+  content: '';                  /* required for pseudo-elements */
+  position: absolute;
+  left: 0; right: 0;
+  height: 40%;
+  z-index: 1;
+}
+
+.photo-divider::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--black), transparent);
+}
+
+.photo-divider::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--black), transparent);
+}
+
+/*
+================================================================
+SECTIONS — base styles shared by all content sections
+================================================================
+*/
+section {
+  padding: 7rem 6vw;            /* 7rem top/bottom, 6vw left/right */
+}
+
+/* small red label above section titles — like "DISCOGRAPHY" above "Music" */
+.section-label {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 0.6em;
+  color: var(--blood);
+  margin-bottom: 2rem;
+  display: block;               /* block makes it sit on its own line */
+}
+
+/* large section heading */
+.section-title {
+  font-family: var(--display);
+  font-size: clamp(48px, 7vw, 100px);
+  line-height: 0.9;
+  color: var(--dirty);
+  margin-bottom: 3rem;
+  letter-spacing: 0.02em;
+}
+
+/*
+================================================================
+MUSIC SECTION
+================================================================
+*/
+.release-block {
+  display: grid;
+  /* auto-fit fills the row with as many columns as fit at 280px min */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 4rem;
+  align-items: start;
+}
+
+.release-info {}
+
+.release-meta {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: var(--blood);
+  margin-bottom: 1rem;
+}
+
+.release-title {
+  font-family: var(--display);
+  font-size: clamp(36px, 5vw, 64px);
+  color: var(--dirty);
+  line-height: 0.9;
+  margin-bottom: 1rem;
+  letter-spacing: 0.03em;
+}
+
+.release-description {
+  font-size: 12px;
+  color: var(--mid);
+  line-height: 1.9;
+  font-style: italic;
+  margin-bottom: 2rem;
+  max-width: 420px;
+}
+
+/* secondary streaming link below the Spotify embed */
+.stream-also {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--mid);
+  text-decoration: none;
+  border-bottom: 1px solid var(--mid);
+  padding-bottom: 2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.stream-also:hover {
+  color: var(--dirty);
+  border-color: var(--dirty);
+}
+
+/* wrapper for the Spotify embed iframe */
+.spotify-embed {
+  border-radius: 0;             /* keep it square to match the aesthetic */
+}
+
+/* 
+  IFRAME — an inline frame that embeds another website.
+  Spotify's embed player lives inside this.
+  border: none removes the default iframe border.
+*/
+.spotify-embed iframe {
+  border: none;
+  width: 100%;
+  
+}
+
+/*
+================================================================
+LIVE SECTION
+================================================================
+*/
+.show-list {
+  border-top: 1px solid var(--dim);
+}
+
+/* 
+  Each show is a row with three columns: date | info | ticket link
+  grid-template-columns defines the column widths
+*/
+.show-row {
+  display: grid;
+  grid-template-columns: 130px 1fr auto;
+  gap: 2rem;
+  align-items: center;
+  padding: 1.75rem 0;
+  border-bottom: 1px solid var(--dim);
+  transition: padding-left 0.1s;
+}
+
+.show-row:hover {
+  padding-left: 0.75rem;        /* slides right slightly on hover */
+}
+
+.show-date {
+  font-family: var(--display);
+  font-size: 20px;
+  color: var(--dirty);
+  letter-spacing: 0.05em;
+}
+
+.show-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.show-venue {
+  font-family: var(--display);
+  font-size: 18px;
+  color: var(--dirty);
+  letter-spacing: 0.05em;
+}
+
+.show-location {
+  font-size: 11px;
+  color: var(--mid);
+  font-style: italic;
+}
+
+.show-ticket {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--blood);
+  text-decoration: none;
+  border: 1px solid var(--blood);
+  padding: 0.5rem 1.25rem;
+  white-space: nowrap;          /* prevents the word "Tickets" from wrapping */
+  transition: background 0.15s, color 0.15s;
+}
+
+.show-ticket:hover {
+  background: var(--blood);
+  color: var(--dirty);
+}
+
+/* shown when there are no upcoming dates */
+.no-shows {
+  padding: 3rem 0;
+  color: var(--mid);
+  font-style: italic;
+  font-size: 12px;
+}
+
+/* wrapper for the YouTube embed iframe */
+.youtube-embed {
+  border-radius: 0;             /* keep it square to match the aesthetic */
+}
+
+/* 
+  IFRAME — an inline frame that embeds another website.
+  YouTube's embed player lives inside this.
+  border: none removes the default iframe border.
+*/
+.youtube-embed iframe {
+  border: none;
+  width: 100%;
+  /* height: 100%; */
+  align-items: center;
+}
+
+/*
+================================================================
+ABOUT SECTION
+================================================================
+*/
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;  /* two equal columns */
+  gap: 6rem;
+  margin-top: 1rem;
+}
+
+.about-photos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;                     /* 2px gap creates the grid line effect */
+}
+
+/* 
+  The photo containers — overflow:hidden clips images to their box.
+  aspect-ratio keeps them square.
+*/
+.about-photo {
+  overflow: hidden;
+  aspect-ratio: 1;              /* forces a perfect square */
+}
+
+.about-photo.wide {
+  grid-column: span 2;          /* this photo spans both columns */
+  aspect-ratio: 2 / 1;          /* wider ratio for the spanning photo */
+}
+
+.about-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%);      /* full black and white */
+  opacity: 0.75;
+  transition: opacity 0.3s, filter 0.3s;
+}
+
+/* on hover: brings back some color and increases brightness */
+.about-photo:hover img {
+  opacity: 0.9;
+  filter: grayscale(60%);
+}
+
+.about-text {}
+
+.about-bio p {
+  font-size: 13px;
+  line-height: 2;
+  color: var(--dirty);
+  opacity: 0.85;
+  margin-bottom: 1.5rem;
+}
+
+.about-bio p:first-child {
+  opacity: 1;                   /* first paragraph slightly brighter */
+}
+
+/* member list below the bio */
+.member-list {
+  margin-top: 3rem;
+  border-top: 1px solid var(--dim);
+}
+
+.member-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;        /* aligns text along their baseline */
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--dim);
+}
+
+.member-name {
+  font-family: var(--display);
+  font-size: 22px;
+  color: var(--dirty);
+  letter-spacing: 0.05em;
+}
+
+.member-role {
+  font-size: 11px;
+  color: var(--mid);
+  font-style: italic;
+}
+
+/*
+================================================================
+MERCH SECTION
+================================================================
+*/
+.merch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2px;
+  margin-top: 1rem;
+}
+
+.merch-card {
+  background: var(--dark);
+  padding: 2rem;
+  border-left: 2px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.merch-card:hover {
+  border-left-color: var(--blood);
+}
+
+/* placeholder box where a product photo will go */
+.merch-img {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: var(--mid);
+  margin-bottom: 1.25rem;
+  border: 1px solid #222;
+}
+
+.merch-title {
+  font-family: var(--display);
+  font-size: 20px;
+  color: var(--dirty);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.merch-desc {
+  font-size: 11px;
+  color: var(--mid);
+  font-style: italic;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.merch-price {
+  font-family: var(--display);
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  color: var(--blood);
+}
+
+.merch-cta {
+  margin-top: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.merch-store-link {
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  color: var(--dirty);
+  text-decoration: none;
+  border: 1px solid var(--dirty);
+  padding: 1rem 2rem;
+  transition: background 0.15s, color 0.15s;
+}
+
+.merch-store-link:hover {
+  background: var(--dirty);
+  color: var(--black);
+}
+
+.merch-note {
+  font-size: 11px;
+  color: var(--mid);
+  font-style: italic;
+}
+
+/*
+================================================================
+CONTACT SECTION
+================================================================
+*/
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  margin-top: 1rem;
+}
+
+.contact-block {
+  margin-bottom: 2.5rem;
+}
+
+.contact-label {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: var(--blood);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.contact-value {
+  font-size: 13px;
+  color: var(--dirty);
+}
+
+.contact-value a {
+  color: var(--dirty);
+  text-decoration: none;
+  border-bottom: 1px solid var(--mid);
+  padding-bottom: 1px;
+  transition: border-color 0.15s;
+}
+
+.contact-value a:hover {
+  border-color: var(--dirty);
+}
+
+.contact-download {
+  color: var(--blood);
+  text-decoration: none;
+  border-bottom: 1px solid var(--blood);
+  padding-bottom: 1px;
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.contact-download:hover {
+  color: var(--dirty);
+  border-color: var(--dirty);
+}
+
+/* social platform links */
+.social-links {
+  display: flex;
+  flex-direction: column;
+}
+
+.social-link {
+  font-family: var(--display);
+  font-size: 16px;
+  letter-spacing: 0.15em;
+  color: var(--dirty);
+  text-decoration: none;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--dim);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: color 0.15s;
+}
+
+.social-link:hover {
+  color: var(--blood);
+}
+
+/* the ↗ arrow that appears on the right of each social link */
+.social-link::after {
+  content: '↗';
+  font-size: 11px;
+  color: var(--mid);
+}
+
+/*
+================================================================
+FOOTER
+================================================================
+*/
+footer {
+  padding: 4rem 6vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--dim);
+}
+
+/* the footer logo image — small, dim, bottom-left */
+.footer-logo img {
+  height: 48px;                 /* CHANGE: adjust height to taste */
+  opacity: 0.15;                /* very faint — increase to make more visible */
+  filter: invert(1);            /* inverts colors — makes black logo white */
+  transition: opacity 0.2s;
+}
+
+.footer-logo img:hover {
+  opacity: 0.35;
+}
+
+.footer-right {
+  text-align: right;
+}
+
+.footer-copy {
+  font-size: 10px;
+  color: var(--mid);
+  letter-spacing: 0.2em;
+  font-style: italic;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.footer-tagline {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--dim);
+}
+
+/*
+================================================================
+RESPONSIVE — styles that only apply below certain screen widths.
+@media is a CSS "if statement" — "if screen is narrower than 700px,
+apply these styles instead"
+================================================================
+*/
+@media (max-width: 900px) {
+  /* stack about grid to single column on tablets */
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  /* reverse order so photos come first on mobile */
+  .about-photos {
+    order: -1;
+  }
+}
+
+@media (max-width: 700px) {
+  section {
+    padding: 5rem 5vw;
+  }
+
+  /* hide ticket link on mobile (small screens) */
+  .show-ticket {
+    display: none;
+  }
+
+  /* show rows become two columns instead of three */
+  .show-row {
+    grid-template-columns: 90px 1fr;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  /* hide nav links on mobile — a hamburger menu would go here eventually */
+  .nav-links {
+    display: none;
+  }
+}
+
+/* 
+  ACCESSIBILITY — respects users who have "reduce motion" enabled
+  in their OS settings. Skips the glitch animation for them.
+*/
+@media (prefers-reduced-motion: reduce) {
+  .hero-name span {
+    opacity: 1 !important;     /* !important overrides all other opacity rules */
+  }
+}
+
+
+
+/*
+================================================================
+SHARED — small additions used by the new pages
+================================================================
+*/
+
+/* Pages without a full-screen hero need to clear the fixed nav bar. */
+.page-top {
+  padding-top: 10rem;
+}
+
+/* Sub-heading inside a section, e.g. "UPCOMING" / "PAST" on shows.html */
+.section-sub {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 0.6em;
+  color: var(--blood);
+  margin: 4rem 0 1.5rem;
+  display: block;
+}
+.section-sub:first-of-type {
+  margin-top: 0;
+}
+
+/* Small text link with the underline treatment used elsewhere on the site */
+.text-link {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--mid);
+  text-decoration: none;
+  border-bottom: 1px solid var(--mid);
+  padding-bottom: 2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.text-link:hover {
+  color: var(--dirty);
+  border-color: var(--dirty);
+}
+
+/* Row of links / buttons under a section */
+.link-row {
+  margin-top: 2.5rem;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* The bordered button style already used by .merch-store-link, made reusable */
+.btn-outline {
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  color: var(--dirty);
+  text-decoration: none;
+  border: 1px solid var(--dirty);
+  padding: 1rem 2rem;
+  background: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.btn-outline:hover {
+  background: var(--dirty);
+  color: var(--black);
+}
+
+/*
+  TODO PLACEHOLDER — marks content that still needs to be supplied.
+  Deliberately loud so it can't be missed. Delete the .todo block
+  once the real content is in.
+*/
+.todo {
+  border: 1px dashed var(--blood);
+  padding: 1.25rem 1.5rem;
+  color: var(--mid);
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.8;
+}
+.todo::before {
+  content: 'TODO';
+  display: block;
+  font-family: var(--display);
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: var(--blood);
+  margin-bottom: 0.5rem;
+}
+
+
+/*
+================================================================
+SHOWS PAGE
+The show rows themselves reuse .show-row / .show-date / .show-venue /
+.show-location / .show-ticket from the LIVE SECTION above.
+================================================================
+*/
+
+/* Supporting acts, shown under the city on the same row */
+.show-bill {
+  font-size: 11px;
+  color: var(--mid);
+  letter-spacing: 0.05em;
+}
+
+/*
+  A past show's video sits directly under its row.
+  aspect-ratio keeps the player 16:9 at any width.
+*/
+.show-video {
+  border-bottom: 1px solid var(--dim);
+  padding: 0 0 1.75rem;
+}
+.show-video iframe {
+  display: block;
+  width: 100%;
+  max-width: 900px;
+  aspect-ratio: 16 / 9;
+  border: none;
+}
+
+
+/*
+================================================================
+EPK PAGE
+Built to be skimmed. Fact grid at the top, then sections in the
+order a booker asks for them.
+================================================================
+*/
+
+/* Quick-facts grid under the EPK title */
+.epk-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2px;
+  border-top: 1px solid var(--dim);
+  margin-bottom: 2rem;
+}
+.epk-fact {
+  background: var(--dark);
+  padding: 1.5rem;
+}
+.epk-fact-label {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: var(--blood);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.epk-fact-value {
+  font-size: 13px;
+  color: var(--dirty);
+  line-height: 1.6;
+}
+.epk-fact-value a {
+  color: var(--dirty);
+  text-decoration: none;
+  border-bottom: 1px solid var(--mid);
+}
+
+/* EPK sections are tighter than the fan-site sections */
+.epk-section {
+  padding: 4rem 6vw;
+}
+.epk-section .section-title {
+  font-size: clamp(32px, 4vw, 56px);
+  margin-bottom: 2rem;
+}
+
+/* Bio text */
+.epk-bio p {
+  font-size: 13px;
+  line-height: 2;
+  color: var(--dirty);
+  opacity: 0.85;
+  margin-bottom: 1.5rem;
+  max-width: 720px;
+}
+.epk-bio p:first-child { opacity: 1; }
+
+/* Two-column layout used for music + video side by side */
+.epk-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 3rem;
+  align-items: start;
+}
+
+/* Press photo grid — each cell is the photo plus a download line */
+.press-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2rem;
+}
+.press-photo img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 0.75rem;
+  filter: grayscale(100%);
+  opacity: 0.85;
+  transition: opacity 0.3s, filter 0.3s;
+}
+.press-photo:hover img {
+  opacity: 1;
+  filter: grayscale(40%);
+}
+.press-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  font-size: 11px;
+  color: var(--mid);
+  font-style: italic;
+}
+.press-meta .text-link {
+  font-style: normal;
+  white-space: nowrap;
+}
+
+/* Logo downloads — light tile so the black logo is visible */
+.logo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2rem;
+}
+.logo-tile {
+  background: var(--dirty);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  margin-bottom: 0.75rem;
+}
+.logo-tile img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Elements that only show up on paper / PDF */
+.print-only { display: none; }
+
+
+/*
+================================================================
+PRINT / ONE-SHEET
+epk.html → browser "Print" → "Save as PDF" produces the one-sheet.
+Black-on-white, no nav, no embeds (they're replaced by their URLs).
+================================================================
+*/
+@media print {
+  :root {
+    --black: #FFFFFF;
+    --dirty: #111111;
+    --dark:  #F2F2F2;
+    --mid:   #555555;
+    --dim:   #DDDDDD;
+  }
+  @page { margin: 15mm; }
+
+  body { font-size: 11px; background: #fff; color: #111; }
+
+  #nav, footer, .no-print, iframe, .hero-bg, .hero-overlay { display: none !important; }
+  .print-only { display: block; }
+
+  .page-top { padding-top: 0; }
+  .epk-section { padding: 1.5rem 0; break-inside: avoid; }
+  .epk-section .section-title { font-size: 28px; margin-bottom: 1rem; }
+  .section-label { margin-bottom: 0.5rem; }
+
+  .epk-facts { margin-bottom: 1rem; }
+  .epk-fact { padding: 0.75rem 1rem; background: #f2f2f2; }
+
+  .press-grid { grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+  .press-photo img { filter: none; opacity: 1; aspect-ratio: 3 / 2; }
+  .press-meta { font-size: 9px; }
+
+  .logo-grid { grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+  .logo-tile { padding: 0.5rem; background: #fff; border: 1px solid #ddd; }
+
+  .show-row { padding: 0.5rem 0; grid-template-columns: 90px 1fr; }
+  .show-row:hover { padding-left: 0; }
+  .show-date { font-size: 13px; }
+  .show-venue { font-size: 13px; }
+  .show-ticket { display: none; }
+  .show-video { display: none; }
+
+  .todo { border-color: #999; color: #777; }
+  .todo::before { color: #999; }
+
+  a { color: inherit; text-decoration: none; border: none !important; }
+  .text-link, .btn-outline, .link-row { display: none; }
+}

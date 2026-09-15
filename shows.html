@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!--
+  ====================================================================
+  VO!D — Shows
+  shows.html
+
+  Upcoming and past shows. Nothing on this page is typed by hand —
+  every row comes from data/shows.js. To add a show, edit that file.
+
+  Past shows with a youtubeId in data/shows.js get an embedded player
+  under their row.
+  ====================================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>VO!D — Shows</title>
+  <meta name="description" content="VO!D live — upcoming dates and past shows. Calgary, Alberta metal.">
+  <meta property="og:title" content="VO!D — Shows">
+  <meta property="og:description" content="Upcoming dates and past shows.">
+  <meta property="og:image" content="assets/images/release-residual.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- shared design system — same file index.html uses -->
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+
+<body>
+
+  <!-- NAVIGATION — same links as index.html, pointed back at the homepage -->
+  <nav id="nav">
+    <a href="index.html" class="nav-logo">VO!D</a>
+    <ul class="nav-links">
+      <li><a href="index.html#music">Music</a></li>
+      <li><a href="shows.html">Shows</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#merch">Merch</a></li>
+      <li><a href="epk.html">EPK</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <section id="shows" class="page-top">
+    <span class="section-label">Come Hang Out With Us</span>
+    <h2 class="section-title">Shows</h2>
+
+    <!-- UPCOMING — filled in by assets/js/shows.js -->
+    <span class="section-sub">Upcoming</span>
+    <div class="show-list"
+         data-shows="upcoming"
+         data-empty="No upcoming dates. Check back soon.">
+    </div>
+
+    <div class="link-row">
+      <!-- CHANGE: booking email -->
+      <a href="mailto:void.empr@gmail.com" class="btn-outline">Book Us</a>
+      <a href="epk.html" class="text-link">Press Kit →</a>
+    </div>
+
+    <!-- PAST — most recent first, with video where one exists -->
+    <span class="section-sub">Past</span>
+    <div class="show-list"
+         data-shows="past"
+         data-video="true"
+         data-empty="No past shows listed yet.">
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <footer>
+    <div class="footer-logo">
+      <img src="assets/images/logo-footer.png" alt="VO!D">
+    </div>
+    <div class="footer-right">
+      <!-- CHANGE: update year -->
+      <span class="footer-copy">© 2026 VO!D — Calgary, AB</span>
+      <span class="footer-tagline">born of the universe, we come from nothing</span>
+    </div>
+  </footer>
+
+  <!-- data first, then the renderer that reads it -->
+  <script src="data/shows.js"></script>
+  <script src="assets/js/shows.js"></script>
+</body>
+</html>
