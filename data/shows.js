@@ -21,8 +21,12 @@
     date       "YYYY-MM-DD"   required. Use the numbers, e.g. "2026-11-07".
     venue      "The Vat"      required.
     city       "Red Deer, AB" required.
-    bill       [ ... ]        optional. Other bands on the bill, in quotes,
-                              separated by commas. Use [] if unknown/none.
+    event      "Some Fest"    optional. Festival or tour name. Shows as a
+                              red label above the venue. Leave "" for a
+                              regular show.
+    bill       [ ... ]        optional. Full lineup in bill order, in
+                              quotes, separated by commas. Include VO!D.
+                              Use [] if unknown.
     ticketUrl  "https://..."  optional. Leave "" and the row shows CONTACT US.
     youtubeId  "abc123XYZ"    optional. For PAST shows with a published
                               multitrack video. This is the part of the
@@ -36,23 +40,84 @@
 */
 
 window.VOID_SHOWS = [
-
-  // TODO: confirm spelling of "A Nobodies Achivement" — copied as-is
-  //       from the previous Live section.
+  {
+    date: "2026-09-11",
+    venue: "The Dive Bar",
+    city: "Edmonton, AB",
+    event: "",
+    bill: ["Axohxin","Flaccid Wrath","VO!D","Desicrate"],
+    ticketUrl: "",
+    youtubeId: ""
+  },
   {
     date: "2026-08-01",
     venue: "The Vat",
     city: "Red Deer, AB",
-    bill: ["A Nobodies Achivement", "Folded Hand"],
+    event: "",
+    bill: ["A Nobodies Achievement","Folded Hand","VO!D"],
     ticketUrl: "",
     youtubeId: ""
   },
-
   {
-    date: "2026-09-11",
-    venue: "Dive Bar",
+    date: "2026-07-05",
+    venue: "Blox Art Centre",
+    city: "Calgary, AB",
+    event: "THE GREAT WESTERN ROT",
+    bill: ["Without Mercy","Butcher","Decrepitation","VO!D"],
+    ticketUrl: "",
+    youtubeId: ""
+  },
+  {
+    date: "2026-07-04",
+    venue: "D2 Bar & Stage",
+    city: "Red Deer, AB",
+    event: "THE GREAT WESTERN ROT",
+    bill: ["Without Mercy","Butcher","Decrepitation","VO!D"],
+    ticketUrl: "",
+    youtubeId: ""
+  },
+  {
+    date: "2026-07-03",
+    venue: "Rendevous Pub",
     city: "Edmonton, AB",
-    bill: ["Axohxin"],
+    event: "THE GREAT WESTERN ROT",
+    bill: ["Without Mercy","Butcher","Decrepitation","VO!D"],
+    ticketUrl: "",
+    youtubeId: ""
+  },
+  {
+    date: "2026-06-05",
+    venue: "The Rec Room",
+    city: "Calgary, AB",
+    event: "DECIMATE FEST FUNDRAISER",
+    bill: ["Hombre", "Axohxin","Disorderly Conduct","Another Time Around","VO!D"],
+    ticketUrl: "",
+    youtubeId: "https://www.youtube.com/watch?v=_7-afHWL_mc"
+  },
+  {
+    date: "2026-03-06",
+    venue: "Vin L Den",
+    city: "Red Deer, AB",
+    event: "RESIDUAL RELEASE SHOW",
+    bill: ["VO!D","The 21st Agenda","Feel and Flow"],
+    ticketUrl: "",
+    youtubeId: ""
+  },
+  {
+    date: "2025-09-11",
+    venue: "The Kings Head",
+    city: "Calgary, AB",
+    event: "",
+    bill: ["Jane Decay","GodFall","VO!D"],
+    ticketUrl: "",
+    youtubeId: ""
+  },
+  {
+    date: "2025-07-06",
+    venue: "Blox Art Centre",
+    city: "Calgary, AB",
+    event: "",
+    bill: ["Nameless King","Balrogath","Cultist","VO!D"],
     ticketUrl: "",
     youtubeId: ""
   },

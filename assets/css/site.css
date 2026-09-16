@@ -107,6 +107,17 @@ position: fixed means it stays visible as you scroll
   letter-spacing: 0.1em;        /* space between letters */
 }
 
+.nav-logo img {
+  height: 28px;                 /* CHANGE: nav logo size */
+  display: block;
+  filter: invert(1);            /* black logo -> white, same trick as the footer */
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+.nav-logo:hover img {
+  opacity: 1;
+}
+
 .nav-links {
   display: flex;
   gap: 2.5rem;                  /* space between each nav item */
@@ -150,7 +161,7 @@ HERO — the first full-screen section the visitor sees
 .hero-bg {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-image: url('../images/logo-hero.png');
+  background-image: url('../images/hero-bg.png');
   background-size: 70%;             /* logo takes up 70% of the hero width */
   background-position: center 40%;  /* horizontal center, 40% down */
   background-repeat: no-repeat;
@@ -925,13 +936,78 @@ SHARED — small additions used by the new pages
 
 /*
 ================================================================
+SECTION BACKGROUNDS - optional photo behind a section
+Same idea as .hero-bg: an absolutely-positioned layer under the
+content, dimmed and faded into black at the top and bottom.
+
+To turn one on: the section already contains
+  <div class="section-bg"></div>
+as its first child. Drop the matching file into assets/images/
+(names below) and it appears. No file = plain black, no change.
+To turn one off for good: delete the div from the section.
+================================================================
+*/
+section {
+  position: relative;           /* so .section-bg can sit inside it */
+}
+.section-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
+  pointer-events: none;         /* clicks go through to the content */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.25;                /* CHANGE: how visible the photo is (0-1) */
+  filter: grayscale(60%);       /* CHANGE: 100% = full B&W, 0 = full colour */
+}
+/* fade the photo into black at the top and bottom edges */
+.section-bg::before,
+.section-bg::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 35%;
+}
+.section-bg::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--black), transparent);
+}
+.section-bg::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--black), transparent);
+}
+/* everything else in the section sits above the photo */
+section > *:not(.section-bg) {
+  position: relative;
+  z-index: 1;
+}
+
+/* CHANGE: one line per section. File goes in assets/images/. */
+#about   .section-bg { background-image: url('../images/bg-about.jpg'); }
+#music   .section-bg { background-image: url('../images/bg-music.jpg'); }
+#live    .section-bg { background-image: url('../images/bg-live.jpg'); }
+#merch   .section-bg { background-image: url('../images/bg-merch.jpg'); }
+#contact .section-bg { background-image: url('../images/bg-contact.jpg'); }
+
+
+/*
+================================================================
 SHOWS PAGE
 The show rows themselves reuse .show-row / .show-date / .show-venue /
 .show-location / .show-ticket from the LIVE SECTION above.
 ================================================================
 */
 
-/* Supporting acts, shown under the city on the same row */
+/* Festival / tour name — small red label above the venue */
+.show-event {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: var(--blood);
+}
+
+/* Full lineup, shown under the city on the same row */
 .show-bill {
   font-size: 11px;
   color: var(--mid);
@@ -1100,7 +1176,7 @@ Black-on-white, no nav, no embeds (they're replaced by their URLs).
 
   body { font-size: 11px; background: #fff; color: #111; }
 
-  #nav, footer, .no-print, iframe, .hero-bg, .hero-overlay { display: none !important; }
+  #nav, footer, .no-print, iframe, .hero-bg, .hero-overlay, .section-bg { display: none !important; }
   .print-only { display: block; }
 
   .page-top { padding-top: 0; }

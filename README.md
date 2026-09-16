@@ -30,7 +30,8 @@ Open `data/shows.js`. Copy one `{ ... },` block, paste it anywhere in the list, 
   date: "2026-11-07",          // YYYY-MM-DD
   venue: "Venue Name",
   city: "Calgary, AB",
-  bill: ["Band A", "Band B"], // other acts, or []
+  event: "",                   // festival / tour name, or ""
+  bill: ["Band A", "VO!D"],    // full lineup in bill order, or []
   ticketUrl: "",              // leave "" to show CONTACT US
   youtubeId: ""               // past shows only, once the video is up
 },
@@ -59,6 +60,16 @@ To get a new Spotify embed: open the release in Spotify → three dots → Share
 Find the Social Links block in the Contact section.
 Each `<a>` tag has a `href=` — replace the URL inside the quotes.
 
+### Swap a photo
+Images in `assets/images/` are named by their slot on the page, not by what's in them. To change the wide About photo, save your new file as `assets/images/about-wide.jpg` over the old one. No HTML edit needed. Keep these web-sized (~1600–2000px on the long edge) — the site gets slow with camera-sized files.
+
+Full-res originals for the EPK downloads live in `assets/press/`. Those are named by content because a promoter sees the filename when they save it.
+
+### Section backgrounds
+Every homepage section (About, Music, Live, Merch, Contact) can have a faint photo behind it. Drop a file named `bg-about.jpg`, `bg-music.jpg`, `bg-live.jpg`, `bg-merch.jpg`, or `bg-contact.jpg` into `assets/images/` and it appears on refresh. Delete the file and it's gone. If a file isn't there, the section is just black — nothing to switch off.
+
+Opacity and desaturation are set once in `assets/css/site.css` under `SECTION BACKGROUNDS` (`.section-bg`). Same rules as photos: web-sized JPGs.
+
 ### Add a product to merch
 Find the merch grid. Copy one `<div class="merch-card">` block, paste it, update the title, description, and price.
 
@@ -80,15 +91,21 @@ void-band/
     │   └── site.css        ← all styles, shared by every page
     ├── js/
     │   └── shows.js        ← reads data/shows.js and draws the rows (don't edit)
-    └── images/
-        ├── logo-hero.png       ← shrapnel explosion logo (voidalt_01)
-        ├── logo-footer.png     ← block logo (voidalt_02)
-        ├── photo-live.jpg      ← full band shot
-        ├── photo-silhouette.jpg ← fluorescent silhouette shot
-        ├── photo-guitar.jpg    ← 8-string close-up
-        ├── photo-vocalist.jpg  ← vocalist from behind
-        ├── photo-drums.JPG     ← drummer B&W (note: capital .JPG — GitHub Pages is case-sensitive)
-        └── release-residual.jpg ← RESIDUAL album art
+    ├── images/                 ← homepage images, named by WHERE they sit (web-sized)
+    │   ├── hero-bg.png         ← faint logo behind the hero
+    │   ├── logo.png            ← nav + footer logo
+    │   ├── divider-1.jpg       ← photo strip after the hero
+    │   ├── about-wide.jpg      ← About grid, top (wide)
+    │   ├── about-1.jpg         ← About grid, bottom-left
+    │   ├── about-2.jpg         ← About grid, bottom-right
+    │   ├── divider-2.jpg       ← photo strip after About
+    │   ├── og-image.jpg        ← link-preview image (Discord, iMessage, etc.)
+    │   └── bg-*.jpg            ← optional section backgrounds (see below) — not present until you add them
+    └── press/                  ← full-resolution originals for the EPK download links
+        ├── press-photo-1.jpg … press-photo-4.jpg
+        ├── logo-shrapnel.png
+        ├── logo-block.png
+        └── cover-residual.jpg
 ```
 
 ---
