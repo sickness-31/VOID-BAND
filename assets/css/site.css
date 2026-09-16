@@ -1015,19 +1015,106 @@ The show rows themselves reuse .show-row / .show-date / .show-venue /
 }
 
 /*
-  A past show's video sits directly under its row.
-  aspect-ratio keeps the player 16:9 at any width.
+  A past show with a video gets a third column on the right
+  holding the player. Rows without video keep the normal layout.
 */
-.show-video {
-  border-bottom: 1px solid var(--dim);
-  padding: 0 0 1.75rem;
+.show-row.has-video {
+  grid-template-columns: 130px 1fr min(480px, 40%);  /* CHANGE: 480px = max player width */
+  align-items: start;
+  padding: 2rem 0;
 }
 .show-video iframe {
   display: block;
   width: 100%;
-  max-width: 900px;
   aspect-ratio: 16 / 9;
   border: none;
+}
+/*
+  PHOTO STRIP - thumbnails for a past show, full width under the
+  text/video. Click opens the lightbox. Files: assets/shows/<date>/
+*/
+.show-photos {
+  grid-column: 1 / -1;          /* span every column of the row */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 2px;
+  margin-top: 0.5rem;
+}
+.show-photo {
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--dim);
+}
+.show-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(100%);
+  opacity: 0.75;
+  transition: opacity 0.2s, filter 0.2s;
+}
+.show-photo:hover img {
+  opacity: 1;
+  filter: grayscale(0%);
+}
+
+/* LIGHTBOX - created by assets/js/shows.js on first click */
+.lightbox {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 200;                 /* above the nav (100) */
+  background: rgba(10, 10, 10, 0.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox[hidden] {
+  display: none;                /* author display:flex above would otherwise beat [hidden] */
+}
+.lightbox img {
+  max-width: 92vw;
+  max-height: 90vh;
+  object-fit: contain;
+  cursor: pointer;              /* click = next */
+}
+.lightbox button {
+  position: absolute;
+  background: none;
+  border: none;
+  color: var(--dirty);
+  font-family: var(--display);
+  font-size: 32px;
+  cursor: pointer;
+  opacity: 0.5;
+  padding: 1rem;
+  transition: opacity 0.15s;
+}
+.lightbox button:hover { opacity: 1; }
+.lightbox-prev  { left: 1rem;  top: 50%; transform: translateY(-50%); }
+.lightbox-next  { right: 1rem; top: 50%; transform: translateY(-50%); }
+.lightbox-close { right: 1rem; top: 1rem; }
+.lightbox-count {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--display);
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  color: var(--mid);
+}
+
+/* phones: video drops under the text, full width. Must come AFTER the rule above. */
+@media (max-width: 700px) {
+  .show-row.has-video {
+    grid-template-columns: 90px 1fr;  /* drop the video column on phones */
+  }
+  .show-row.has-video .show-video {
+    grid-column: 1 / -1;          /* span both columns, under the text */
+    margin-top: 1rem;
+  }
 }
 
 
@@ -1176,7 +1263,7 @@ Black-on-white, no nav, no embeds (they're replaced by their URLs).
 
   body { font-size: 11px; background: #fff; color: #111; }
 
-  #nav, footer, .no-print, iframe, .hero-bg, .hero-overlay, .section-bg { display: none !important; }
+  #nav, footer, .no-print, iframe, .hero-bg, .hero-overlay, .section-bg, .show-photos, .lightbox { display: none !important; }
   .print-only { display: block; }
 
   .page-top { padding-top: 0; }

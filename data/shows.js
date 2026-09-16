@@ -34,6 +34,15 @@
                               https://www.youtube.com/watch?v=_7-afHWL_mc
                               the id is "_7-afHWL_mc". Leave "" until the
                               video is up.
+    photos     12             optional. Number of photos for a PAST show.
+                              Files go in assets/shows/<date>/ named
+                              01.jpg, 02.jpg, ... up to that number, e.g.
+                              assets/shows/2026-06-05/01.jpg
+                              Adding one: drop in 13.jpg, change 12 to 13.
+                              Removing one from the middle: renumber.
+                              0 = no gallery.
+                              You can also give a list of filenames instead:
+                              photos: ["01.jpg", "crowd.jpg"]
 
   Lines starting with // are comments — they're ignored by the browser.
   ====================================================================
@@ -47,16 +56,18 @@ window.VOID_SHOWS = [
     event: "",
     bill: ["Axohxin","Flaccid Wrath","VO!D","Desicrate"],
     ticketUrl: "",
-    youtubeId: ""
+    youtubeId: "",
+    photos: 0
   },
   {
     date: "2026-08-01",
     venue: "The Vat",
     city: "Red Deer, AB",
-    event: "",
+    event: "Consumer Culture EP Release Show",
     bill: ["A Nobodies Achievement","Folded Hand","VO!D"],
     ticketUrl: "",
-    youtubeId: ""
+    youtubeId: "",
+    photos: 0
   },
   {
     date: "2026-07-05",
@@ -65,7 +76,8 @@ window.VOID_SHOWS = [
     event: "THE GREAT WESTERN ROT",
     bill: ["Without Mercy","Butcher","Decrepitation","VO!D"],
     ticketUrl: "",
-    youtubeId: ""
+    youtubeId: "",
+    photos: 0
   },
   {
     date: "2026-07-04",
@@ -74,7 +86,8 @@ window.VOID_SHOWS = [
     event: "THE GREAT WESTERN ROT",
     bill: ["Without Mercy","Butcher","Decrepitation","VO!D"],
     ticketUrl: "",
-    youtubeId: ""
+    youtubeId: "",
+    photos: 0
   },
   {
     date: "2026-07-03",
@@ -83,7 +96,8 @@ window.VOID_SHOWS = [
     event: "THE GREAT WESTERN ROT",
     bill: ["Without Mercy","Butcher","Decrepitation","VO!D"],
     ticketUrl: "",
-    youtubeId: ""
+    youtubeId: "",
+    photos: 0
   },
   {
     date: "2026-06-05",
@@ -92,16 +106,18 @@ window.VOID_SHOWS = [
     event: "DECIMATE FEST FUNDRAISER",
     bill: ["Hombre", "Axohxin","Disorderly Conduct","Another Time Around","VO!D"],
     ticketUrl: "",
-    youtubeId: "https://www.youtube.com/watch?v=_7-afHWL_mc"
+    youtubeId: "https://www.youtube.com/watch?v=_7-afHWL_mc",
+    photos: 0
   },
   {
     date: "2026-03-06",
     venue: "Vin L Den",
     city: "Red Deer, AB",
-    event: "RESIDUAL RELEASE SHOW",
+    event: "RESIDUAL EP RELEASE SHOW",
     bill: ["VO!D","The 21st Agenda","Feel and Flow"],
     ticketUrl: "",
-    youtubeId: ""
+    youtubeId: "",
+    photos: 0
   },
   {
     date: "2025-09-11",
@@ -110,7 +126,8 @@ window.VOID_SHOWS = [
     event: "",
     bill: ["Jane Decay","GodFall","VO!D"],
     ticketUrl: "",
-    youtubeId: ""
+    youtubeId: "",
+    photos: 0
   },
   {
     date: "2025-07-06",
@@ -119,7 +136,8 @@ window.VOID_SHOWS = [
     event: "",
     bill: ["Nameless King","Balrogath","Cultist","VO!D"],
     ticketUrl: "",
-    youtubeId: ""
+    youtubeId: "",
+    photos: 10
   },
 
   // ---- paste new shows above this line ----

@@ -16,12 +16,15 @@
 
   data-shows   "upcoming" | "past"     which shows to list
   data-limit   number                  max rows (optional)
-  data-video   "true"                  embed YouTube for shows that have one
+  data-video   "true"                  embed YouTube (in the row, right side) for shows that have one
   data-condensed "true"                date / venue / city only (EPK view)
   data-empty   text                    message shown when the list is empty
 
   Per-show fields it reads: date, venue, city, event (optional label),
-  bill (full lineup, printed as-is), ticketUrl, youtubeId.
+  bill (full lineup, printed as-is), ticketUrl, youtubeId, photos.
+
+  data-photos  "true"                  show the photo strip for past shows
+                                       that have photos (click opens a lightbox)
 
   Upcoming = today or later, soonest first.
   Past     = before today, most recent first.
@@ -55,6 +58,22 @@
       .replace(/"/g, '&quot;');
   }
 
+  // photos: 12  -> assets/shows/<date>/01.jpg ... 12.jpg
+  // photos: ["a.jpg", "b.jpg"] -> assets/shows/<date>/a.jpg, ...
+  function photoUrls(show) {
+    var dir = 'assets/shows/' + show.date + '/';
+    var p = show.photos;
+    if (Array.isArray(p)) {
+      return p.filter(Boolean).map(function (f) { return dir + f; });
+    }
+    var n = parseInt(p, 10);
+    var out = [];
+    for (var i = 1; i <= n; i++) {
+      out.push(dir + (i < 10 ? '0' + i : String(i)) + '.jpg');
+    }
+    return out;
+  }
+
   function getShows(mode) {
     var all = (window.VOID_SHOWS || []).filter(function (s) {
       return s && typeof s.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s.date);
@@ -73,7 +92,9 @@
 
   function renderRow(show, opts) {
     var bill = Array.isArray(show.bill) ? show.bill.filter(Boolean) : [];
-    var html = '<div class="show-row">';
+    var hasVideo = opts.video && opts.mode === 'past' && !!show.youtubeId;
+    var photos = (opts.photos && opts.mode === 'past') ? photoUrls(show) : [];
+    var html = '<div class="show-row' + (hasVideo ? ' has-video' : '') + '">';
     html += '<span class="show-date">' + esc(show.date) + '</span>';
     html += '<div class="show-info">';
     if (show.event) {
@@ -98,9 +119,8 @@
                 '" class="show-ticket" target="_blank" rel="noopener">WATCH</a>';
       }
     }
-    html += '</div>';
-
-    if (opts.video && opts.mode === 'past' && show.youtubeId) {
+    if (hasVideo) {
+      // player sits in the row's third column (see .show-row.has-video in CSS)
       html += '<div class="show-video">' +
         '<iframe src="https://www.youtube.com/embed/' + esc(show.youtubeId) + '" ' +
         'title="VO!D live at ' + esc(show.venue) + ', ' + esc(show.date) + '" ' +
@@ -108,6 +128,18 @@
         'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>' +
         '</div>';
     }
+    if (photos.length) {
+      // thumbnail strip spans the full row width (see .show-photos in CSS)
+      html += '<div class="show-photos">';
+      for (var p = 0; p < photos.length; p++) {
+        html += '<a href="' + esc(photos[p]) + '" class="show-photo" ' +
+          'data-lightbox="' + esc(show.date) + '" data-index="' + p + '">' +
+          '<img src="' + esc(photos[p]) + '" alt="VO!D at ' + esc(show.venue) + ', ' + esc(show.date) + '" loading="lazy">' +
+          '</a>';
+      }
+      html += '</div>';
+    }
+    html += '</div>';
     return html;
   }
 
@@ -116,7 +148,8 @@
     var opts = {
       mode: mode,
       video: el.getAttribute('data-video') === 'true',
-      condensed: el.getAttribute('data-condensed') === 'true'
+      condensed: el.getAttribute('data-condensed') === 'true',
+      photos: el.getAttribute('data-photos') === 'true'
     };
     var limit = parseInt(el.getAttribute('data-limit'), 10);
     var shows = getShows(mode);
@@ -131,9 +164,68 @@
     el.innerHTML = shows.map(function (s) { return renderRow(s, opts); }).join('');
   }
 
+  /*
+    LIGHTBOX - one overlay for the whole page. Clicking a .show-photo
+    opens it; left/right (keys or click) move within that show's
+    photos; Esc or clicking the dark area closes it.
+  */
+  var lb = { el: null, img: null, urls: [], i: 0 };
+
+  function lbShow(i) {
+    lb.i = (i + lb.urls.length) % lb.urls.length;
+    lb.img.src = lb.urls[lb.i];
+    lb.el.querySelector('.lightbox-count').textContent = (lb.i + 1) + ' / ' + lb.urls.length;
+  }
+  function lbClose() {
+    lb.el.hidden = true;
+    lb.img.src = '';
+    document.body.style.overflow = '';
+  }
+  function lbOpen(urls, i) {
+    if (!lb.el) {
+      lb.el = document.createElement('div');
+      lb.el.className = 'lightbox';
+      lb.el.innerHTML =
+        '<button type="button" class="lightbox-prev" aria-label="Previous">&larr;</button>' +
+        '<img alt="">' +
+        '<button type="button" class="lightbox-next" aria-label="Next">&rarr;</button>' +
+        '<button type="button" class="lightbox-close" aria-label="Close">&times;</button>' +
+        '<span class="lightbox-count"></span>';
+      document.body.appendChild(lb.el);
+      lb.img = lb.el.querySelector('img');
+      lb.el.addEventListener('click', function (e) {
+        if (e.target.classList.contains('lightbox-prev')) lbShow(lb.i - 1);
+        else if (e.target.classList.contains('lightbox-next') || e.target === lb.img) lbShow(lb.i + 1);
+        else lbClose();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (lb.el.hidden) return;
+        if (e.key === 'Escape') lbClose();
+        else if (e.key === 'ArrowLeft') lbShow(lb.i - 1);
+        else if (e.key === 'ArrowRight') lbShow(lb.i + 1);
+      });
+    }
+    lb.urls = urls;
+    lb.el.hidden = false;
+    document.body.style.overflow = 'hidden';
+    lbShow(i);
+  }
+
+  function onPhotoClick(e) {
+    var a = e.target.closest ? e.target.closest('a.show-photo') : null;
+    if (!a) return;
+    e.preventDefault();
+    var strip = a.parentElement;
+    var links = strip.querySelectorAll('a.show-photo');
+    var urls = [];
+    for (var i = 0; i < links.length; i++) urls.push(links[i].getAttribute('href'));
+    lbOpen(urls, parseInt(a.getAttribute('data-index'), 10) || 0);
+  }
+
   function init() {
     var targets = document.querySelectorAll('[data-shows]');
     for (var i = 0; i < targets.length; i++) renderInto(targets[i]);
+    document.addEventListener('click', onPhotoClick);
   }
 
   if (document.readyState === 'loading') {

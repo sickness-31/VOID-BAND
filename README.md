@@ -33,7 +33,8 @@ Open `data/shows.js`. Copy one `{ ... },` block, paste it anywhere in the list, 
   event: "",                   // festival / tour name, or ""
   bill: ["Band A", "VO!D"],    // full lineup in bill order, or []
   ticketUrl: "",              // leave "" to show CONTACT US
-  youtubeId: ""               // past shows only, once the video is up
+  youtubeId: "",              // past shows only, once the video is up
+  photos: 0                   // past shows only, see "Add show photos"
 },
 ```
 
@@ -41,6 +42,19 @@ That's it. The homepage shows the next 3 upcoming, `shows.html` shows everything
 
 ### Attach a live video to a past show
 Set `youtubeId` on that show in `data/shows.js`. It's the part of the YouTube URL after `v=`. The player embeds under the show's row on `shows.html`.
+
+### Add show photos
+Make a folder named after the show date under `assets/shows/`, put the photos in it numbered `01.jpg`, `02.jpg`, … and set `photos:` on that show to how many there are:
+
+```
+assets/shows/2026-06-05/01.jpg
+assets/shows/2026-06-05/02.jpg
+```
+```js
+photos: 2,
+```
+
+They show as a thumbnail strip under the show on `shows.html`; clicking one opens it full-size with arrow keys to move through. Keep them web-sized (~1600px long edge). To add one later, drop in the next number and bump the count.
 
 ### Remove a show
 Delete its `{ ... },` block from `data/shows.js`.
@@ -61,7 +75,7 @@ Find the Social Links block in the Contact section.
 Each `<a>` tag has a `href=` — replace the URL inside the quotes.
 
 ### Swap a photo
-Images in `assets/images/` are named by their slot on the page, not by what's in them. To change the wide About photo, save your new file as `assets/images/about-wide.jpg` over the old one. No HTML edit needed. Keep these web-sized (~1600–2000px on the long edge) — the site gets slow with camera-sized files.
+Images in `assets/images/` are named by their slot on the page, not by what's in them — see **Image reference** below for the full list. To change the wide About photo, save your new file as `assets/images/about-wide.jpg` over the old one. No HTML edit needed. Keep these web-sized (~1600–2000px on the long edge) — the site gets slow with camera-sized files.
 
 Full-res originals for the EPK downloads live in `assets/press/`. Those are named by content because a promoter sees the filename when they save it.
 
@@ -91,22 +105,49 @@ void-band/
     │   └── site.css        ← all styles, shared by every page
     ├── js/
     │   └── shows.js        ← reads data/shows.js and draws the rows (don't edit)
-    ├── images/                 ← homepage images, named by WHERE they sit (web-sized)
-    │   ├── hero-bg.png         ← faint logo behind the hero
-    │   ├── logo.png            ← nav + footer logo
-    │   ├── divider-1.jpg       ← photo strip after the hero
-    │   ├── about-wide.jpg      ← About grid, top (wide)
-    │   ├── about-1.jpg         ← About grid, bottom-left
-    │   ├── about-2.jpg         ← About grid, bottom-right
-    │   ├── divider-2.jpg       ← photo strip after About
-    │   ├── og-image.jpg        ← link-preview image (Discord, iMessage, etc.)
-    │   └── bg-*.jpg            ← optional section backgrounds (see below) — not present until you add them
-    └── press/                  ← full-resolution originals for the EPK download links
-        ├── press-photo-1.jpg … press-photo-4.jpg
-        ├── logo-shrapnel.png
-        ├── logo-block.png
-        └── cover-residual.jpg
+    ├── images/                 ← homepage images, named by WHERE they sit (see table below)
+    └── press/                  ← full-res originals for the EPK download links (see table below)
 ```
+
+## Image reference
+
+### `assets/images/` — homepage slots
+
+Web-sized. To swap one, save the new file over the old one with the same name.
+
+| Filename | Where it shows |
+|---|---|
+| `hero-bg.png` | Faint logo behind the big VO!D on the opening screen |
+| `logo.png` | Nav bar (top-left) and footer (bottom-left), all three pages |
+| `divider-1.jpg` | Full-width photo strip between the hero and About |
+| `about-wide.jpg` | About grid — top photo, spans both columns |
+| `about-1.jpg` | About grid — bottom-left square |
+| `about-2.jpg` | About grid — bottom-right square |
+| `divider-2.jpg` | Full-width photo strip between About and Music |
+| `og-image.jpg` | Link-preview thumbnail when the URL is pasted in Discord / iMessage / Facebook — never visible on the page |
+| `bg-about.jpg` | Optional — behind the About section |
+| `bg-music.jpg` | Optional — behind the Music section |
+| `bg-live.jpg` | Optional — behind the Live section |
+| `bg-merch.jpg` | Optional — behind the Merch section |
+| `bg-contact.jpg` | Optional — behind the Contact section |
+
+The five `bg-*` files don't exist until you add them; the section stays black until then.
+
+### `assets/press/` — EPK downloads
+
+Full resolution. Named by content because a promoter sees the filename when they save it.
+
+| Filename | What it is |
+|---|---|
+| `press-photo-1.jpg` | drums |
+| `press-photo-2.jpg` | guitar |
+| `press-photo-3.jpg` | vocalist |
+| `press-photo-4.jpg` | silhouette |
+| `logo-shrapnel.png` | explosion logo |
+| `logo-block.png` | block logo |
+| `cover-residual.jpg` | RESIDUAL album art |
+
+The captions in `epk.html` ("6000 × 4000 · Photo: …") are typed by hand — if you swap a press photo for one with different dimensions, update that line too.
 
 ---
 
