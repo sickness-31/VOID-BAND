@@ -124,6 +124,7 @@ Web-sized. To swap one, save the new file over the old one with the same name.
 | `about-1.jpg` | About grid — bottom-left square |
 | `about-2.jpg` | About grid — bottom-right square |
 | `divider-2.jpg` | Optional — full-width photo strip between About and Music. No file = no strip. |
+| `epk-logo.png` | Logo at the top of the EPK page, in place of a text title |
 | `og-image.jpg` | Link-preview thumbnail when the URL is pasted in Discord / iMessage / Facebook — never visible on the page |
 | `bg-about.jpg` | Optional — behind the About section |
 | `bg-music.jpg` | Optional — behind the Music section |
@@ -146,6 +147,7 @@ Full resolution. Named by content because a promoter sees the filename when they
 | `logo-1.png` | logo (PNG) — add `logo-3.png` etc. and a matching block in `epk.html` for more |
 | `logo-2.png` | logo (PNG) |
 | `cover-residual.jpg` | RESIDUAL album art |
+| `qr-site.svg` / `.png` | QR code to the site URL with the logo in the centre. Shown in the EPK Booking section. If the site URL ever changes, ask for it to be regenerated. |
 
 Press-photo captions (size + photographer) are read automatically from each JPEG by `assets/js/credits.js`. Set the photographer in Windows: right-click the file → Properties → Details → **Authors**. Works for `assets/press/` and show photos (lightbox). JPEG only — PNG can't carry it. Don't click "Remove Properties and Personal Information" on that tab; it strips the credit.
 

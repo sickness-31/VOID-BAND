@@ -63,7 +63,8 @@
        ================================================ -->
   <section id="epk-top" class="page-top epk-section">
     <span class="section-label">Electronic Press Kit</span>
-    <h2 class="section-title">VO!D</h2>
+    <!-- logo instead of a text title. File: assets/images/epk-logo.png (overwrite to swap) -->
+    <img class="epk-logo" src="assets/images/epk-logo.png" alt="VO!D">
 
     <div class="epk-facts">
       <div class="epk-fact">
@@ -348,19 +349,33 @@
     <span class="section-label">Get In Touch</span>
     <h2 class="section-title">Booking</h2>
 
-    <div class="contact-block">
-      <span class="contact-label">Booking &amp; Press</span>
-      <p class="contact-value">
-        <!-- CHANGE: booking email -->
-        <a href="mailto:void.empr@gmail.com">void.empr@gmail.com</a>
-      </p>
-    </div>
-    <div class="contact-block">
-      <span class="contact-label">Web</span>
-      <p class="contact-value">
-        <!-- CHANGE: replace with the custom domain once CNAME is set -->
-        <a href="https://sickness-31.github.io/void-band/">sickness-31.github.io/void-band</a>
-      </p>
+    <div class="booking-grid">
+      <div>
+        <div class="contact-block">
+          <span class="contact-label">Booking &amp; Press</span>
+          <p class="contact-value">
+            <!-- CHANGE: booking email -->
+            <a href="mailto:void.empr@gmail.com">void.empr@gmail.com</a>
+          </p>
+        </div>
+        <div class="contact-block">
+          <span class="contact-label">Web</span>
+          <p class="contact-value">
+            <!-- CHANGE: replace with the custom domain once CNAME is set.
+                 If the URL changes, regenerate assets/press/qr-site.* too. -->
+            <a href="https://sickness-31.github.io/void-band/">sickness-31.github.io/void-band</a>
+          </p>
+        </div>
+      </div>
+      <div class="qr-block">
+        <!-- QR to the site. Files in assets/press/ (svg for print, png for web). -->
+        <img src="assets/press/qr-site.svg" alt="QR code: sickness-31.github.io/void-band" class="qr-img">
+        <div class="press-meta">
+          <span>Scan for the site</span>
+          <a href="assets/press/qr-site.svg" download class="text-link">SVG ↓</a>
+          <a href="assets/press/qr-site.png" download class="text-link">PNG ↓</a>
+        </div>
+      </div>
     </div>
   </section>
 

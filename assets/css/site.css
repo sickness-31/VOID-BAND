@@ -1140,10 +1140,18 @@ order a booker asks for them.
 ================================================================
 */
 
+/* Logo in place of the EPK title */
+.epk-logo {
+  display: block;
+  width: min(480px, 70vw);      /* CHANGE: logo size on the EPK page */
+  height: auto;
+  margin: 0 0 2.5rem;
+}
+
 /* Quick-facts grid under the EPK title */
 .epk-facts {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, 1fr);   /* 4 x 2 on desktop, same as the PDF */
   gap: 2px;
   border-top: 1px solid var(--dim);
   margin-bottom: 2rem;
@@ -1258,8 +1266,31 @@ order a booker asks for them.
   object-fit: contain;
 }
 
+/* Booking section: contact on the left, QR on the right */
+.booking-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 3rem;
+  align-items: start;
+}
+.qr-img {
+  display: block;
+  width: 160px;                 /* CHANGE: QR size on screen */
+  height: 160px;
+  margin-bottom: 0.5rem;
+}
+.qr-block .press-meta { gap: 0.75rem; justify-content: flex-start; }
+
 /* Elements that only show up on paper / PDF */
 .print-only { display: none; }
+
+@media (max-width: 900px) {
+  .epk-facts { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 500px) {
+  .epk-facts { grid-template-columns: 1fr; }
+  .booking-grid { grid-template-columns: 1fr; }
+}
 
 
 /*
@@ -1273,7 +1304,7 @@ Either way: no nav, no embeds (replaced by their URLs).
 ================================================================
 */
 @media print {
-  /* edge-to-edge: no printer margin, the 15mm lives on the body instead */
+  /* edge-to-edge: no printer margin, the page margin lives on the body instead */
   @page { margin: 0; }
 
   html, body {
@@ -1281,7 +1312,7 @@ Either way: no nav, no embeds (replaced by their URLs).
     -webkit-print-color-adjust: exact;   /* print backgrounds as on screen */
     print-color-adjust: exact;
   }
-  body { font-size: 11px; color: var(--dirty); padding: 15mm; }
+  body { font-size: 9.5px; line-height: 1.4; color: var(--dirty); padding: 8mm 10mm; }
 
   /* LIGHT variant — set by the PDF Version (Light) button on epk.html */
   html.print-light {
@@ -1293,32 +1324,66 @@ Either way: no nav, no embeds (replaced by their URLs).
   }
 
   #nav, footer, .no-print, iframe, .hero-bg, .hero-overlay, .section-bg, .show-photos, .lightbox { display: none !important; }
-  .print-only { display: block; }
+  .print-only { display: block; font-size: 9px; color: var(--mid); }
 
-  .page-top { padding-top: 0; }
-  .epk-section { padding: 1.5rem 0; break-inside: avoid; }
-  .epk-section .section-title { font-size: 28px; margin-bottom: 1rem; }
-  .section-label { margin-bottom: 0.5rem; }
+  /*
+    ONE-SHEET PACKING
+    Sections are allowed to split across pages; only small units
+    (a fact tile, a paragraph, a show row, a photo) are kept whole.
+    A section-level break-inside: avoid is what pushed every section
+    onto its own page before.
+  */
+  section.page-top { padding-top: 0; }
+  .epk-section { padding: 0.6rem 0; }
+  .epk-section .section-label { font-size: 8px; letter-spacing: 0.4em; margin-bottom: 0.15rem; }
+  .epk-section .section-title { font-size: 18px; margin-bottom: 0.5rem; break-after: avoid; }
+  .section-sub { font-size: 8px; margin: 0.6rem 0 0.3rem; break-after: avoid; }
+  .rule { margin: 0; }
 
-  .epk-facts { margin-bottom: 1rem; }
-  .epk-fact { padding: 0.75rem 1rem; }
+  /* header: title small, facts in a tight 4-up grid */
+  .epk-logo { width: 55mm; margin-bottom: 0.4rem; }
+  html.print-light .epk-logo { filter: invert(1); }   /* white logo on a white page otherwise */
+  .epk-facts { grid-template-columns: repeat(4, 1fr); gap: 1px; margin-bottom: 0; }
+  .epk-fact { padding: 0.4rem 0.6rem; break-inside: avoid; }
+  .epk-fact-label { font-size: 7.5px; letter-spacing: 0.3em; margin-bottom: 0.15rem; }
+  .epk-fact-value { font-size: 9px; line-height: 1.35; }
 
-  .press-grid { grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
-  .press-photo img { filter: none; opacity: 1; aspect-ratio: 3 / 2; }
-  .press-meta { font-size: 9px; }
+  /* bio: short + long flow in two text columns */
+  .epk-bio { column-count: 2; column-gap: 1.5rem; max-width: none; }
+  .epk-bio p { font-size: 9px; line-height: 1.45; margin-bottom: 0.5rem; max-width: none; break-inside: avoid; }
 
-  .logo-grid { grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
-  .logo-tile { padding: 0.5rem; border: 1px solid var(--dim); }
+  /* music & video: embeds are hidden, only the two URL lines remain */
+  .epk-grid-2 { grid-template-columns: 1fr 1fr; gap: 1rem; }
 
-  .show-row { padding: 0.5rem 0; grid-template-columns: 90px 1fr; }
+  /* photos 4-up, logos 2-up on one row */
+  .press-grid { grid-template-columns: repeat(4, 1fr); gap: 0.35rem; }
+  .press-photo { break-inside: avoid; }
+  .press-photo img { filter: none; opacity: 1; aspect-ratio: 3 / 2; margin-bottom: 0.2rem; }
+  .press-meta { font-size: 7.5px; }
+  .logo-grid { grid-template-columns: repeat(5, 1fr); gap: 0.35rem; }
+  .logo-tile { padding: 0.4rem; border: 1px solid var(--dim); aspect-ratio: 3 / 2; margin-bottom: 0.2rem; }
+
+  /* show history: always starts on page 2, two readable columns */
+  #epk-history { break-before: page; }
+  .show-list { border-top: none; display: grid; grid-template-columns: 1fr 1fr; column-gap: 2rem; }
+  .show-row { padding: 0.45rem 0; grid-template-columns: 62px 1fr; gap: 0.6rem; align-items: start; break-inside: avoid; }
   .show-row:hover { padding-left: 0; }
-  .show-date { font-size: 13px; }
-  .show-venue { font-size: 13px; }
-  .show-ticket { display: none; }
-  .show-video { display: none; }
+  .show-info { gap: 0; }
+  .show-date { font-size: 10px; }
+  .show-venue { font-size: 11px; }
+  .show-event { font-size: 7.5px; letter-spacing: 0.25em; }
+  .show-location { font-size: 8.5px; }
+  .show-bill { font-size: 8px; }
+  .show-ticket, .show-video { display: none; }
 
-  .todo { border-color: var(--mid); color: var(--mid); }
-  .todo::before { color: var(--mid); }
+  /* booking: sits under the show history on page 2, QR to the right */
+  #epk-contact .contact-block { display: inline-block; margin: 0 2rem 0 0; }
+  .qr-img { width: 28mm; height: 28mm; }
+  .qr-block .press-meta span { font-size: 7.5px; }
+  .contact-label { font-size: 8px; margin-bottom: 0.1rem; }
+  .contact-value { font-size: 9px; }
+
+  .todo { display: none; }          /* notes-to-self don't go to bookers */
 
   a { color: inherit; text-decoration: none; border: none !important; }
   .text-link, .btn-outline, .link-row { display: none; }

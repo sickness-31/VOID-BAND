@@ -17,7 +17,7 @@
   data-shows   "upcoming" | "past"     which shows to list
   data-limit   number                  max rows (optional)
   data-video   "true"                  embed YouTube (in the row, right side) for shows that have one
-  data-condensed "true"                date / venue / city only (EPK view)
+  data-condensed "true"                no buttons / video / photos (EPK view)
   data-empty   text                    message shown when the list is empty
 
   Per-show fields it reads: date, venue, city, event (optional label),
@@ -102,7 +102,7 @@
     }
     html += '<span class="show-venue">' + esc(show.venue) + '</span>';
     html += '<span class="show-location">' + esc(show.city) + '</span>';
-    if (!opts.condensed && bill.length) {
+    if (bill.length) {
       html += '<span class="show-bill">' + bill.map(esc).join(', ') + '</span>';
     }
     html += '</div>';
