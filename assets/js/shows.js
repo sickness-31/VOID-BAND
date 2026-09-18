@@ -175,6 +175,15 @@
     lb.i = (i + lb.urls.length) % lb.urls.length;
     lb.img.src = lb.urls[lb.i];
     lb.el.querySelector('.lightbox-count').textContent = (lb.i + 1) + ' / ' + lb.urls.length;
+    // photographer, from the JPEG's metadata (assets/js/credits.js), if loaded
+    var credit = lb.el.querySelector('.lightbox-credit');
+    credit.textContent = '';
+    if (window.VOID_CREDITS) {
+      var url = lb.urls[lb.i];
+      window.VOID_CREDITS.get(url).then(function (name) {
+        if (name && lb.urls[lb.i] === url) credit.textContent = 'Photo: ' + name;
+      });
+    }
   }
   function lbClose() {
     lb.el.hidden = true;
@@ -190,7 +199,8 @@
         '<img alt="">' +
         '<button type="button" class="lightbox-next" aria-label="Next">&rarr;</button>' +
         '<button type="button" class="lightbox-close" aria-label="Close">&times;</button>' +
-        '<span class="lightbox-count"></span>';
+        '<span class="lightbox-count"></span>' +
+        '<span class="lightbox-credit"></span>';
       document.body.appendChild(lb.el);
       lb.img = lb.el.querySelector('img');
       lb.el.addEventListener('click', function (e) {

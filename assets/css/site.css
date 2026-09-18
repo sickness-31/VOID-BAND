@@ -284,7 +284,7 @@ section {
 /* small red label above section titles — like "DISCOGRAPHY" above "Music" */
 .section-label {
   font-family: var(--display);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.6em;
   color: var(--blood);
   margin-bottom: 2rem;
@@ -318,7 +318,7 @@ MUSIC SECTION
 
 .release-meta {
   font-family: var(--display);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.4em;
   color: var(--blood);
   margin-bottom: 1rem;
@@ -668,7 +668,7 @@ CONTACT SECTION
 
 .contact-label {
   font-family: var(--display);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.4em;
   color: var(--blood);
   display: block;
@@ -856,7 +856,7 @@ SHARED — small additions used by the new pages
 /* Sub-heading inside a section, e.g. "UPCOMING" / "PAST" on shows.html */
 .section-sub {
   font-family: var(--display);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.6em;
   color: var(--blood);
   margin: 4rem 0 1.5rem;
@@ -927,7 +927,7 @@ SHARED — small additions used by the new pages
   display: block;
   font-family: var(--display);
   font-style: normal;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.4em;
   color: var(--blood);
   margin-bottom: 0.5rem;
@@ -977,8 +977,10 @@ section {
   bottom: 0;
   background: linear-gradient(to top, var(--black), transparent);
 }
-/* everything else in the section sits above the photo */
-section > *:not(.section-bg) {
+/* everything AFTER a .section-bg in the same section sits above the photo.
+   (Sibling selector on purpose: a plain section > * rule would also catch
+   .hero-bg / .hero-overlay and break their position: absolute.) */
+.section-bg ~ * {
   position: relative;
   z-index: 1;
 }
@@ -1002,7 +1004,7 @@ The show rows themselves reuse .show-row / .show-date / .show-venue /
 /* Festival / tour name — small red label above the venue */
 .show-event {
   font-family: var(--display);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.4em;
   color: var(--blood);
 }
@@ -1095,6 +1097,16 @@ The show rows themselves reuse .show-row / .show-date / .show-venue /
 .lightbox-prev  { left: 1rem;  top: 50%; transform: translateY(-50%); }
 .lightbox-next  { right: 1rem; top: 50%; transform: translateY(-50%); }
 .lightbox-close { right: 1rem; top: 1rem; }
+.lightbox-credit {
+  position: absolute;
+  bottom: 3.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-style: italic;
+  color: var(--mid);
+  white-space: nowrap;
+}
 .lightbox-count {
   position: absolute;
   bottom: 1.5rem;
@@ -1140,7 +1152,7 @@ order a booker asks for them.
 }
 .epk-fact-label {
   font-family: var(--display);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.4em;
   color: var(--blood);
   display: block;
@@ -1217,6 +1229,10 @@ order a booker asks for them.
 .press-meta .text-link {
   font-style: normal;
   white-space: nowrap;
+}
+/* filled by assets/js/credits.js; empty until the metadata is read */
+.press-caption:empty::before {
+  content: '\00a0';
 }
 
 /* Logo downloads — light tile so the black logo is visible */

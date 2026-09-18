@@ -1,0 +1,177 @@
+/*
+  ====================================================================
+  VO!D — PHOTO CREDITS
+  assets/js/credits.js
+
+  Reads the photographer's name out of a JPEG's own metadata and
+  writes it under the photo. Nothing is typed into the HTML.
+
+  WHERE THE NAME COMES FROM (first one found wins):
+    1. EXIF "Artist"        — what Windows Explorer > Properties >
+                              Details > Authors writes
+    2. EXIF "XPAuthor"      — Windows' own copy of the same field
+    3. XMP  dc:creator      — Lightroom / Affinity "Creator"
+    4. EXIF "Copyright"     — if it's not blank
+
+  USAGE (in HTML):
+    <div class="press-photo">
+      <img src="assets/press/press-photo-1.jpg" data-credit>
+      <span class="press-caption"></span>
+    </div>
+  The caption gets "6000 × 4000 · Photo: name". No metadata = just
+  the dimensions. Other scripts can call
+    window.VOID_CREDITS.get(url).then(function (name) { ... })
+
+  Only reads the first 256 KB of each file — metadata lives at the
+  front of a JPEG. Needs http(s); won't run from file://.
+  ====================================================================
+*/
+
+(function () {
+  'use strict';
+
+  var LIMIT = 256 * 1024;
+  var cache = {};
+
+  // Fetch just the head of the file, stopping the download once we
+  // have enough bytes (works whether or not the server honours Range).
+  function fetchHead(url) {
+    return fetch(url, { headers: { Range: 'bytes=0-' + (LIMIT - 1) } }).then(function (res) {
+      if (!res.ok && res.status !== 206) throw new Error(res.status);
+      if (!res.body || !res.body.getReader) return res.arrayBuffer();
+      var reader = res.body.getReader();
+      var chunks = [], total = 0;
+      function step() {
+        return reader.read().then(function (r) {
+          if (r.done) return done();
+          chunks.push(r.value);
+          total += r.value.length;
+          if (total >= LIMIT) { reader.cancel(); return done(); }
+          return step();
+        });
+      }
+      function done() {
+        var out = new Uint8Array(total), o = 0;
+        for (var i = 0; i < chunks.length; i++) { out.set(chunks[i], o); o += chunks[i].length; }
+        return out.buffer;
+      }
+      return step();
+    });
+  }
+
+  function ascii(bytes, start, len) {
+    var s = '';
+    for (var i = 0; i < len; i++) {
+      var c = bytes[start + i];
+      if (c === 0) break;
+      s += String.fromCharCode(c);
+    }
+    return s;
+  }
+  function utf16le(bytes, start, len) {
+    var s = '';
+    for (var i = 0; i + 1 < len; i += 2) {
+      var c = bytes[start + i] | (bytes[start + i + 1] << 8);
+      if (c === 0) break;
+      s += String.fromCharCode(c);
+    }
+    return s;
+  }
+  function utf8(bytes, start, len) {
+    try { return new TextDecoder('utf-8').decode(bytes.subarray(start, start + len)); }
+    catch (e) { return ascii(bytes, start, len); }
+  }
+
+  // TIFF/EXIF block: returns {artist, xpauthor, copyright}
+  function parseTiff(bytes, base, end) {
+    var out = {};
+    var le = bytes[base] === 0x49 && bytes[base + 1] === 0x49;   // "II" = little-endian
+    var dv = new DataView(bytes.buffer, bytes.byteOffset);
+    function u16(o) { return dv.getUint16(o, le); }
+    function u32(o) { return dv.getUint32(o, le); }
+    var ifd = base + u32(base + 4);
+    if (ifd + 2 > end) return out;
+    var n = u16(ifd);
+    var sizes = { 1: 1, 2: 1, 3: 2, 4: 4, 5: 8, 7: 1 };
+    for (var k = 0; k < n; k++) {
+      var e = ifd + 2 + k * 12;
+      if (e + 12 > end) break;
+      var tag = u16(e), type = u16(e + 2), count = u32(e + 4);
+      var size = (sizes[type] || 1) * count;
+      var valOff = size <= 4 ? e + 8 : base + u32(e + 8);
+      if (valOff + size > end) continue;
+      if (tag === 0x013B) out.artist = ascii(bytes, valOff, size);
+      else if (tag === 0x9C9E) out.xpauthor = utf16le(bytes, valOff, size);
+      else if (tag === 0x8298) out.copyright = ascii(bytes, valOff, size);
+    }
+    return out;
+  }
+
+  function parseJpeg(buf) {
+    var b = new Uint8Array(buf);
+    if (b[0] !== 0xFF || b[1] !== 0xD8) return null;
+    var found = {};
+    var i = 2;
+    while (i + 4 <= b.length) {
+      if (b[i] !== 0xFF) break;
+      var marker = b[i + 1];
+      if (marker === 0xDA) break;                        // image data starts — no more metadata
+      var len = (b[i + 2] << 8) | b[i + 3];
+      var segStart = i + 4, segEnd = i + 2 + len;
+      if (segEnd > b.length) segEnd = b.length;
+      if (marker === 0xE1) {
+        var head = ascii(b, segStart, 29);
+        if (head.indexOf('Exif') === 0) {
+          var t = parseTiff(b, segStart + 6, segEnd);
+          for (var k in t) found[k] = t[k];
+        } else if (head.indexOf('http://ns.adobe.com/xap/1.0/') === 0) {
+          var xmp = utf8(b, segStart + 29, segEnd - segStart - 29);
+          var m = /<dc:creator>[\s\S]*?<rdf:li[^>]*>([\s\S]*?)<\/rdf:li>/.exec(xmp);
+          if (m) found.xmpcreator = m[1].trim();
+        }
+      }
+      i = segEnd;
+    }
+    var name = (found.artist || '').trim() || (found.xpauthor || '').trim() ||
+               (found.xmpcreator || '').trim() || (found.copyright || '').trim();
+    // Windows joins multiple Authors with ';' -> show as 'a, b'
+    name = name.split(';').map(function (s) { return s.trim(); }).filter(Boolean).join(', ');
+    return name || null;
+  }
+
+  function get(url) {
+    if (!cache[url]) {
+      cache[url] = fetchHead(url).then(parseJpeg).catch(function () { return null; });
+    }
+    return cache[url];
+  }
+
+  // Fill <span class="press-caption"> next to each <img data-credit>
+  function fillCaptions() {
+    var imgs = document.querySelectorAll('img[data-credit]');
+    for (var i = 0; i < imgs.length; i++) (function (img) {
+      var box = img.parentElement;
+      var cap = box ? box.querySelector('.press-caption') : null;
+      if (!cap) return;
+      var src = img.getAttribute('src');
+      function write(name) {
+        var parts = [];
+        if (img.naturalWidth) parts.push(img.naturalWidth + ' × ' + img.naturalHeight);
+        if (name) parts.push('Photo: ' + name);
+        cap.textContent = parts.join(' · ');
+      }
+      get(src).then(function (name) {
+        if (img.complete) write(name);
+        else img.addEventListener('load', function () { write(name); });
+      });
+    })(imgs[i]);
+  }
+
+  window.VOID_CREDITS = { get: get };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fillCaptions);
+  } else {
+    fillCaptions();
+  }
+})();

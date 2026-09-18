@@ -16,6 +16,9 @@
   The print stylesheet in assets/css/site.css strips the nav, swaps
   to black-on-white, and replaces embeds with their URLs.
 
+  Photo captions are NOT typed here — assets/js/credits.js reads the
+  size and photographer from each JPEG's metadata.
+
   Anything in a <div class="todo"> still needs real content.
   Search for "TODO" to find them all.
   ====================================================================
@@ -68,9 +71,9 @@
         <div class="epk-fact-value">Calgary, Alberta, Canada</div>
       </div>
       <div class="epk-fact">
-        <!-- CHANGE: genre wording — "nudeath" is pulled from the homepage meta description -->
+        <!-- CHANGE: genre wording -->
         <span class="epk-fact-label">Genre</span>
-        <div class="epk-fact-value">Metal / nudeath</div>
+        <div class="epk-fact-value">Nu Death / Hardcore</div>
       </div>
       <div class="epk-fact">
         <span class="epk-fact-label">Members</span>
@@ -81,8 +84,16 @@
         </div>
       </div>
       <div class="epk-fact">
+        <span class="epk-fact-label">Lineup</span>
+        <div class="epk-fact-value">Writing together 10 years<br>Current 3-piece since Jan 2024</div>
+      </div>
+      <div class="epk-fact">
         <span class="epk-fact-label">Latest Release</span>
-        <div class="epk-fact-value">RESIDUAL — EP, 2026<br>5 tracks, ~15 min</div>
+        <div class="epk-fact-value">RESIDUAL — EP, 5 tracks<br>March 5, 2026</div>
+      </div>
+      <div class="epk-fact">
+        <span class="epk-fact-label">Live Set</span>
+        <div class="epk-fact-value">~30 min</div>
       </div>
       <div class="epk-fact">
         <span class="epk-fact-label">Booking</span>
@@ -109,8 +120,8 @@
 
   <!-- ================================================
        BIO
-       Short bio = the existing homepage copy, unchanged.
-       Long bio does not exist yet.
+       Short bio is the same copy as the About section on index.html
+       (keep them in sync). Long bio is EPK-only.
        ================================================ -->
   <section id="epk-bio" class="epk-section">
     <span class="section-label">Biography</span>
@@ -118,29 +129,43 @@
 
     <span class="section-sub">Short</span>
     <div class="epk-bio">
-      <!-- CHANGE: short bio — this is the About copy from index.html, keep them in sync -->
+      <!-- CHANGE: short bio — same as the About copy on index.html, keep them in sync -->
       <p>
-        Based in Calgary, Alberta, VO!D is a metal band taking influence
-        from all things heavy and groovy. After years of crafting a sound
-        that is uniquely theirs, they have recently begun to release music.
-      </p>
-      <p>
-        VO!D seeks to demonstrate uniquely energetic, raw and crushing riffs,
-        groovy forward-pushing drums, and loud, harsh vocals blended into
+        Calgary's VO!D takes influence from all things heavy &amp; groovy,
+        seeking to demonstrate uniquely raw &amp; crushing riffs, as well as
+        groovy, forward-pushing drums, and loud, harsh vocals, blended into
         a wall of sound that moves you.
       </p>
       <p>
-        Certainly small and upcoming, VO!D's members are chomping at the bit
-        to be heard — and love to get a room moving.
+        Certainly small and upcoming, we love to get a room moving.
       </p>
     </div>
 
     <span class="section-sub">Long</span>
-    <div class="todo">
-      Long bio (~400 words) doesn't exist yet. Cover: how the band formed and
-      when, what RESIDUAL is and how it was made, what the live show is like,
-      what's next (second EP). Replace this box with &lt;p&gt; paragraphs
-      inside a &lt;div class="epk-bio"&gt;.
+    <div class="epk-bio">
+      <!-- CHANGE: long bio -->
+      <p>
+        VO!D is here to dropkick you in the chest. A 3 piece built on groove,
+        brutality, and depth. We began to release music under this name in
+        2025, but our members have been writing together for 10 years.
+      </p>
+      <p>
+        RESIDUAL came together from a place of stepping forward, and leaving
+        something behind. It was written to make a statement. “When we die,
+        that’s it.” To remain in place is to decay, and to move forward is
+        just the same. We’d rather move forward.
+      </p>
+      <p>
+        RESIDUAL was written, recorded, edited, and produced by VO!D, and
+        mixed and mastered by our friend Tyler Corbett at Sole Audio. Living
+        statically on the internet as an artifact of who we were that year.
+      </p>
+      <p>
+        We are currently in prep to begin executing our second EP. Writing is
+        nearly complete, and recording is underway. A majority of these songs
+        are used in our current live set. We are excited to bring the next
+        chapter of our sound to the world, and hope you’re ready.
+      </p>
     </div>
   </section>
 
@@ -155,14 +180,14 @@
 
     <div class="epk-grid-2">
       <div>
-        <span class="section-sub">RESIDUAL — EP (2026)</span>
+        <span class="section-sub">RESIDUAL — EP (March 2026)</span>
         <div class="spotify-embed">
           <!-- same RESIDUAL embed as index.html -->
           <iframe
             style="border-radius:12px"
             src="https://open.spotify.com/embed/album/4aS5ZwJ2XtOlr2G8sASaux?utm_source=generator&theme=0"
             width="100%"
-            height="352"
+            height="520"
             frameBorder="0"
             allowfullscreen=""
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
@@ -205,9 +230,11 @@
 
   <!-- ================================================
        PRESS PHOTOS
-       Links point at the full-resolution originals in
-       assets/press (the homepage uses web copies in assets/images). The download attribute
-       makes the browser save instead of open.
+       Links point at the full-resolution originals in assets/press.
+       The caption (size + photographer) is filled in by
+       assets/js/credits.js from each JPEG's metadata — set it in
+       Windows: right-click > Properties > Details > Authors.
+       To add a photo: copy one .press-photo block, bump the number.
        ================================================ -->
   <section id="epk-photos" class="epk-section">
     <span class="section-label">Download</span>
@@ -215,31 +242,34 @@
 
     <div class="press-grid">
       <div class="press-photo">
-        <img src="assets/press/press-photo-1.jpg" alt="VO!D — drums">
+        <img src="assets/press/press-photo-1.jpg" alt="VO!D — drums" data-credit>
         <div class="press-meta">
-          <!-- CHANGE: photographer credit -->
-          <span>6000 × 4000 · Photo: TODO credit</span>
+          <!-- filled by assets/js/credits.js from the photo's own metadata -->
+          <span class="press-caption"></span>
           <a href="assets/press/press-photo-1.jpg" download class="text-link">Download ↓</a>
         </div>
       </div>
       <div class="press-photo">
-        <img src="assets/press/press-photo-2.jpg" alt="VO!D — guitar">
+        <img src="assets/press/press-photo-2.jpg" alt="VO!D — guitar" data-credit>
         <div class="press-meta">
-          <span>5568 × 3712 · Photo: TODO credit</span>
+          <!-- filled by assets/js/credits.js from the photo's own metadata -->
+          <span class="press-caption"></span>
           <a href="assets/press/press-photo-2.jpg" download class="text-link">Download ↓</a>
         </div>
       </div>
       <div class="press-photo">
-        <img src="assets/press/press-photo-3.jpg" alt="VO!D — vocals">
+        <img src="assets/press/press-photo-3.jpg" alt="VO!D — vocals" data-credit>
         <div class="press-meta">
-          <span>3712 × 5568 · Photo: TODO credit</span>
+          <!-- filled by assets/js/credits.js from the photo's own metadata -->
+          <span class="press-caption"></span>
           <a href="assets/press/press-photo-3.jpg" download class="text-link">Download ↓</a>
         </div>
       </div>
       <div class="press-photo">
-        <img src="assets/press/press-photo-4.jpg" alt="VO!D — silhouette">
+        <img src="assets/press/press-photo-4.jpg" alt="VO!D — silhouette" data-credit>
         <div class="press-meta">
-          <span>2480 × 3508 · Photo: TODO credit</span>
+          <!-- filled by assets/js/credits.js from the photo's own metadata -->
+          <span class="press-caption"></span>
           <a href="assets/press/press-photo-4.jpg" download class="text-link">Download ↓</a>
         </div>
       </div>
@@ -250,9 +280,8 @@
     </div>
 
     <div class="todo" style="margin-top:2rem;">
-      Photographer credit(s) for the four photos above. The full-band live
-      shot (assets/images/about-wide.jpg) is only 1200 × 800 and was left out — supply a
-      high-res version if a full-band press shot is wanted here.
+      Full-band press shot — waiting on photos. Add as press-photo-5.jpg
+      when one exists.
     </div>
   </section>
 
@@ -266,29 +295,25 @@
     <h2 class="section-title">Logos</h2>
 
     <div class="logo-grid">
+      <!-- CHANGE: to add a logo, copy one block and bump the number -->
       <div>
         <div class="logo-tile">
-          <img src="assets/press/logo-shrapnel.png" alt="VO!D shrapnel logo">
+          <img src="assets/press/logo-1.png" alt="VO!D logo 1">
         </div>
         <div class="press-meta">
-          <span>Shrapnel — PNG, 10000 × 10000</span>
-          <a href="assets/press/logo-shrapnel.png" download class="text-link">Download ↓</a>
+          <span>Logo 1 — PNG</span>
+          <a href="assets/press/logo-1.png" download class="text-link">Download ↓</a>
         </div>
       </div>
       <div>
         <div class="logo-tile">
-          <img src="assets/press/logo-block.png" alt="VO!D block logo">
+          <img src="assets/press/logo-2.png" alt="VO!D logo 2">
         </div>
         <div class="press-meta">
-          <span>Block — PNG, 10000 × 10000</span>
-          <a href="assets/press/logo-block.png" download class="text-link">Download ↓</a>
+          <span>Logo 2 — PNG</span>
+          <a href="assets/press/logo-2.png" download class="text-link">Download ↓</a>
         </div>
       </div>
-    </div>
-
-    <div class="todo" style="margin-top:2rem;">
-      Vector versions (SVG / AI / EPS) for print. Drop them in
-      assets/press/ and add a download line next to each PNG above.
     </div>
   </section>
 
@@ -352,6 +377,7 @@
   </footer>
 
   <script src="data/shows.js"></script>
+  <script src="assets/js/credits.js"></script>
   <script src="assets/js/shows.js"></script>
 </body>
 </html>

@@ -119,11 +119,11 @@ Web-sized. To swap one, save the new file over the old one with the same name.
 |---|---|
 | `hero-bg.png` | Faint logo behind the big VO!D on the opening screen |
 | `logo.png` | Nav bar (top-left) and footer (bottom-left), all three pages |
-| `divider-1.jpg` | Full-width photo strip between the hero and About |
+| `divider-1.jpg` | Optional — full-width photo strip between the hero and About. No file = no strip. |
 | `about-wide.jpg` | About grid — top photo, spans both columns |
 | `about-1.jpg` | About grid — bottom-left square |
 | `about-2.jpg` | About grid — bottom-right square |
-| `divider-2.jpg` | Full-width photo strip between About and Music |
+| `divider-2.jpg` | Optional — full-width photo strip between About and Music. No file = no strip. |
 | `og-image.jpg` | Link-preview thumbnail when the URL is pasted in Discord / iMessage / Facebook — never visible on the page |
 | `bg-about.jpg` | Optional — behind the About section |
 | `bg-music.jpg` | Optional — behind the Music section |
@@ -143,11 +143,11 @@ Full resolution. Named by content because a promoter sees the filename when they
 | `press-photo-2.jpg` | guitar |
 | `press-photo-3.jpg` | vocalist |
 | `press-photo-4.jpg` | silhouette |
-| `logo-shrapnel.png` | explosion logo |
-| `logo-block.png` | block logo |
+| `logo-1.png` | logo (PNG) — add `logo-3.png` etc. and a matching block in `epk.html` for more |
+| `logo-2.png` | logo (PNG) |
 | `cover-residual.jpg` | RESIDUAL album art |
 
-The captions in `epk.html` ("6000 × 4000 · Photo: …") are typed by hand — if you swap a press photo for one with different dimensions, update that line too.
+Press-photo captions (size + photographer) are read automatically from each JPEG by `assets/js/credits.js`. Set the photographer in Windows: right-click the file → Properties → Details → **Authors**. Works for `assets/press/` and show photos (lightbox). JPEG only — PNG can't carry it. Don't click "Remove Properties and Personal Information" on that tab; it strips the credit.
 
 ---
 
