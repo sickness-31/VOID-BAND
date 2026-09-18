@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<!--
+  ====================================================================
+  VO!D — Electronic Press Kit
+  epk.html
+
+  Booker-facing page. Built to be skimmed top to bottom in under a
+  minute: facts → bio → music → video → photos → logos →
+  show history → contact.
+
+  Technical specs (stage plot, input list, rider) are deliberately
+  NOT on this page — they're shared with bookers directly.
+
+  PDF VERSION:
+  "PDF Version (Dark)" prints in the site's own palette; "(Light)" is
+  black-on-white. Both: browser print dialog → Save as PDF. Plain
+  Ctrl+P gives Dark. The print styles live in assets/css/site.css.
+
+  Photo captions are NOT typed here — assets/js/credits.js reads the
+  size and photographer from each JPEG's metadata.
+
+  Anything in a <div class="todo"> still needs real content.
+  Search for "TODO" to find them all.
+  ====================================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>VO!D — Press Kit</title>
+  <meta name="description" content="VO!D electronic press kit — bio, music, live video, press photos, logos, and booking contact. Calgary, Alberta.">
+  <meta property="og:title" content="VO!D — Press Kit">
+  <meta property="og:description" content="Bio, music, photos, and booking contact.">
+  <meta property="og:image" content="assets/images/og-image.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- shared design system — same file index.html uses -->
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+
+<body>
+
+  <nav id="nav">
+    <a href="index.html" class="nav-logo"><img src="assets/images/logo.png" alt="VO!D"></a>
+    <ul class="nav-links">
+      <li><a href="index.html#music">Music</a></li>
+      <li><a href="shows.html">Shows</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#merch">Merch</a></li>
+      <li><a href="epk.html">EPK</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ================================================
+       HEADER + QUICK FACTS
+       The 10-second version. Everything a booker needs to
+       decide whether to keep reading.
+       ================================================ -->
+  <section id="epk-top" class="page-top epk-section">
+    <span class="section-label">Electronic Press Kit</span>
+    <!-- logo instead of a text title. File: assets/images/epk-logo.png (overwrite to swap) -->
+    <img class="epk-logo" src="assets/images/epk-logo.png" alt="VO!D">
+
+    <div class="epk-facts">
+      <div class="epk-fact">
+        <span class="epk-fact-label">Based In</span>
+        <div class="epk-fact-value">Calgary, Alberta, Canada</div>
+      </div>
+      <div class="epk-fact">
+        <!-- CHANGE: genre wording -->
+        <span class="epk-fact-label">Genre</span>
+        <div class="epk-fact-value">Nu Death / Hardcore</div>
+      </div>
+      <div class="epk-fact">
+        <span class="epk-fact-label">Members</span>
+        <div class="epk-fact-value">
+          Rowan Campbell — Vocals<br>
+          Kyle Kristjansson — Guitar<br>
+          Jordan Pearton — Drums
+        </div>
+      </div>
+      <div class="epk-fact">
+        <span class="epk-fact-label">Lineup</span>
+        <div class="epk-fact-value">Writing together 10 years<br>Current 3-piece since Jan 2024</div>
+      </div>
+      <div class="epk-fact">
+        <span class="epk-fact-label">Latest Release</span>
+        <div class="epk-fact-value">RESIDUAL — EP, 5 tracks<br>March 5, 2026</div>
+      </div>
+      <div class="epk-fact">
+        <span class="epk-fact-label">Live Set</span>
+        <div class="epk-fact-value">~30 min</div>
+      </div>
+      <div class="epk-fact">
+        <span class="epk-fact-label">Booking</span>
+        <div class="epk-fact-value"><a href="mailto:void.empr@gmail.com">void.empr@gmail.com</a></div>
+      </div>
+      <div class="epk-fact">
+        <span class="epk-fact-label">Links</span>
+        <div class="epk-fact-value">
+          <a href="https://open.spotify.com/artist/7Hr36pXqkd8HszkUkhOIgz" target="_blank" rel="noopener">Spotify</a> ·
+          <a href="https://music.apple.com/us/artist/vo-d/1657633364" target="_blank" rel="noopener">Apple Music</a> ·
+          <a href="https://www.youtube.com/@void_yyc" target="_blank" rel="noopener">YouTube</a> ·
+          <a href="https://www.instagram.com/void.yyc/" target="_blank" rel="noopener">Instagram</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="link-row no-print">
+      <!-- both print the page; Light adds class "print-light" to <html> first (see script at the bottom) -->
+      <button type="button" class="btn-outline" data-print="dark">PDF Version (Dark)</button>
+      <button type="button" class="btn-outline" data-print="light">PDF Version (Light)</button>
+      <a href="#epk-contact" class="text-link">Skip to booking contact ↓</a>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ================================================
+       BIO
+       Short bio is the same copy as the About section on index.html
+       (keep them in sync). Long bio is EPK-only.
+       ================================================ -->
+  <section id="epk-bio" class="epk-section">
+    <span class="section-label">Biography</span>
+    <h2 class="section-title">Bio</h2>
+
+    <span class="section-sub">Short</span>
+    <div class="epk-bio">
+      <!-- CHANGE: short bio — same as the About copy on index.html, keep them in sync -->
+      <p>
+        Calgary's VO!D takes influence from all things heavy &amp; groovy,
+        seeking to demonstrate uniquely raw &amp; crushing riffs, as well as
+        groovy, forward-pushing drums, and loud, harsh vocals, blended into
+        a wall of sound that moves you.
+      </p>
+      <p>
+        Certainly small and upcoming, we love to get a room moving.
+      </p>
+    </div>
+
+    <span class="section-sub">Long</span>
+    <div class="epk-bio">
+      <!-- CHANGE: long bio -->
+      <p>
+        VO!D is here to dropkick you in the chest. A 3 piece built on groove,
+        brutality, and depth. We began to release music under this name in
+        2025, but our members have been writing together for 10 years.
+      </p>
+      <p>
+        RESIDUAL came together from a place of stepping forward, and leaving
+        something behind. It was written to make a statement. “When we die,
+        that’s it.” To remain in place is to decay, and to move forward is
+        just the same. We’d rather move forward.
+      </p>
+      <p>
+        RESIDUAL was written, recorded, edited, and produced by VO!D, and
+        mixed and mastered by our friend Tyler Corbett at Sole Audio. Living
+        statically on the internet as an artifact of who we were that year.
+      </p>
+      <p>
+        We are currently in prep to begin executing our second EP. Writing is
+        nearly complete, and recording is underway. A majority of these songs
+        are used in our current live set. We are excited to bring the next
+        chapter of our sound to the world, and hope you’re ready.
+      </p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ================================================
+       MUSIC + VIDEO — side by side
+       ================================================ -->
+  <section id="epk-media" class="epk-section">
+    <span class="section-label">Listen &amp; Watch</span>
+    <h2 class="section-title">Music &amp; Video</h2>
+
+    <div class="epk-grid-2">
+      <div>
+        <span class="section-sub">RESIDUAL — EP (March 2026)</span>
+        <div class="spotify-embed">
+          <!-- same RESIDUAL embed as index.html -->
+          <iframe
+            style="border-radius:12px"
+            src="https://open.spotify.com/embed/album/4aS5ZwJ2XtOlr2G8sASaux?utm_source=generator&theme=0"
+            width="100%"
+            height="500"
+            frameBorder="0"
+            allowfullscreen=""
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            title="RESIDUAL on Spotify">
+          </iframe>
+        </div>
+        <!-- shows only on the printed PDF version -->
+        <p class="print-only">Listen: https://open.spotify.com/artist/7Hr36pXqkd8HszkUkhOIgz</p>
+        <div class="link-row">
+          <a href="https://music.apple.com/us/artist/vo-d/1657633364" target="_blank" rel="noopener" class="text-link">Apple Music ↗</a>
+          <a href="https://open.spotify.com/artist/7Hr36pXqkd8HszkUkhOIgz" target="_blank" rel="noopener" class="text-link">Spotify ↗</a>
+        </div>
+      </div>
+
+      <div>
+        <!-- CHANGE: video label — say what this footage is (venue / date) -->
+        <span class="section-sub">Live</span>
+        <div class="youtube-embed">
+          <!-- same video currently embedded on index.html -->
+          <iframe
+            src="https://www.youtube.com/embed/_7-afHWL_mc"
+            title="VO!D live"
+            style="aspect-ratio:16/9; width:100%;"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+            loading="lazy">
+          </iframe>
+        </div>
+        <p class="print-only">Watch: https://www.youtube.com/watch?v=_7-afHWL_mc</p>
+        <div class="link-row">
+          <a href="https://www.youtube.com/@void_yyc" target="_blank" rel="noopener" class="text-link">YouTube channel ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ================================================
+       PRESS PHOTOS
+       Links point at the full-resolution originals in assets/press.
+       The caption (size + photographer) is filled in by
+       assets/js/credits.js from each JPEG's metadata — set it in
+       Windows: right-click > Properties > Details > Authors.
+       To add a photo: copy one .press-photo block, bump the number.
+       ================================================ -->
+  <section id="epk-photos" class="epk-section">
+    <span class="section-label">Download</span>
+    <h2 class="section-title">Press Photos</h2>
+
+    <div class="press-grid">
+      <div class="press-photo">
+        <img src="assets/press/press-photo-1.jpg" alt="VO!D — drums" data-credit>
+        <div class="press-meta">
+          <!-- filled by assets/js/credits.js from the photo's own metadata -->
+          <span class="press-caption"></span>
+          <a href="assets/press/press-photo-1.jpg" download class="text-link">Download ↓</a>
+        </div>
+      </div>
+      <div class="press-photo">
+        <img src="assets/press/press-photo-2.jpg" alt="VO!D — guitar" data-credit>
+        <div class="press-meta">
+          <!-- filled by assets/js/credits.js from the photo's own metadata -->
+          <span class="press-caption"></span>
+          <a href="assets/press/press-photo-2.jpg" download class="text-link">Download ↓</a>
+        </div>
+      </div>
+      <div class="press-photo">
+        <img src="assets/press/press-photo-3.jpg" alt="VO!D — vocals" data-credit>
+        <div class="press-meta">
+          <!-- filled by assets/js/credits.js from the photo's own metadata -->
+          <span class="press-caption"></span>
+          <a href="assets/press/press-photo-3.jpg" download class="text-link">Download ↓</a>
+        </div>
+      </div>
+      <div class="press-photo">
+        <img src="assets/press/press-photo-4.jpg" alt="VO!D — silhouette" data-credit>
+        <div class="press-meta">
+          <!-- filled by assets/js/credits.js from the photo's own metadata -->
+          <span class="press-caption"></span>
+          <a href="assets/press/press-photo-4.jpg" download class="text-link">Download ↓</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="link-row">
+      <a href="assets/press/cover-residual.jpg" download class="text-link">RESIDUAL cover art (3131 × 3131) ↓</a>
+    </div>
+
+    <div class="todo" style="margin-top:2rem;">
+      Full-band press shot (TODO)
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ================================================
+       LOGOS
+       ================================================ -->
+  <section id="epk-logos" class="epk-section">
+    <span class="section-label">Download</span>
+    <h2 class="section-title">Logos</h2>
+
+    <div class="logo-grid">
+      <!-- CHANGE: to add a logo, copy one block and bump the number -->
+      <div>
+        <div class="logo-tile">
+          <img src="assets/press/logo-1.png" alt="VO!D logo 1">
+        </div>
+        <div class="press-meta">
+          <span>Logo 1 — PNG</span>
+          <a href="assets/press/logo-1.png" download class="text-link">Download ↓</a>
+        </div>
+      </div>
+      <div>
+        <div class="logo-tile">
+          <img src="assets/press/logo-2.png" alt="VO!D logo 2">
+        </div>
+        <div class="press-meta">
+          <span>Logo 2 — PNG</span>
+          <a href="assets/press/logo-2.png" download class="text-link">Download ↓</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ================================================
+       SHOW HISTORY — condensed, from data/shows.js
+       Draw evidence for bookers. Same data as shows.html.
+       ================================================ -->
+  <section id="epk-history" class="epk-section">
+    <span class="section-label">Track Record</span>
+    <h2 class="section-title">Show History</h2>
+
+    <div class="show-list"
+         data-shows="past"
+         data-condensed="true"
+         data-empty="No past shows listed yet.">
+    </div>
+
+    <div class="link-row">
+      <a href="shows.html" class="text-link">Full show list with video →</a>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ================================================
+       CONTACT
+       ================================================ -->
+  <section id="epk-contact" class="epk-section">
+    <span class="section-label">Get In Touch</span>
+    <h2 class="section-title">Booking</h2>
+
+    <div class="booking-grid">
+      <div>
+        <div class="contact-block">
+          <span class="contact-label">Booking &amp; Press</span>
+          <p class="contact-value">
+            <!-- CHANGE: booking email -->
+            <a href="mailto:void.empr@gmail.com">void.empr@gmail.com</a>
+          </p>
+        </div>
+        <div class="contact-block">
+          <span class="contact-label">Web</span>
+          <p class="contact-value">
+            <!-- CHANGE: replace with the custom domain once CNAME is set.
+                 If the URL changes, regenerate assets/press/qr-site.* too. -->
+            <a href="https://sickness-31.github.io/void-band/">sickness-31.github.io/void-band</a>
+          </p>
+        </div>
+      </div>
+      <div class="qr-block">
+        <!-- QR to the site. Files in assets/press/ (svg for print, png for web). -->
+        <img src="assets/press/qr-site.svg" alt="QR code: sickness-31.github.io/void-band" class="qr-img">
+        <div class="press-meta">
+          <span>Scan for the site</span>
+          <a href="assets/press/qr-site.svg" download class="text-link">SVG ↓</a>
+          <a href="assets/press/qr-site.png" download class="text-link">PNG ↓</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <footer>
+    <div class="footer-logo">
+      <img src="assets/images/logo.png" alt="VO!D">
+    </div>
+    <div class="footer-right">
+      <!-- CHANGE: update year -->
+      <span class="footer-copy">© 2026 VO!D — Calgary, AB</span>
+      <span class="footer-tagline">born of the universe, we come from nothing</span>
+    </div>
+  </footer>
+
+  <script src="data/shows.js"></script>
+  <script src="assets/js/credits.js"></script>
+  <script src="assets/js/shows.js"></script>
+  <script>
+    // PDF Version buttons. Light = add a class the print CSS keys off, print, remove it.
+    document.querySelectorAll('[data-print]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.documentElement.classList.toggle('print-light', btn.getAttribute('data-print') === 'light');
+        window.print();
+      });
+    });
+    window.addEventListener('afterprint', function () {
+      document.documentElement.classList.remove('print-light');
+    });
+  </script>
+</body>
+</html>
