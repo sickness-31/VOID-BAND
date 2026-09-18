@@ -848,8 +848,10 @@ SHARED — small additions used by the new pages
 ================================================================
 */
 
-/* Pages without a full-screen hero need to clear the fixed nav bar. */
-.page-top {
+/* Pages without a full-screen hero need to clear the fixed nav bar.
+   section.page-top (not just .page-top) so it beats the later
+   .epk-section { padding: ... } shorthand. */
+section.page-top {
   padding-top: 10rem;
 }
 
@@ -1262,22 +1264,33 @@ order a booker asks for them.
 
 /*
 ================================================================
-PRINT / ONE-SHEET
-epk.html → browser "Print" → "Save as PDF" produces the one-sheet.
-Black-on-white, no nav, no embeds (they're replaced by their URLs).
+PRINT / PDF VERSION
+epk.html → "PDF Version (Dark)" / "(Light)" buttons, or Ctrl+P → Save as PDF.
+DARK is the default: the site's own palette, backgrounds forced on.
+LIGHT: the buttons add class "print-light" to <html> first; the
+html.print-light block below swaps to black-on-white.
+Either way: no nav, no embeds (replaced by their URLs).
 ================================================================
 */
 @media print {
-  :root {
+  /* edge-to-edge: no printer margin, the 15mm lives on the body instead */
+  @page { margin: 0; }
+
+  html, body {
+    background: var(--black);
+    -webkit-print-color-adjust: exact;   /* print backgrounds as on screen */
+    print-color-adjust: exact;
+  }
+  body { font-size: 11px; color: var(--dirty); padding: 15mm; }
+
+  /* LIGHT variant — set by the PDF Version (Light) button on epk.html */
+  html.print-light {
     --black: #FFFFFF;
     --dirty: #111111;
     --dark:  #F2F2F2;
     --mid:   #555555;
     --dim:   #DDDDDD;
   }
-  @page { margin: 15mm; }
-
-  body { font-size: 11px; background: #fff; color: #111; }
 
   #nav, footer, .no-print, iframe, .hero-bg, .hero-overlay, .section-bg, .show-photos, .lightbox { display: none !important; }
   .print-only { display: block; }
@@ -1288,14 +1301,14 @@ Black-on-white, no nav, no embeds (they're replaced by their URLs).
   .section-label { margin-bottom: 0.5rem; }
 
   .epk-facts { margin-bottom: 1rem; }
-  .epk-fact { padding: 0.75rem 1rem; background: #f2f2f2; }
+  .epk-fact { padding: 0.75rem 1rem; }
 
   .press-grid { grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
   .press-photo img { filter: none; opacity: 1; aspect-ratio: 3 / 2; }
   .press-meta { font-size: 9px; }
 
   .logo-grid { grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
-  .logo-tile { padding: 0.5rem; background: #fff; border: 1px solid #ddd; }
+  .logo-tile { padding: 0.5rem; border: 1px solid var(--dim); }
 
   .show-row { padding: 0.5rem 0; grid-template-columns: 90px 1fr; }
   .show-row:hover { padding-left: 0; }
@@ -1304,8 +1317,8 @@ Black-on-white, no nav, no embeds (they're replaced by their URLs).
   .show-ticket { display: none; }
   .show-video { display: none; }
 
-  .todo { border-color: #999; color: #777; }
-  .todo::before { color: #999; }
+  .todo { border-color: var(--mid); color: var(--mid); }
+  .todo::before { color: var(--mid); }
 
   a { color: inherit; text-decoration: none; border: none !important; }
   .text-link, .btn-outline, .link-row { display: none; }

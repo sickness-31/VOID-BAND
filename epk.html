@@ -11,10 +11,10 @@
   Technical specs (stage plot, input list, rider) are deliberately
   NOT on this page — they're shared with bookers directly.
 
-  ONE-SHEET / PDF:
-  Click "Download One-Sheet" (or browser Print → Save as PDF).
-  The print stylesheet in assets/css/site.css strips the nav, swaps
-  to black-on-white, and replaces embeds with their URLs.
+  PDF VERSION:
+  "PDF Version (Dark)" prints in the site's own palette; "(Light)" is
+  black-on-white. Both: browser print dialog → Save as PDF. Plain
+  Ctrl+P gives Dark. The print styles live in assets/css/site.css.
 
   Photo captions are NOT typed here — assets/js/credits.js reads the
   size and photographer from each JPEG's metadata.
@@ -111,7 +111,9 @@
     </div>
 
     <div class="link-row no-print">
-      <button type="button" class="btn-outline" onclick="window.print()">Download One-Sheet (PDF)</button>
+      <!-- both print the page; Light adds class "print-light" to <html> first (see script at the bottom) -->
+      <button type="button" class="btn-outline" data-print="dark">PDF Version (Dark)</button>
+      <button type="button" class="btn-outline" data-print="light">PDF Version (Light)</button>
       <a href="#epk-contact" class="text-link">Skip to booking contact ↓</a>
     </div>
   </section>
@@ -187,7 +189,7 @@
             style="border-radius:12px"
             src="https://open.spotify.com/embed/album/4aS5ZwJ2XtOlr2G8sASaux?utm_source=generator&theme=0"
             width="100%"
-            height="520"
+            height="500"
             frameBorder="0"
             allowfullscreen=""
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
@@ -195,7 +197,7 @@
             title="RESIDUAL on Spotify">
           </iframe>
         </div>
-        <!-- shows only on the printed one-sheet -->
+        <!-- shows only on the printed PDF version -->
         <p class="print-only">Listen: https://open.spotify.com/artist/7Hr36pXqkd8HszkUkhOIgz</p>
         <div class="link-row">
           <a href="https://music.apple.com/us/artist/vo-d/1657633364" target="_blank" rel="noopener" class="text-link">Apple Music ↗</a>
@@ -280,8 +282,7 @@
     </div>
 
     <div class="todo" style="margin-top:2rem;">
-      Full-band press shot — waiting on photos. Add as press-photo-5.jpg
-      when one exists.
+      Full-band press shot (TODO)
     </div>
   </section>
 
@@ -379,5 +380,17 @@
   <script src="data/shows.js"></script>
   <script src="assets/js/credits.js"></script>
   <script src="assets/js/shows.js"></script>
+  <script>
+    // PDF Version buttons. Light = add a class the print CSS keys off, print, remove it.
+    document.querySelectorAll('[data-print]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.documentElement.classList.toggle('print-light', btn.getAttribute('data-print') === 'light');
+        window.print();
+      });
+    });
+    window.addEventListener('afterprint', function () {
+      document.documentElement.classList.remove('print-light');
+    });
+  </script>
 </body>
 </html>

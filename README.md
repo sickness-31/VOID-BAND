@@ -4,7 +4,7 @@ Official site for VO!D. Three static HTML pages sharing one stylesheet, hosted f
 
 - `index.html` — fan-facing homepage
 - `shows.html` — upcoming + past shows (with video where available)
-- `epk.html`   — electronic press kit for bookers / promoters, with a one-sheet PDF button
+- `epk.html`   — electronic press kit for bookers / promoters, with PDF Version (dark/light) buttons
 
 ---
 
@@ -62,8 +62,8 @@ Delete its `{ ... },` block from `data/shows.js`.
 ### Update the press kit
 Open `epk.html`. Anything still needed is in a `<div class="todo">` box — search for `TODO`. Delete each box once the real content is in.
 
-### Export the one-sheet PDF
-Open `epk.html` in a browser → **Download One-Sheet (PDF)** (or Ctrl+P → Save as PDF). The print stylesheet strips the nav, flips to black-on-white, and swaps embeds for their URLs.
+### Export the PDF version
+Open `epk.html` in a browser → **PDF Version (Dark)** or **PDF Version (Light)** → Save as PDF in the print dialog. Dark is the site's own look (send this one); Light is black-on-white for anyone who'll actually put it on paper. Plain Ctrl+P gives Dark. Both strip the nav and swap embeds for their URLs.
 
 ### Add a new release
 In the Music section, duplicate the `release-block` div.
@@ -95,7 +95,7 @@ Find the merch grid. Copy one `<div class="merch-card">` block, paste it, update
 void-band/
 ├── index.html              ← homepage
 ├── shows.html              ← upcoming + past shows
-├── epk.html                ← press kit / one-sheet
+├── epk.html                ← press kit / PDF version
 ├── CNAME                   ← custom domain (add your domain name here)
 ├── README.md               ← this file
 ├── data/
