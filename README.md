@@ -158,7 +158,7 @@ Press-photo captions (size + photographer) are read automatically from each JPEG
 1. Push this repo to GitHub (must be **public**)
 2. Go to the repo → Settings → Pages
 3. Source: Deploy from branch → `main` → `/root` → Save
-4. Site goes live at `https://yourusername.github.io/void-band`
+4. Site goes live at `https://sickness-31.github.io/VOID-BAND/` — note the capitals: GitHub Pages uses the repo name exactly as cased on GitHub, and lowercase 404s.
 
 ## Adding a custom domain
 

@@ -138,6 +138,27 @@ position: fixed means it stays visible as you scroll
   color: var(--dirty);
 }
 
+/* three-bar menu button — hidden on desktop, shown by the 900px rule below */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--dirty);
+  margin: 4px 0;
+  transition: transform 0.15s, opacity 0.15s;
+}
+/* turns into an X when open */
+#nav.open .nav-toggle span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+#nav.open .nav-toggle span:nth-child(2) { opacity: 0; }
+#nav.open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
 /*
 ================================================================
 HERO — the first full-screen section the visitor sees
@@ -824,9 +845,36 @@ apply these styles instead"
     gap: 3rem;
   }
 
-  /* hide nav links on mobile — a hamburger menu would go here eventually */
+}
+
+/*
+  MOBILE MENU — 900px and narrower. The link row would overflow the
+  screen here, so it becomes a panel under the bar, opened by .nav-toggle
+  (assets/js/nav.js adds/removes the .open class on #nav).
+*/
+@media (max-width: 900px) {
+  #nav {
+    flex-wrap: wrap;             /* lets the panel drop below the logo/button row */
+  }
+  .nav-toggle {
+    display: block;
+  }
   .nav-links {
     display: none;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    margin-top: 1rem;
+    border-top: 1px solid var(--dim);
+  }
+  #nav.open .nav-links {
+    display: flex;
+  }
+  .nav-links a {
+    display: block;
+    padding: 1rem 0;             /* big tap targets */
+    font-size: 14px;
+    border-bottom: 1px solid var(--dim);
   }
 }
 

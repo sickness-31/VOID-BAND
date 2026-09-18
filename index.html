@@ -74,7 +74,11 @@
   <nav id="nav">
     <!-- CHANGE: clicking this takes you back to the top of the page -->
     <a href="#hero" class="nav-logo"><img src="assets/images/logo.png" alt="VO!D"></a>
-    <ul class="nav-links">
+    <!-- mobile menu button (shown at 900px and narrower; see assets/js/nav.js) -->
+    <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="nav-links">
       <!-- each href="#music" scrolls to <section id="music"> below -->
       <li><a href="#music">Music</a></li>
       <li><a href="shows.html">Shows</a></li>
@@ -592,5 +596,6 @@
   <!-- show list: data first, then the renderer that reads it -->
   <script src="data/shows.js"></script>
   <script src="assets/js/shows.js"></script>
+  <script src="assets/js/nav.js"></script>
 </body>
 </html>

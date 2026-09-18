@@ -46,7 +46,11 @@
 
   <nav id="nav">
     <a href="index.html" class="nav-logo"><img src="assets/images/logo.png" alt="VO!D"></a>
-    <ul class="nav-links">
+    <!-- mobile menu button (shown at 900px and narrower; see assets/js/nav.js) -->
+    <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="nav-links">
       <li><a href="index.html#music">Music</a></li>
       <li><a href="shows.html">Shows</a></li>
       <li><a href="index.html#about">About</a></li>
@@ -363,13 +367,13 @@
           <p class="contact-value">
             <!-- CHANGE: replace with the custom domain once CNAME is set.
                  If the URL changes, regenerate assets/press/qr-site.* too. -->
-            <a href="https://sickness-31.github.io/void-band/">sickness-31.github.io/void-band</a>
+            <a href="https://sickness-31.github.io/VOID-BAND/">sickness-31.github.io/VOID-BAND</a>
           </p>
         </div>
       </div>
       <div class="qr-block">
         <!-- QR to the site. Files in assets/press/ (svg for print, png for web). -->
-        <img src="assets/press/qr-site.svg" alt="QR code: sickness-31.github.io/void-band" class="qr-img">
+        <img src="assets/press/qr-site.svg" alt="QR code: sickness-31.github.io/VOID-BAND" class="qr-img">
         <div class="press-meta">
           <span>Scan for the site</span>
           <a href="assets/press/qr-site.svg" download class="text-link">SVG ↓</a>
@@ -395,6 +399,7 @@
   <script src="data/shows.js"></script>
   <script src="assets/js/credits.js"></script>
   <script src="assets/js/shows.js"></script>
+  <script src="assets/js/nav.js"></script>
   <script>
     // PDF Version buttons. Light = add a class the print CSS keys off, print, remove it.
     document.querySelectorAll('[data-print]').forEach(function (btn) {
