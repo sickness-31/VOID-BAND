@@ -165,17 +165,20 @@
         <!-- wide photo spans both columns -->
         <div class="about-photo wide">
           <!-- CHANGE: main about photo — currently the full band live shot -->
-          <img src="assets/images/about-wide.jpg" alt="VO!D live">
+          <img src="assets/images/about-wide.jpg" alt="VO!D live" data-credit="name">
+          <span class="press-caption"></span>
         </div>
 
         <div class="about-photo">
           <!-- CHANGE: second about photo -->
-          <img src="assets/images/about-1.jpg" alt="VO!D drums">
+          <img src="assets/images/about-1.jpg" alt="VO!D drums" data-credit="name">
+          <span class="press-caption"></span>
         </div>
 
         <div class="about-photo">
           <!-- CHANGE: third about photo -->
-          <img src="assets/images/about-2.jpg" alt="VO!D guitar">
+          <img src="assets/images/about-2.jpg" alt="VO!D guitar" data-credit="name">
+          <span class="press-caption"></span>
         </div>
 
       </div>
@@ -343,18 +346,6 @@
       <a href="shows.html" class="text-link">All shows + past dates →</a>
     </div>
 
-       <div class="youtube-embed">
-        <iframe 
-        width="560" height="315" 
-        src="https://www.youtube.com/embed/_7-afHWL_mc?si=3C-3Y71EHLHmf4N9" 
-        title="YouTube video player" 
-        frameborder="0" 
-        allow="accelerometer; 
-        autoplay; clipboard-write; encrypted-media; gyroscope; 
-        picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" 
-        allowfullscreen>
-      </iframe>
-    </div>
       
    
   </section>
@@ -594,6 +585,8 @@
 
   <!-- show list: data first, then the renderer that reads it -->
   <script src="data/shows.js"></script>
+  <script src="data/credits.js"></script>
+  <script src="assets/js/credits.js"></script>
   <script src="assets/js/shows.js"></script>
   <script src="assets/js/nav.js"></script>
 </body>
