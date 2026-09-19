@@ -22,7 +22,8 @@
 
   Per-show fields it reads: date, venue, city, event (optional label),
   bill (full lineup, printed as-is), ticketUrl, youtubeId, photos,
-  clips (video files in the show folder), videos (YouTube ids/URLs).
+  clips (video files in the show folder), videos (YouTube ids/URLs),
+  instagram (post URLs, shown as link chips).
 
   data-photos  "true"                  show the photo strip for past shows
                                        that have photos (click opens a lightbox)
@@ -132,6 +133,14 @@
     html += '<span class="show-location">' + esc(show.city) + '</span>';
     if (bill.length) {
       html += '<span class="show-bill">' + bill.map(esc).join(', ') + '</span>';
+    }
+    var ig = Array.isArray(show.instagram) ? show.instagram.filter(Boolean) : [];
+    if (!opts.condensed && ig.length) {
+      html += '<span class="show-chips">';
+      ig.forEach(function (u, k) {
+        html += '<a href="' + esc(u) + '" class="show-chip" target="_blank" rel="noopener">Instagram' + (ig.length > 1 ? ' ' + (k + 1) : '') + ' ↗</a>';
+      });
+      html += '</span>';
     }
     html += '</div>';
 

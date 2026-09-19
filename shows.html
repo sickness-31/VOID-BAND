@@ -1,15 +1,9 @@
 <!DOCTYPE html>
 <!--
-  ====================================================================
   VO!D — Shows
   shows.html
 
-  Upcoming and past shows. Nothing on this page is typed by hand —
-  every row comes from data/shows.js. To add a show, edit that file.
-
-  Past shows with a youtubeId in data/shows.js get an embedded player
-  under their row.
-  ====================================================================
+  Every row comes from data/shows.js — nothing here is typed by hand.
 -->
 <html lang="en">
 <head>
@@ -26,13 +20,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-  <!-- shared design system — same file index.html uses -->
+
   <link rel="stylesheet" href="assets/css/site.css">
 </head>
 
 <body>
 
-  <!-- NAVIGATION — same links as index.html, pointed back at the homepage -->
+
   <nav id="nav">
     <a href="index.html" class="nav-logo"><img src="assets/images/logo.png" alt="VO!D"></a>
     <!-- mobile menu button (shown at 900px and narrower; see assets/js/nav.js) -->
@@ -53,7 +47,7 @@
     <span class="section-label">Come Hang Out With Us</span>
     <h2 class="section-title">Shows</h2>
 
-    <!-- UPCOMING — filled in by assets/js/shows.js -->
+    <!-- UPCOMING -->
     <span class="section-sub">Upcoming</span>
     <div class="show-list"
          data-shows="upcoming"
@@ -66,7 +60,7 @@
       <a href="epk.html" class="text-link">Press Kit →</a>
     </div>
 
-    <!-- PAST — most recent first, with video and photos where they exist -->
+    <!-- PAST — with video and gallery where they exist -->
     <span class="section-sub">Past</span>
     <div class="show-list"
          data-shows="past"
@@ -89,7 +83,7 @@
     </div>
   </footer>
 
-  <!-- data first, then the renderer that reads it -->
+
   <script src="data/shows.js"></script>
   <script src="data/credits.js"></script>
   <script src="assets/js/credits.js"></script>

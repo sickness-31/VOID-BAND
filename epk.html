@@ -1,27 +1,13 @@
 <!DOCTYPE html>
 <!--
-  ====================================================================
   VO!D — Electronic Press Kit
   epk.html
 
-  Booker-facing page. Built to be skimmed top to bottom in under a
-  minute: facts → bio → music → video → photos → logos →
-  show history → contact.
-
-  Technical specs (stage plot, input list, rider) are deliberately
-  NOT on this page — they're shared with bookers directly.
-
-  PDF VERSION:
-  "PDF Version (Dark)" prints in the site's own palette; "(Light)" is
-  black-on-white. Both: browser print dialog → Save as PDF. Plain
-  Ctrl+P gives Dark. The print styles live in assets/css/site.css.
-
-  Photo captions are NOT typed here — assets/js/credits.js reads the
-  size and photographer from each JPEG's metadata.
-
-  Anything in a <div class="todo"> still needs real content.
-  Search for "TODO" to find them all.
-  ====================================================================
+  Booker-facing: facts, bio, music, video, photos, logos, show history,
+  booking. Technical specs are deliberately not on this page.
+  PDF: the two buttons print the page (Dark = site palette, Light =
+  black-on-white); print styles live in assets/css/site.css.
+  Photo captions are filled from each JPEG's metadata (credits.js).
 -->
 <html lang="en">
 <head>
@@ -38,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-  <!-- shared design system — same file index.html uses -->
+
   <link rel="stylesheet" href="assets/css/site.css">
 </head>
 
@@ -62,19 +48,16 @@
 
   <!-- ================================================
        HEADER + QUICK FACTS
-       The 10-second version. Everything a booker needs to
-       decide whether to keep reading.
        ================================================ -->
   <section id="epk-top" class="page-top epk-section">
-    <!-- optional background photo: drop assets/images/bg-epk-top.jpg in place and it appears -->
+    <!-- optional background: assets/images/bg-epk-top.jpg -->
     <div class="section-bg"></div>
     <span class="section-label">Electronic Press Kit</span>
     <div class="epk-header">
-      <!-- logo instead of a text title. File: assets/images/epk-logo.png (overwrite to swap) -->
+      <!-- logo in place of a title: assets/images/epk-logo.png -->
       <img class="epk-logo" src="assets/images/epk-logo.png" alt="VO!D">
       <div class="qr-block">
-        <!-- QR to the site. Files in assets/press/ (svg for print, png for web).
-             If the site URL changes, regenerate them. -->
+        <!-- QR to the site (assets/press/qr-site.*). Regenerate if the URL changes. -->
         <img src="assets/press/qr-site.svg" alt="QR code: sickness-31.github.io/VOID-BAND" class="qr-img">
         <div class="press-meta">
           <a href="assets/press/qr-site.svg" download class="text-link">SVG ↓</a>
@@ -129,7 +112,7 @@
     </div>
 
     <div class="link-row no-print">
-      <!-- both print the page; Light adds class "print-light" to <html> first (see script at the bottom) -->
+      <!-- print buttons — Light adds class "print-light" to <html> first -->
       <button type="button" class="btn-outline" data-print="dark">PDF Version (Dark)</button>
       <button type="button" class="btn-outline" data-print="light">PDF Version (Light)</button>
       <a href="#epk-contact" class="text-link">Skip to booking contact ↓</a>
@@ -139,11 +122,10 @@
   <hr class="rule">
 
   <!-- ================================================
-       BIO — the long bio only. (The short version lives in the About
-       section on index.html.)
+       BIO
        ================================================ -->
   <section id="epk-bio" class="epk-section">
-    <!-- optional background photo: drop assets/images/bg-epk-bio.jpg in place and it appears -->
+    <!-- optional background: assets/images/bg-epk-bio.jpg -->
     <div class="section-bg"></div>
     <span class="section-label">Biography</span>
     <h2 class="section-title">Bio</h2>
@@ -181,7 +163,7 @@
        MUSIC + VIDEO — side by side
        ================================================ -->
   <section id="epk-media" class="epk-section">
-    <!-- optional background photo: drop assets/images/bg-epk-media.jpg in place and it appears -->
+    <!-- optional background: assets/images/bg-epk-media.jpg -->
     <div class="section-bg"></div>
     <span class="section-label">Listen &amp; Watch</span>
     <h2 class="section-title">Music &amp; Video</h2>
@@ -190,7 +172,7 @@
       <div>
         <span class="section-sub">RESIDUAL — EP (March 2026)</span>
         <div class="spotify-embed">
-          <!-- same RESIDUAL embed as index.html -->
+
           <iframe
             style="border-radius:12px"
             src="https://open.spotify.com/embed/album/4aS5ZwJ2XtOlr2G8sASaux?utm_source=generator&theme=0"
@@ -212,10 +194,10 @@
       </div>
 
       <div>
-        <!-- CHANGE: video label — say what this footage is (venue / date) -->
+        <!-- CHANGE: video label -->
         <span class="section-sub">Live</span>
         <div class="youtube-embed">
-          <!-- same video currently embedded on index.html -->
+
           <iframe
             src="https://www.youtube.com/embed/_7-afHWL_mc"
             title="VO!D live"
@@ -234,15 +216,11 @@
   <hr class="rule">
 
   <!-- ================================================
-       PRESS PHOTOS
-       Links point at the full-resolution originals in assets/press.
-       The caption (size + photographer) is filled in by
-       assets/js/credits.js from each JPEG's metadata — set it in
-       Windows: right-click > Properties > Details > Authors.
-       To add a photo: copy one .press-photo block, bump the number.
+       PRESS PHOTOS — full-res files in assets/press. Captions are
+       filled from each JPEG's Authors metadata by credits.js.
        ================================================ -->
   <section id="epk-photos" class="epk-section">
-    <!-- optional background photo: drop assets/images/bg-epk-photos.jpg in place and it appears -->
+    <!-- optional background: assets/images/bg-epk-photos.jpg -->
     <div class="section-bg"></div>
     <span class="section-label">Download</span>
     <h2 class="section-title">Press Photos</h2>
@@ -251,7 +229,7 @@
       <div class="press-photo">
         <img src="assets/press/press-photo-1.jpg" alt="VO!D — drums" data-credit>
         <div class="press-meta">
-          <!-- filled by assets/js/credits.js from the photo's own metadata -->
+
           <span class="press-caption"></span>
           <a href="assets/press/press-photo-1.jpg" download class="text-link">Download ↓</a>
         </div>
@@ -259,7 +237,7 @@
       <div class="press-photo">
         <img src="assets/press/press-photo-2.jpg" alt="VO!D — guitar" data-credit>
         <div class="press-meta">
-          <!-- filled by assets/js/credits.js from the photo's own metadata -->
+
           <span class="press-caption"></span>
           <a href="assets/press/press-photo-2.jpg" download class="text-link">Download ↓</a>
         </div>
@@ -267,7 +245,7 @@
       <div class="press-photo">
         <img src="assets/press/press-photo-3.jpg" alt="VO!D — vocals" data-credit>
         <div class="press-meta">
-          <!-- filled by assets/js/credits.js from the photo's own metadata -->
+
           <span class="press-caption"></span>
           <a href="assets/press/press-photo-3.jpg" download class="text-link">Download ↓</a>
         </div>
@@ -275,7 +253,7 @@
       <div class="press-photo">
         <img src="assets/press/press-photo-4.jpg" alt="VO!D — silhouette" data-credit>
         <div class="press-meta">
-          <!-- filled by assets/js/credits.js from the photo's own metadata -->
+
           <span class="press-caption"></span>
           <a href="assets/press/press-photo-4.jpg" download class="text-link">Download ↓</a>
         </div>
@@ -297,13 +275,13 @@
        LOGOS
        ================================================ -->
   <section id="epk-logos" class="epk-section">
-    <!-- optional background photo: drop assets/images/bg-epk-logos.jpg in place and it appears -->
+    <!-- optional background: assets/images/bg-epk-logos.jpg -->
     <div class="section-bg"></div>
     <span class="section-label">Download</span>
     <h2 class="section-title">Logos</h2>
 
     <div class="logo-grid">
-      <!-- CHANGE: to add a logo, copy one block and bump the number -->
+      <!-- CHANGE: one block per logo -->
       <div>
         <div class="logo-tile">
           <img src="assets/press/logo-1.png" alt="VO!D logo 1">
@@ -328,11 +306,10 @@
   <hr class="rule">
 
   <!-- ================================================
-       SHOW HISTORY — condensed, from data/shows.js
-       Draw evidence for bookers. Same data as shows.html.
+       SHOW HISTORY — from data/shows.js
        ================================================ -->
   <section id="epk-history" class="epk-section">
-    <!-- optional background photo: drop assets/images/bg-epk-history.jpg in place and it appears -->
+    <!-- optional background: assets/images/bg-epk-history.jpg -->
     <div class="section-bg"></div>
     <span class="section-label">Track Record</span>
     <h2 class="section-title">Show History</h2>
@@ -354,7 +331,7 @@
        CONTACT
        ================================================ -->
   <section id="epk-contact" class="epk-section">
-    <!-- optional background photo: drop assets/images/bg-epk-contact.jpg in place and it appears -->
+    <!-- optional background: assets/images/bg-epk-contact.jpg -->
     <div class="section-bg"></div>
     <span class="section-label">Get In Touch</span>
     <h2 class="section-title">Booking</h2>
@@ -369,12 +346,11 @@
     <div class="contact-block">
       <span class="contact-label">Web</span>
       <p class="contact-value">
-        <!-- CHANGE: replace with the custom domain once CNAME is set.
-             If the URL changes, regenerate assets/press/qr-site.* too. -->
+        <!-- CHANGE: site URL (regenerate the QR if it changes) -->
         <a href="https://sickness-31.github.io/VOID-BAND/">sickness-31.github.io/VOID-BAND</a>
       </p>
     </div>
-    <!-- on phones the header QR is hidden and this one shows instead (bottom of the page) -->
+    <!-- phones: QR shows here instead of in the header -->
     <div class="qr-block qr-mobile">
       <img src="assets/press/qr-site.svg" alt="QR code: sickness-31.github.io/VOID-BAND" class="qr-img">
       <div class="press-meta">

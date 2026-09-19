@@ -52,6 +52,8 @@
                               or pasted URLs: videos: ["_7-afHWL_mc"]
                               (youtubeId above is the featured one shown
                               big beside the show; these go in the strip.)
+    instagram  [ ... ]        optional. Instagram post URLs. Shown as small
+                              "Instagram ↗" links under the lineup.
 
   Lines starting with // are comments — they're ignored by the browser.
   ====================================================================

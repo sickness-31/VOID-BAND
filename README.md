@@ -67,7 +67,7 @@ clips:  ["clip-01.mp4"],          // video FILES in assets/shows/<date>/ — sho
 videos: ["_7-afHWL_mc"],          // YouTube ids or pasted URLs — full sets, longer footage
 ```
 
-They appear in the strip after the photos with a play badge and open in the same lightbox. Clips: H.264 1080p, aim for under 20 seconds / 20 MB each (HandBrake does this); GitHub refuses files over 100 MB and the repo gets slow long before that — anything longer belongs on YouTube. YouTube tiles need the live site or a local server to play (same as the embeds).
+They appear in the strip after the photos with a play badge and open in the same lightbox. There's also `instagram: ["https://www.instagram.com/p/…"]` for post links — those show as small "Instagram ↗" chips under the lineup rather than embedding anything. Clips: H.264 1080p, aim for under 20 seconds / 20 MB each (HandBrake does this); GitHub refuses files over 100 MB and the repo gets slow long before that — anything longer belongs on YouTube. YouTube tiles need the live site or a local server to play (same as the embeds).
 
 ### Remove a show
 Delete its `{ ... },` block from `data/shows.js`.

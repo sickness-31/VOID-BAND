@@ -1,64 +1,36 @@
 <!DOCTYPE html>
 <!--
-  ====================================================================
   VO!D — Official Website
   index.html
-  
-  HOW THIS FILE IS ORGANIZED:
-  1. <head>      — invisible setup: fonts, page title, stylesheet link
-  2. <body>      — everything the visitor actually sees
-  3. <script>    — the glitch animation on the hero name + show list
 
-  STYLES live in assets/css/site.css (shared with shows.html, epk.html).
-  SHOWS live in data/shows.js — edit that file, not this one, for dates.
-  
-  TO UPDATE CONTENT: search for "CHANGE:" comments throughout the file.
-  They mark every piece of text, link, or image you'll want to edit.
-  
-  TO UPDATE STYLES: open assets/css/site.css. The CSS variables at
-  the top set colors and fonts for every page.
-  ====================================================================
+  Content to edit is marked with CHANGE: comments — search for them.
+  Shows come from data/shows.js. Styles are in assets/css/site.css.
 -->
 <html lang="en">
 <head>
 
-  <!-- tells the browser this file uses UTF-8 characters (handles 
-       special characters like é, ö, etc. safely) -->
+
   <meta charset="UTF-8">
 
-  <!-- makes the site scale correctly on phones and tablets -->
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- CHANGE: this text appears in the browser tab -->
+  <!-- CHANGE: browser tab title -->
   <title>VO!D — Calgary Metal</title>
 
-  <!-- 
-    META TAGS — these control how the site looks when shared on 
-    social media (Discord, Facebook, iMessage link previews, etc.)
-    CHANGE: update these when you have a proper description and image
-  -->
+  <!-- CHANGE: link-preview text for Discord / Facebook / iMessage -->
   <meta name="description" content="VO!D — Nu Death / Hardcore from Calgary, Alberta. born of the universe, we come from nothing.">
   <meta property="og:title" content="VO!D">
   <meta property="og:description" content="born of the universe, we come from nothing.">
-  <!-- CHANGE: replace with a real preview image path when you have one -->
+  <!-- CHANGE: link-preview image -->
   <meta property="og:image" content="assets/images/og-image.jpg">
 
-  <!-- 
-    GOOGLE FONTS — loads two typefaces from Google's free font library.
-    Bebas Neue: tall, condensed, all-caps display font (headers)
-    Space Mono: fixed-width typewriter font (body text)
-    These load from the internet — if you ever want to self-host them,
-    download the files and replace these links with local paths.
-  -->
+  <!-- Fonts: Bebas Neue (headings), Space Mono (body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-  <!-- 
-    STYLES — the whole design system lives in assets/css/site.css.
-    It's shared with shows.html and epk.html so all three pages
-    look the same. Colors, fonts, spacing: edit them there.
-  -->
+  <!-- All styles: assets/css/site.css (shared with shows.html and epk.html) -->
   <link rel="stylesheet" href="assets/css/site.css">
 </head>
 
@@ -66,20 +38,16 @@
 
   <!-- ================================================
        NAVIGATION
-       The bar that sticks to the top as you scroll.
-       To add a nav link: copy one <li> item and paste it,
-       change the href="#section-id" and the link text.
-       The href matches the id="" on each <section> below.
        ================================================ -->
   <nav id="nav">
-    <!-- CHANGE: clicking this takes you back to the top of the page -->
+
     <a href="#hero" class="nav-logo"><img src="assets/images/logo.png" alt="VO!D"></a>
     <!-- mobile menu button (shown at 900px and narrower; see assets/js/nav.js) -->
     <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="nav-links">
-      <!-- each href="#music" scrolls to <section id="music"> below -->
+
       <li><a href="#music">Music</a></li>
       <li><a href="shows.html">Shows</a></li>
       <li><a href="#about">About</a></li>
@@ -90,53 +58,39 @@
   </nav>
 
   <!-- ================================================
-       HERO — full screen opening section
-       The VO!D name glitches in on page load via JS below.
-       The background logo image is set in CSS (.hero-bg)
+       HERO — the VO!D name glitches in on load (script at the bottom)
        ================================================ -->
   <section id="hero">
 
-    <!-- background shrapnel logo — opacity controlled in CSS above -->
+    <!-- faint logo behind the text (see .hero-bg) -->
     <div class="hero-bg"></div>
 
-    <!-- gradient that fades the photo into the black background -->
+
     <div class="hero-overlay"></div>
 
     <div class="hero-content">
 
-      <!-- CHANGE: the small text above the band name -->
+      <!-- CHANGE: eyebrow text -->
       <p class="hero-eyebrow">Calgary, AB</p>
 
-      <!-- 
-        THE BAND NAME — each letter is in its own <span> so the 
-        glitch animation can reveal them one at a time.
-        aria-label="VO!D" tells screen readers the real text
-        since the spans might confuse them during animation.
-        DO NOT change the individual letters inside the spans
-        without also updating the realChars array in the JS below.
-      -->
+      <!-- One <span> per letter for the glitch animation. Keep the letters in sync
+           with realChars in the script below. -->
       <h1 class="hero-name" aria-label="VO!D">
         <span data-char="V">V</span><span data-char="O">O</span><span data-char="!">!</span><span data-char="D">D</span>
       </h1>
 
-      <!-- CHANGE: the tagline under the band name -->
+      <!-- CHANGE: tagline -->
       <p class="hero-tagline">born of the universe, we come from nothing</p>
 
     </div>
   </section>
 
-  <!-- blood red line between every section -->
+
   <hr class="rule">
 
-  <!-- ================================================
-       SILHOUETTE PHOTO DIVIDER
-       Full-width atmospheric image.
-       CHANGE: swap src= to use a different photo.
-       The image path is relative to index.html — 
-       assets/images/ means the images folder inside assets/
-       ================================================ -->
+  <!-- photo divider — optional: only shows if assets/images/divider-1.jpg exists -->
   <div class="photo-divider">
-    <!-- CHANGE: replace with any photo from assets/images/ -->
+
     <img src="assets/images/divider-1.jpg" alt="VO!D" onerror="this.parentElement.remove()">
   </div>
 
@@ -146,52 +100,44 @@
        ABOUT SECTION
        ================================================ -->
   <section id="about">
-    <!-- optional background photo: drop assets/images/bg-about.jpg in place and it appears -->
+    <!-- optional background: assets/images/bg-about.jpg -->
     <div class="section-bg"></div>
     <span class="section-label">The Band</span>
     <h2 class="section-title">About</h2>
 
     <div class="about-grid">
 
-      <!-- LEFT: photo grid -->
+
       <div class="about-photos">
 
-        <!-- 
-          PHOTO GRID — 2x2 with one wide photo spanning the top.
-          CHANGE: swap src= paths to use different photos.
-          All photos are in assets/images/
-        -->
+        <!-- Photo grid: one wide, two square. Files are named by slot in assets/images/. -->
 
-        <!-- wide photo spans both columns -->
+
         <div class="about-photo wide">
-          <!-- CHANGE: main about photo — currently the full band live shot -->
+
           <img src="assets/images/about-wide.jpg" alt="VO!D live" data-credit="name">
           <span class="press-caption"></span>
         </div>
 
         <div class="about-photo">
-          <!-- CHANGE: second about photo -->
+
           <img src="assets/images/about-1.jpg" alt="VO!D drums" data-credit="name">
           <span class="press-caption"></span>
         </div>
 
         <div class="about-photo">
-          <!-- CHANGE: third about photo -->
+
           <img src="assets/images/about-2.jpg" alt="VO!D guitar" data-credit="name">
           <span class="press-caption"></span>
         </div>
 
       </div>
 
-      <!-- RIGHT: bio text and member list -->
+
       <div class="about-text">
 
         <div class="about-bio">
-          <!--
-            BIO — your words, kept raw.
-            CHANGE: update these paragraphs as the band evolves.
-            Each <p> is a paragraph — add or remove as needed.
-          -->
+          <!-- CHANGE: bio -->
           <p>
             Calgary Alberta’s VO!D takes influence from all things heavy &amp; groovy.
             Uniquely raw, crushing riffs, as well as tasty, forward drums, &amp; loud,
@@ -202,15 +148,11 @@
           </p>
         </div>
 
-        <!-- 
-          MEMBER LIST
-          CHANGE: add or remove <div class="member-row"> blocks as lineup changes.
-          Format: Name on the left, role on the right.
-        -->
+        <!-- CHANGE: members — one .member-row each -->
         <div class="member-list">
 
           <div class="member-row">
-            <!-- CHANGE: member name and role -->
+
             <span class="member-name">Rowan Campbell</span>
             <span class="member-role">Vocals</span>
           </div>
@@ -234,7 +176,7 @@
 
   <!-- second photo divider — optional: only shows if assets/images/divider-2.jpg exists -->
   <div class="photo-divider">
-    <!-- CHANGE: swap for a different divider photo if desired -->
+
     <img src="assets/images/divider-2.jpg" alt="VO!D" onerror="this.parentElement.remove()">
   </div>
 
@@ -244,30 +186,27 @@
        MUSIC SECTION
        ================================================ -->
   <section id="music">
-    <!-- optional background photo: drop assets/images/bg-music.jpg in place and it appears -->
+    <!-- optional background: assets/images/bg-music.jpg -->
     <div class="section-bg"></div>
     <span class="section-label">Discography</span>
     <h2 class="section-title">Music</h2>
 
     <div class="release-block">
 
-      <!-- LEFT COLUMN: release info -->
+
       <div class="release-info">
 
-        <!-- CHANGE: update year, format, and title if you release more music -->
+        <!-- CHANGE: release -->
         <p class="release-meta">2026 — EP</p>
         <h3 class="release-title">Residual</h3>
 
-        <!-- CHANGE: update this description for each release -->
+
         <p class="release-description">
           VO!D's initial foothold into releasing further music.
           A 15-minute wedge made specifically for the door into the metal scene.
         </p>
 
-        <!-- 
-          CHANGE: update href= with the Apple Music link for each release.
-          The Spotify embed below handles Spotify — this is the Apple Music fallback.
-        -->
+        <!-- CHANGE: Apple Music link -->
         <a href="https://music.apple.com/us/artist/vo-d/1657633364"
            target="_blank"
            rel="noopener"
@@ -277,32 +216,11 @@
 
       </div>
 
-      <!-- RIGHT COLUMN: Spotify embed player -->
-      <div class="spotify-embed">
-        <!--
-          SPOTIFY EMBED PLAYER
-          How to get this for a new release:
-          1. Open Spotify and find the album/EP/single
-          2. Click the three dots (...) next to the release
-          3. Share → Embed album/track
-          4. Copy the embed code Spotify gives you
-          5. Paste it here, replacing the entire <iframe> below
 
-          The current embed is for RESIDUAL.
-          CHANGE: replace the entire iframe with the new embed code.
-        -->
-        <!-- <iframe //BANDPAGE
-          style="border-radius:0px"
-          src="https://open.spotify.com/embed/artist/7Hr36pXqkd8HszkUkhOIgz?utm_source=generator&theme=0"
-          width="100%"
-          height="352"
-          frameBorder="0"
-          allowfullscreen=""
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-          loading="lazy">
-        </iframe> -->
-        <iframe //RESIDUAL
-        data-testid="embed-iframe" 
+      <div class="spotify-embed">
+        <!-- Spotify embed. New release: Spotify > Share > Embed, paste the iframe here. -->
+
+        <iframe
         style="border-radius:12px" 
         src="https://open.spotify.com/embed/album/4aS5ZwJ2XtOlr2G8sASaux?utm_source=generator&theme=0&si=25b3dc6b6491492c" 
         width="100%" 
@@ -320,16 +238,10 @@
   <hr class="rule">
 
   <!-- ================================================
-       LIVE SECTION — next few upcoming shows
-
-       The rows are NOT typed here. They're filled in from
-       data/shows.js by assets/js/shows.js at page load.
-       TO ADD / REMOVE A SHOW: edit data/shows.js.
-       data-limit="3" caps how many show on the homepage;
-       shows.html has the full list plus past shows.
+       LIVE — next 3 upcoming shows, from data/shows.js
        ================================================ -->
   <section id="live">
-    <!-- optional background photo: drop assets/images/bg-live.jpg in place and it appears -->
+    <!-- optional background: assets/images/bg-live.jpg -->
     <div class="section-bg"></div>
     <span class="section-label">Come Hang Out With Us</span>
     <h2 class="section-title">Live</h2>
@@ -355,38 +267,25 @@
   
 
   <!-- ================================================
-       MERCH SECTION
-       
-       TO ADD A PRODUCT:
-       Copy one <div class="merch-card"> block and paste it
-       inside .merch-grid, then update title, description,
-       price, and replace the placeholder image div with
-       an <img> tag when you have product photos.
-
-       TO LINK TO YOUR ACTUAL STORE:
-       Update the href on .merch-store-link below.
+       MERCH — one .merch-card per product
        ================================================ -->
   <section id="merch">
-    <!-- optional background photo: drop assets/images/bg-merch.jpg in place and it appears -->
+    <!-- optional background: assets/images/bg-merch.jpg -->
     <div class="section-bg"></div>
     <span class="section-label">COMING SOON</span>
     <h2 class="section-title">Merch</h2>
 
     <div class="merch-grid">
 
-      <!-- MERCH CARD — copy this whole block to add a product -->
+
       <div class="merch-card">
-        <!-- 
-          CHANGE: replace this placeholder div with an actual product image:
-          <img src="assets/images/merch-tee.jpg" alt="VO!D Logo Tee">
-          Once you have product photos, drop them in assets/images/
-        -->
+        <!-- CHANGE: replace the placeholder div with <img src="..."> when there's a product photo -->
         <div class="merch-img">T-SHIRT</div>
-        <!-- CHANGE: product name -->
+
         <p class="merch-title">BLEACH TEE</p>
-        <!-- CHANGE: short description -->
+
         <p class="merch-desc">COMING SOON</p>
-        <!-- CHANGE: price or "COMING SOON" -->
+
         <span class="merch-price">COMING SOON</span>
       </div>
 
@@ -407,12 +306,9 @@
     </div>
 
     <div class="merch-cta">
-      <!-- 
-        CHANGE: replace # with your actual store URL (Printful, Bandcamp, etc.)
-        when the store is live. Until then the # just keeps the link inactive.
-      -->
+      <!-- CHANGE: store link -->
       <a href="#" class="merch-store-link">Store COMING SOON ↗</a>
-      <!-- CHANGE: update or remove this note based on your fulfillment setup -->
+
       <p class="merch-note">COMING SOON</p>
     </div>
   </section>
@@ -423,14 +319,14 @@
        CONTACT SECTION
        ================================================ -->
   <section id="contact">
-    <!-- optional background photo: drop assets/images/bg-contact.jpg in place and it appears -->
+    <!-- optional background: assets/images/bg-contact.jpg -->
     <div class="section-bg"></div>
     <span class="section-label">Get In Touch</span>
     <h2 class="section-title">Contact</h2>
 
     <div class="contact-grid">
 
-      <!-- LEFT: email and press kit -->
+
       <div>
         <div class="contact-block">
           <span class="contact-label">All Inquiries</span>
@@ -443,50 +339,43 @@
         <div class="contact-block">
           <span class="contact-label">Press Kit</span>
           <p class="contact-value">
-            <!-- the EPK is a page, not a file: epk.html has PDF Version buttons -->
+
             <a href="epk.html" class="contact-download">VIEW PRESS KIT →</a>
           </p>
         </div>
       </div>
 
-      <!-- RIGHT: social platform links -->
+
       <div class="social-links">
 
-        <!--
-          SOCIAL LINKS
-          CHANGE: update the href= for each platform.
-          To remove a platform: delete the entire <a> line.
-          To add a platform: copy a line and update the href and text.
-          target="_blank" opens the link in a new tab.
-          rel="noopener" is a security best practice for external links.
-        -->
+        <!-- CHANGE: social links -->
 
-        <!-- CHANGE: Instagram URL -->
+
         <a href="https://www.instagram.com/void.yyc/"
            target="_blank" rel="noopener"
            class="social-link">Instagram</a>
 
-        <!-- CHANGE: TikTok URL -->
+
         <a href="https://www.tiktok.com/@void.yyc"
            target="_blank" rel="noopener"
            class="social-link">TikTok</a>
 
-        <!-- CHANGE: Facebook URL -->
+
         <a href="https://www.facebook.com/share/1GX7bonVd8/"
            target="_blank" rel="noopener"
            class="social-link">Facebook</a>
 
-        <!-- CHANGE: YouTube URL -->
+
         <a href="https://www.youtube.com/@void_yyc"
            target="_blank" rel="noopener"
            class="social-link">YouTube</a>
 
-        <!-- CHANGE: Spotify URL -->
+
         <a href="https://open.spotify.com/artist/7Hr36pXqkd8HszkUkhOIgz"
            target="_blank" rel="noopener"
            class="social-link">Spotify</a>
 
-        <!-- CHANGE: Apple Music URL -->
+
         <a href="https://music.apple.com/us/artist/vo-d/1657633364"
            target="_blank" rel="noopener"
            class="social-link">Apple Music</a>
@@ -503,14 +392,7 @@
   <footer>
 
     <div class="footer-logo">
-      <!--
-        FOOTER LOGO IMAGE
-        CHANGE: swap src= to use a different logo variant.
-        filter: invert(1) in the CSS makes a black logo appear white —
-        so use the black-on-white block logo here.
-        If your logo is already white on black, remove filter: invert(1)
-        from the .footer-logo img rule in the CSS above.
-      -->
+      <!-- footer logo (inverted to white in CSS) -->
       <img src="assets/images/logo.png" alt="VO!D">
     </div>
 
@@ -523,13 +405,7 @@
   </footer>
 
   <!-- ================================================
-       JAVASCRIPT — glitch animation on the hero VO!D name
-       
-       CHANGES FROM PREVIOUS VERSION:
-       - Interval increased 60ms → 80ms (less frantic on fast machines)
-       - More iterations per letter (feels deliberate, not rushed)
-       - opacity forced to 1 before resolved class fires (no dim landings)
-       - Random iteration variation so letters feel independent
+       Glitch animation on the hero name
        ================================================ -->
   <script>
 
@@ -542,21 +418,15 @@
 
         let iterations = 0;
 
-        // More iterations = longer glitch before resolving.
-        // Base of 12, each letter adds 5 more, plus random 0-4 extra
-        // so letters feel independent rather than mechanical
-        const maxIterations = 12 + (i * 5) + Math.floor(Math.random() * 4);
+        // later letters glitch longer; small random spread so they don't move in lockstep
+        const maxIterations = 8 + (i * 3) + Math.floor(Math.random() * 4);
 
-        // Start each letter dim before its interval begins
-        // Staggered so letters don't all start at the same time
         setTimeout(() => {
           span.style.opacity = '0.2';
 
           const interval = setInterval(() => {
 
             if (iterations >= maxIterations) {
-              // Force opacity to 1 BEFORE adding resolved class
-              // prevents letters landing at low opacity mid-flicker
               span.style.opacity = '1';
               span.textContent = realChars[i];
               span.classList.add('resolved');
@@ -565,25 +435,23 @@
               span.textContent = GLITCH_CHARS[
                 Math.floor(Math.random() * GLITCH_CHARS.length)
               ];
-              // Flicker opacity during glitch — but never as low as the start
               span.style.opacity = Math.random() > 0.25 ? '0.9' : '0.4';
               iterations++;
             }
 
-          }, 80); // 80ms interval — less frantic than 60ms on fast machines
+          }, 55);
 
-        }, i * 150); // 150ms stagger between letters (was 120ms)
+        }, i * 90);
 
       });
     }
 
     window.addEventListener('load', () => {
-      setTimeout(glitchResolve, 400);
+      setTimeout(glitchResolve, 200);
     });
 
   </script>
 
-  <!-- show list: data first, then the renderer that reads it -->
   <script src="data/shows.js"></script>
   <script src="data/credits.js"></script>
   <script src="assets/js/credits.js"></script>

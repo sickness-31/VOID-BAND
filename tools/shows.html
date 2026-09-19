@@ -120,8 +120,10 @@
     <div><span class="lbl">Photos <small>how many numbered files in assets/shows/&lt;date&gt;/</small></span><input type="number" id="f-photos" min="0" step="1"></div>
     <div><span class="lbl">Clips <small>video files in the show folder, one per line</small></span><textarea id="f-clips" style="min-height:44px"></textarea></div>
   </div>
-  <span class="lbl">Gallery videos <small>YouTube ids or URLs, one per line</small></span>
-  <textarea id="f-videos" style="min-height:44px"></textarea>
+  <div class="two">
+    <div><span class="lbl">Gallery videos <small>YouTube ids or URLs, one per line</small></span><textarea id="f-videos" style="min-height:44px"></textarea></div>
+    <div><span class="lbl">Instagram posts <small>post URLs, one per line</small></span><textarea id="f-ig" style="min-height:44px"></textarea></div>
+  </div>
   <p class="note" id="f-msg"></p>
   <div class="bar">
     <button class="btn" id="f-apply">APPLY TO LIST</button>
@@ -160,7 +162,8 @@
       ticketUrl: s.ticketUrl || '', youtubeId: s.youtubeId || '',
       photos: Array.isArray(s.photos) ? s.photos.slice() : (parseInt(s.photos, 10) || 0),
       clips: Array.isArray(s.clips) ? s.clips.slice() : [],
-      videos: Array.isArray(s.videos) ? s.videos.slice() : []
+      videos: Array.isArray(s.videos) ? s.videos.slice() : [],
+      instagram: Array.isArray(s.instagram) ? s.instagram.slice() : []
     };
   });
   var current = -1;      // index into shows
@@ -212,7 +215,7 @@
     openShow(parseInt(row.getAttribute('data-i'), 10));
   });
   $('new').addEventListener('click', function () {
-    shows.push({ date: '', venue: '', city: '', event: '', bill: ['VO!D'], ticketUrl: '', youtubeId: '', photos: 0, clips: [], videos: [] });
+    shows.push({ date: '', venue: '', city: '', event: '', bill: ['VO!D'], ticketUrl: '', youtubeId: '', photos: 0, clips: [], videos: [], instagram: [] });
     openShow(shows.length - 1);
   });
 
@@ -225,7 +228,7 @@
     $('f-date').value = s.date; $('f-venue').value = s.venue; $('f-city').value = s.city; $('f-event').value = s.event;
     $('f-bill').value = s.bill.join('\n'); $('f-ticket').value = s.ticketUrl; $('f-yt').value = s.youtubeId;
     $('f-photos').value = Array.isArray(s.photos) ? s.photos.length : s.photos;
-    $('f-clips').value = s.clips.join('\n'); $('f-videos').value = s.videos.join('\n');
+    $('f-clips').value = s.clips.join('\n'); $('f-videos').value = s.videos.join('\n'); $('f-ig').value = s.instagram.join('\n');
     $('p-from').textContent = pad(nextPhotoNumber()) + '.jpg';
     $('f-apply').addEventListener('click', apply);
     $('f-delete').addEventListener('click', function () {
@@ -256,6 +259,8 @@
     s.bill = lines($('f-bill').value); s.ticketUrl = $('f-ticket').value.trim(); s.youtubeId = yt;
     if (!Array.isArray(s.photos)) s.photos = Math.max(0, parseInt($('f-photos').value, 10) || 0);
     s.clips = lines($('f-clips').value); s.videos = vids;
+    s.instagram = lines($('f-ig').value);
+    if (s.instagram.some(function (u) { return !/^https?:\/\/(www\.)?instagram\.com\//.test(u); })) { $('f-msg').innerHTML = '<span class="warn">Instagram links must be full instagram.com URLs.</span>'; return; }
     $('f-msg').innerHTML = '<span class="ok">Applied.</span> Download shows.js when you\'re done.';
     $('p-from').textContent = pad(nextPhotoNumber()) + '.jpg';
     renderList();
@@ -279,6 +284,7 @@
     '    photos     12             optional. Numbered files 01.jpg.. in assets/shows/<date>/',
     '    clips      [ ... ]        optional. Video files in that folder, by name.',
     '    videos     [ ... ]        optional. YouTube ids/URLs for the gallery strip.',
+    '    instagram  [ ... ]        optional. Instagram post URLs, shown as link chips.',
     '  ====================================================================', '*/', ''
   ].join('\n');
   function js(v) { return JSON.stringify(v); }
@@ -297,6 +303,7 @@
         '    photos: ' + js(s.photos) + ',\n' +
         (s.clips.length ? '    clips: ' + js(s.clips) + ',\n' : '') +
         (s.videos.length ? '    videos: ' + js(s.videos) + ',\n' : '') +
+        (s.instagram.length ? '    instagram: ' + js(s.instagram) + ',\n' : '') +
         '  },\n';
     });
     out += '\n  // ---- paste new shows above this line ----\n];\n';
