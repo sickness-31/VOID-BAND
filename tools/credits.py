@@ -2,8 +2,8 @@
 VO!D - PHOTO CREDITS BAKER
 tools/credits.py
 
-Reads the photographer name out of every JPEG in assets/press/ and
-assets/shows/*/ and writes them into data/credits.js so the site can
+Reads the photographer name out of every JPEG in assets/images/,
+assets/press/ and assets/shows/*/ and writes them into data/credits.js so the site can
 show credits without reading the image files at runtime (which
 browsers block when a page is opened from file://).
 
@@ -29,6 +29,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "credits.js")
 FOLDERS = [
+    os.path.join("assets", "images", "*.jpg"),
     os.path.join("assets", "press", "*.jpg"),
     os.path.join("assets", "press", "*.jpeg"),
     os.path.join("assets", "shows", "*", "*.jpg"),

@@ -539,6 +539,19 @@ ABOUT SECTION
 .about-photo {
   overflow: hidden;
   aspect-ratio: 1;              /* forces a perfect square */
+  position: relative;           /* for the credit overlay */
+}
+/* photographer credit, bottom-left over the photo (filled by assets/js/credits.js) */
+.about-photo .press-caption {
+  position: absolute;
+  left: 0.6rem;
+  bottom: 0.4rem;
+  font-size: var(--fs-2xs);
+  font-style: italic;
+  color: var(--dirty);
+  opacity: 0.7;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  pointer-events: none;
 }
 
 .about-photo.wide {
@@ -876,6 +889,10 @@ apply these styles instead"
   (assets/js/nav.js adds/removes the .open class on #nav).
 */
 @media (max-width: 900px) {
+  /* EPK: QR moves from the header to the bottom of the page on phones */
+  .epk-header .qr-block { display: none; }
+  #epk-contact .qr-mobile { display: block; }   /* id selector: outranks the base .qr-mobile rule below */
+
   #nav {
     flex-wrap: wrap;             /* lets the panel drop below the logo/button row */
   }
@@ -1361,6 +1378,7 @@ order a booker asks for them.
   margin-bottom: 0.5rem;
 }
 .qr-block .press-meta { flex-direction: row; gap: 0.75rem; }   /* the two QR download links stay side by side */
+.qr-mobile { display: none; margin-top: 2rem; }                 /* phones only, see the 900px rule */
 
 /* Elements that only show up on paper / PDF */
 .print-only { display: none; }
@@ -1407,7 +1425,8 @@ Either way: no nav, no embeds (replaced by their URLs).
     --dim:   #DDDDDD;
   }
 
-  #nav, footer, .no-print, iframe, .hero-bg, .hero-overlay, .section-bg, .show-photos, .lightbox { display: none !important; }
+  #nav, footer, .no-print, iframe, .hero-bg, .hero-overlay, .section-bg, .show-photos, .lightbox, .qr-mobile { display: none !important; }
+  .epk-header .qr-block { display: block !important; }   /* header QR prints at every width */
   .print-only { display: block; font-size: 9px; color: var(--mid); }
 
   /*

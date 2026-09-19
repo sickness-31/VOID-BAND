@@ -6,6 +6,15 @@
       python tools/credits.py
 */
 window.VOID_CREDIT_DATA = {
+  "assets/images/about-1.jpg": "@alyssamichellephoto",
+  "assets/images/about-2.jpg": "@alyssamichellephoto",
+  "assets/images/about-wide.jpg": "@alyssamichellephoto",
+  "assets/images/bg-about.jpg": "@sicknessstudios",
+  "assets/images/bg-contact.jpg": "@sicknessstudios",
+  "assets/images/bg-merch.jpg": "@sicknessstudios",
+  "assets/images/bg-music.jpg": "@sicknessstudios",
+  "assets/images/divider-1.jpg": "@sicknessstudios",
+  "assets/images/og-image.jpg": "@sicknessstudios",
   "assets/press/cover-residual.jpg": "@sicknessstudios, sicknessstudios",
   "assets/press/press-photo-1.jpg": "@alyssamichellephoto",
   "assets/press/press-photo-2.jpg": "@alyssamichellephoto",
