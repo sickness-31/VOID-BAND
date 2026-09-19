@@ -1146,7 +1146,8 @@ The show rows themselves reuse .show-row / .show-date / .show-venue /
   overflow: hidden;
   background: var(--dim);
 }
-.show-photo img {
+.show-photo img,
+.show-photo video {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1154,10 +1155,30 @@ The show rows themselves reuse .show-row / .show-date / .show-venue /
   filter: grayscale(100%);
   opacity: 0.75;
   transition: opacity 0.2s, filter 0.2s;
+  pointer-events: none;         /* the <a> takes the click, not the video */
 }
-.show-photo:hover img {
+.show-photo:hover img,
+.show-photo:hover video {
   opacity: 1;
   filter: grayscale(0%);
+}
+/* play badge on video tiles (clips and YouTube) */
+.show-photo.is-video { position: relative; }
+.show-photo.is-video::after {
+  content: '\25B6';
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: rgba(10,10,10,0.7);
+  border: 1px solid var(--dirty);
+  color: var(--dirty);
+  font-size: 13px;
+  line-height: 32px;
+  text-align: center;
+  text-indent: 2px;
+  pointer-events: none;
 }
 
 /* LIGHTBOX - created by assets/js/shows.js on first click */
@@ -1179,6 +1200,15 @@ The show rows themselves reuse .show-row / .show-date / .show-venue /
   object-fit: contain;
   cursor: pointer;              /* click = next */
 }
+.lightbox video,
+.lightbox iframe {
+  width: min(92vw, calc(85vh * 16 / 9));
+  aspect-ratio: 16 / 9;
+  max-height: 85vh;
+  border: none;
+  background: #000;
+}
+.lightbox img[hidden], .lightbox video[hidden], .lightbox iframe[hidden] { display: none; }
 .lightbox button {
   position: absolute;
   background: none;

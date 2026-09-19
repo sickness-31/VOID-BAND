@@ -44,6 +44,14 @@
                               0 = no gallery.
                               You can also give a list of filenames instead:
                               photos: ["01.jpg", "crowd.jpg"]
+    clips      [ ... ]        optional. Short video FILES in the same show
+                              folder, by name: clips: ["clip-01.mp4"]
+                              Keep them small (H.264 1080p, under ~20 s /
+                              20 MB). Anything longer goes on YouTube.
+    videos     [ ... ]        optional. YouTube videos for the gallery, ids
+                              or pasted URLs: videos: ["_7-afHWL_mc"]
+                              (youtubeId above is the featured one shown
+                              big beside the show; these go in the strip.)
 
   Lines starting with // are comments — they're ignored by the browser.
   ====================================================================

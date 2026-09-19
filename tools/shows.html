@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<!--
+  ====================================================================
+  VO!D — SHOW EDITOR
+  tools/shows.html
+
+  Add, edit and remove shows without touching code, and prep photos
+  for a show. NOT part of the website — nothing links here. Open this
+  file in a browser (double-click works).
+
+  HOW IT WORKS
+  1. It loads ../data/shows.js (the site's show list).
+  2. You edit in the form. Nothing is saved anywhere yet.
+  3. "DOWNLOAD shows.js" gives you the new file — save it over
+     data/shows.js, commit, push. (A web page can't write into the
+     repo itself; this is the one manual step.)
+
+  PHOTO PREP (bottom of the editor, per show)
+  Drop camera photos in → they're resized to 2000px, the photographer
+  you type is written into each file's Authors metadata, they're
+  numbered after the show's existing photos, and you get a ZIP named
+  after the show date. Unzip it into assets/shows/. The photo count on
+  the show is bumped for you. Then run: python tools/credits.py
+  ====================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VO!D — Show Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0A0A0A; --dirty: #E8E0D0; --blood: #8B0000;
+    --dark: #1A1A1A;  --mid: #4A4A4A;   --dim: #2A2A2A; --mid-text: #8A8A8A;
+    --display: 'Bebas Neue', sans-serif; --body: 'Space Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--black); color: var(--dirty); font-family: var(--body); font-size: 13px; line-height: 1.6; }
+  .app { display: grid; grid-template-columns: 380px 1fr; min-height: 100vh; }
+  .list { border-right: 1px solid var(--dim); display: flex; flex-direction: column; }
+  .list-head { padding: 1.5rem 1.5rem 1rem; }
+  h1 { font-family: var(--display); font-size: 28px; letter-spacing: 0.1em; }
+  .sub { font-size: 11px; color: var(--mid-text); font-style: italic; margin: 0.25rem 0 1rem; }
+  .rows { overflow-y: auto; flex: 1; border-top: 1px solid var(--dim); }
+  .srow { display: grid; grid-template-columns: 92px 1fr; gap: 0.75rem; padding: 0.9rem 1.5rem; border-bottom: 1px solid var(--dim); cursor: pointer; }
+  .srow:hover { background: var(--dark); }
+  .srow.on { background: var(--dark); border-left: 2px solid var(--blood); padding-left: calc(1.5rem - 2px); }
+  .srow .d { font-family: var(--display); font-size: 15px; letter-spacing: 0.05em; }
+  .srow .v { font-family: var(--display); font-size: 15px; letter-spacing: 0.05em; }
+  .srow .c { font-size: 11px; color: var(--mid-text); font-style: italic; }
+  .srow .tag { font-family: var(--display); font-size: 9px; letter-spacing: 0.3em; color: var(--blood); }
+  .grp { font-family: var(--display); font-size: 11px; letter-spacing: 0.5em; color: var(--blood); padding: 0.75rem 1.5rem 0.25rem; border-bottom: 1px solid var(--dim); }
+  .editor { padding: 1.5rem 2rem; overflow-y: auto; max-width: 820px; }
+  .lbl { display: block; font-family: var(--display); font-size: 12px; letter-spacing: 0.4em; color: var(--blood); margin: 1.25rem 0 0.4rem; }
+  .lbl small { color: var(--mid-text); letter-spacing: 0.1em; font-family: var(--body); font-size: 10px; text-transform: none; }
+  input[type=text], input[type=date], input[type=number], input[type=url], textarea {
+    width: 100%; background: var(--dark); color: var(--dirty); border: 1px solid var(--dim);
+    font-family: var(--body); font-size: 12px; padding: 0.55rem 0.65rem; outline: none; color-scheme: dark;
+  }
+  input:focus, textarea:focus { border-color: var(--mid); }
+  input.bad { border-color: var(--blood); }
+  textarea { min-height: 70px; resize: vertical; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .btn { font-family: var(--display); font-size: 13px; letter-spacing: 0.3em; color: var(--dirty); background: none; border: 1px solid var(--dirty); padding: 0.75rem 1.25rem; cursor: pointer; }
+  .btn:hover { background: var(--dirty); color: var(--black); }
+  .btn.red { color: var(--blood); border-color: var(--blood); }
+  .btn.red:hover { background: var(--blood); color: var(--dirty); }
+  .btn.big { width: 100%; padding: 1rem; font-size: 15px; }
+  .bar { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-top: 1.5rem; }
+  .note { font-size: 10.5px; color: var(--mid-text); font-style: italic; margin-top: 0.4rem; }
+  .warn { color: var(--blood); font-style: normal; }
+  .ok { color: #7aa87a; font-style: normal; }
+  .rule { border: none; border-top: 1px solid var(--blood); margin: 2rem 0 0.5rem; }
+  h2 { font-family: var(--display); font-size: 22px; letter-spacing: 0.08em; margin-top: 1.5rem; }
+  .drop { border: 1px dashed var(--mid); padding: 1.5rem; text-align: center; color: var(--mid-text); font-size: 11px; font-style: italic; margin-top: 0.5rem; }
+  .drop.over { border-color: var(--blood); color: var(--dirty); }
+  .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 4px; margin-top: 0.75rem; }
+  .thumbs div { aspect-ratio: 1; background: var(--dim); overflow: hidden; position: relative; }
+  .thumbs img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); }
+  .thumbs span { position: absolute; left: 4px; bottom: 2px; font-family: var(--display); font-size: 11px; letter-spacing: 0.1em; text-shadow: 0 1px 3px #000; }
+  .empty { color: var(--mid-text); font-style: italic; padding: 3rem 2rem; }
+  @media (max-width: 860px) { .app { grid-template-columns: 1fr; } .list { border-right: none; border-bottom: 1px solid var(--dim); max-height: 40vh; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="list">
+    <div class="list-head">
+      <h1>SHOW EDITOR</h1>
+      <p class="sub">Edits ../data/shows.js — nothing saves until you download</p>
+      <button class="btn" id="new">+ NEW SHOW</button>
+    </div>
+    <div class="rows" id="rows"></div>
+  </div>
+
+  <div class="editor" id="editor">
+    <p class="empty">Pick a show on the left, or add a new one.</p>
+  </div>
+</div>
+
+<template id="form">
+  <div class="two">
+    <div><span class="lbl">Date</span><input type="date" id="f-date"></div>
+    <div><span class="lbl">Event <small>festival / tour name, optional</small></span><input type="text" id="f-event"></div>
+  </div>
+  <div class="two">
+    <div><span class="lbl">Venue</span><input type="text" id="f-venue"></div>
+    <div><span class="lbl">City</span><input type="text" id="f-city" placeholder="Calgary, AB"></div>
+  </div>
+  <span class="lbl">Bill <small>full lineup in bill order, one per line, include VO!D</small></span>
+  <textarea id="f-bill"></textarea>
+  <div class="two">
+    <div><span class="lbl">Ticket link <small>blank = "CONTACT US"</small></span><input type="url" id="f-ticket"></div>
+    <div><span class="lbl">Featured video <small>YouTube id or pasted URL</small></span><input type="text" id="f-yt"></div>
+  </div>
+  <div class="two">
+    <div><span class="lbl">Photos <small>how many numbered files in assets/shows/&lt;date&gt;/</small></span><input type="number" id="f-photos" min="0" step="1"></div>
+    <div><span class="lbl">Clips <small>video files in the show folder, one per line</small></span><textarea id="f-clips" style="min-height:44px"></textarea></div>
+  </div>
+  <span class="lbl">Gallery videos <small>YouTube ids or URLs, one per line</small></span>
+  <textarea id="f-videos" style="min-height:44px"></textarea>
+  <p class="note" id="f-msg"></p>
+  <div class="bar">
+    <button class="btn" id="f-apply">APPLY TO LIST</button>
+    <button class="btn red" id="f-delete">DELETE SHOW</button>
+  </div>
+
+  <hr class="rule">
+  <h2>PHOTO PREP</h2>
+  <p class="note">Drop the camera files for this show. Each is resized to 2000px, credited, numbered from <b id="p-from"></b>, and zipped for you.</p>
+  <span class="lbl">Photographer <small>written into every file's Authors field</small></span>
+  <input type="text" id="p-credit" placeholder="@handle or name">
+  <div class="drop" id="p-drop">Drop photos here, or click to choose<input type="file" id="p-file" accept="image/jpeg,image/png" multiple hidden></div>
+  <div class="thumbs" id="p-thumbs"></div>
+  <div class="bar">
+    <button class="btn" id="p-zip" disabled>DOWNLOAD ZIP</button>
+    <span class="note" id="p-msg"></span>
+  </div>
+
+  <hr class="rule">
+  <button class="btn big" id="dl">DOWNLOAD shows.js</button>
+  <p class="note">Save it over <b>data/shows.js</b>, then commit and push. If you prepped photos: unzip into <b>assets/shows/</b> and run <b>python tools/credits.py</b>.</p>
+</template>
+
+<script src="../data/shows.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var FIELDS = ['date', 'venue', 'city', 'event', 'bill', 'ticketUrl', 'youtubeId', 'photos', 'clips', 'videos'];
+
+  // working copy of the data
+  var shows = (window.VOID_SHOWS || []).map(function (s) {
+    return {
+      date: s.date || '', venue: s.venue || '', city: s.city || '', event: s.event || '',
+      bill: Array.isArray(s.bill) ? s.bill.slice() : [],
+      ticketUrl: s.ticketUrl || '', youtubeId: s.youtubeId || '',
+      photos: Array.isArray(s.photos) ? s.photos.slice() : (parseInt(s.photos, 10) || 0),
+      clips: Array.isArray(s.clips) ? s.clips.slice() : [],
+      videos: Array.isArray(s.videos) ? s.videos.slice() : []
+    };
+  });
+  var current = -1;      // index into shows
+  var prepped = [];      // {name, blob} from photo prep
+
+  function videoId(v) {
+    var s = String(v == null ? '' : v).trim();
+    if (!s) return '';
+    var m = /(?:v=|\/embed\/|youtu\.be\/|\/shorts\/|\/live\/)([A-Za-z0-9_-]{11})/.exec(s);
+    if (m) return m[1];
+    return /^[A-Za-z0-9_-]{11}$/.test(s) ? s : '';
+  }
+  function parseDate(iso) { var p = iso.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function today() { var d = new Date(); d.setHours(0, 0, 0, 0); return d; }
+
+  /* ---------------- list ---------------- */
+  function renderList() {
+    var t = today();
+    var idx = shows.map(function (s, i) { return i; });
+    var up = idx.filter(function (i) { return shows[i].date && parseDate(shows[i].date) >= t; })
+      .sort(function (a, b) { return parseDate(shows[a].date) - parseDate(shows[b].date); });
+    var past = idx.filter(function (i) { return !shows[i].date || parseDate(shows[i].date) < t; })
+      .sort(function (a, b) { return parseDate(shows[b].date || '1900-01-01') - parseDate(shows[a].date || '1900-01-01'); });
+    var html = '';
+    function group(list, label) {
+      if (!list.length) return;
+      html += '<div class="grp">' + label + '</div>';
+      list.forEach(function (i) {
+        var s = shows[i];
+        var n = Array.isArray(s.photos) ? s.photos.length : s.photos;
+        var tags = [];
+        if (n) tags.push(n + ' photos');
+        if (s.clips.length) tags.push(s.clips.length + ' clips');
+        if (videoId(s.youtubeId) || s.videos.length) tags.push('video');
+        html += '<div class="srow' + (i === current ? ' on' : '') + '" data-i="' + i + '">' +
+          '<span class="d">' + esc(s.date || '????-??-??') + '</span>' +
+          '<span><span class="v">' + esc(s.venue || '(no venue)') + '</span><br>' +
+          '<span class="c">' + esc(s.city) + (s.event ? ' · ' + esc(s.event) : '') + '</span>' +
+          (tags.length ? '<br><span class="tag">' + tags.join(' · ') + '</span>' : '') + '</span></div>';
+      });
+    }
+    group(up, 'Upcoming'); group(past, 'Past');
+    $('rows').innerHTML = html || '<p class="empty">No shows yet.</p>';
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+  $('rows').addEventListener('click', function (e) {
+    var row = e.target.closest('.srow'); if (!row) return;
+    openShow(parseInt(row.getAttribute('data-i'), 10));
+  });
+  $('new').addEventListener('click', function () {
+    shows.push({ date: '', venue: '', city: '', event: '', bill: ['VO!D'], ticketUrl: '', youtubeId: '', photos: 0, clips: [], videos: [] });
+    openShow(shows.length - 1);
+  });
+
+  /* ---------------- editor ---------------- */
+  function openShow(i) {
+    current = i; prepped = [];
+    var s = shows[i];
+    $('editor').innerHTML = '';
+    $('editor').appendChild($('form').content.cloneNode(true));
+    $('f-date').value = s.date; $('f-venue').value = s.venue; $('f-city').value = s.city; $('f-event').value = s.event;
+    $('f-bill').value = s.bill.join('\n'); $('f-ticket').value = s.ticketUrl; $('f-yt').value = s.youtubeId;
+    $('f-photos').value = Array.isArray(s.photos) ? s.photos.length : s.photos;
+    $('f-clips').value = s.clips.join('\n'); $('f-videos').value = s.videos.join('\n');
+    $('p-from').textContent = pad(nextPhotoNumber()) + '.jpg';
+    $('f-apply').addEventListener('click', apply);
+    $('f-delete').addEventListener('click', function () {
+      if (!confirm('Delete this show from the list?')) return;
+      shows.splice(current, 1); current = -1; renderList();
+      $('editor').innerHTML = '<p class="empty">Deleted. Pick another show or add a new one.</p>';
+    });
+    $('dl').addEventListener('click', downloadShowsJs);
+    ['f-date', 'f-venue', 'f-city'].forEach(function (id) { $(id).addEventListener('input', function () { this.classList.remove('bad'); }); });
+    wirePrep();
+    renderList();
+    window.scrollTo(0, 0);
+  }
+  function lines(v) { return v.split('\n').map(function (l) { return l.trim(); }).filter(Boolean); }
+  function apply() {
+    var s = shows[current], bad = [];
+    var date = $('f-date').value.trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) bad.push('f-date');
+    if (!$('f-venue').value.trim()) bad.push('f-venue');
+    if (!$('f-city').value.trim()) bad.push('f-city');
+    bad.forEach(function (id) { $(id).classList.add('bad'); });
+    if (bad.length) { $('f-msg').innerHTML = '<span class="warn">Date, venue and city are required.</span>'; return; }
+    var ytRaw = $('f-yt').value.trim(), yt = videoId(ytRaw);
+    if (ytRaw && !yt) { $('f-msg').innerHTML = '<span class="warn">That featured video isn\'t a YouTube id or URL.</span>'; return; }
+    var vids = lines($('f-videos').value).map(videoId);
+    if (vids.some(function (v) { return !v; })) { $('f-msg').innerHTML = '<span class="warn">One of the gallery videos isn\'t a YouTube id or URL.</span>'; return; }
+    s.date = date; s.venue = $('f-venue').value.trim(); s.city = $('f-city').value.trim(); s.event = $('f-event').value.trim();
+    s.bill = lines($('f-bill').value); s.ticketUrl = $('f-ticket').value.trim(); s.youtubeId = yt;
+    if (!Array.isArray(s.photos)) s.photos = Math.max(0, parseInt($('f-photos').value, 10) || 0);
+    s.clips = lines($('f-clips').value); s.videos = vids;
+    $('f-msg').innerHTML = '<span class="ok">Applied.</span> Download shows.js when you\'re done.';
+    $('p-from').textContent = pad(nextPhotoNumber()) + '.jpg';
+    renderList();
+  }
+
+  /* ---------------- output ---------------- */
+  var HEADER = [
+    '/*', '  ====================================================================', '  VO!D — SHOW DATA', '  data/shows.js', '',
+    '  THIS IS THE ONLY FILE YOU EDIT TO ADD, CHANGE, OR REMOVE A SHOW.',
+    '  Every page that lists shows (index.html, shows.html, epk.html)',
+    '  reads from this list. You never touch layout code for a show.',
+    '  Easiest way to edit it: open tools/shows.html in a browser.', '',
+    '  FIELDS:',
+    '    date       "YYYY-MM-DD"   required.',
+    '    venue      "The Vat"      required.',
+    '    city       "Red Deer, AB" required.',
+    '    event      "Some Fest"    optional. Festival or tour name (red label).',
+    '    bill       [ ... ]        optional. Full lineup in bill order, incl. VO!D.',
+    '    ticketUrl  "https://..."  optional. Blank = CONTACT US button.',
+    '    youtubeId  "abc123XYZ"    optional. Featured video (id or pasted URL).',
+    '    photos     12             optional. Numbered files 01.jpg.. in assets/shows/<date>/',
+    '    clips      [ ... ]        optional. Video files in that folder, by name.',
+    '    videos     [ ... ]        optional. YouTube ids/URLs for the gallery strip.',
+    '  ====================================================================', '*/', ''
+  ].join('\n');
+  function js(v) { return JSON.stringify(v); }
+  function serialize() {
+    var out = HEADER + 'window.VOID_SHOWS = [\n';
+    var sorted = shows.slice().sort(function (a, b) { return parseDate(b.date || '1900-01-01') - parseDate(a.date || '1900-01-01'); });
+    sorted.forEach(function (s) {
+      out += '  {\n' +
+        '    date: ' + js(s.date) + ',\n' +
+        '    venue: ' + js(s.venue) + ',\n' +
+        '    city: ' + js(s.city) + ',\n' +
+        '    event: ' + js(s.event) + ',\n' +
+        '    bill: ' + js(s.bill) + ',\n' +
+        '    ticketUrl: ' + js(s.ticketUrl) + ',\n' +
+        '    youtubeId: ' + js(s.youtubeId) + ',\n' +
+        '    photos: ' + js(s.photos) + ',\n' +
+        (s.clips.length ? '    clips: ' + js(s.clips) + ',\n' : '') +
+        (s.videos.length ? '    videos: ' + js(s.videos) + ',\n' : '') +
+        '  },\n';
+    });
+    out += '\n  // ---- paste new shows above this line ----\n];\n';
+    return out;
+  }
+  function download(name, blob) {
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+  function downloadShowsJs() {
+    var missing = shows.filter(function (s) { return !s.date || !s.venue || !s.city; });
+    if (missing.length) { alert(missing.length + ' show(s) are missing date, venue or city. Fix and Apply them first.'); return; }
+    download('shows.js', new Blob([serialize()], { type: 'text/javascript' }));
+  }
+
+  /* ---------------- photo prep ---------------- */
+  function pad(n) { return n < 10 ? '0' + n : String(n); }
+  function nextPhotoNumber() {
+    var s = shows[current]; if (!s) return 1;
+    var n = Array.isArray(s.photos) ? s.photos.length : (parseInt($('f-photos') ? $('f-photos').value : s.photos, 10) || 0);
+    return n + 1;
+  }
+  function wirePrep() {
+    var drop = $('p-drop'), file = $('p-file');
+    drop.addEventListener('click', function () { file.click(); });
+    ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
+    ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
+    drop.addEventListener('drop', function (e) { addFiles(e.dataTransfer.files); });
+    file.addEventListener('change', function () { addFiles(this.files); this.value = ''; });
+    $('p-zip').addEventListener('click', makeZip);
+  }
+  function addFiles(list) {
+    var files = [].slice.call(list).filter(function (f) { return /^image\/(jpeg|png)$/.test(f.type); });
+    if (!files.length) return;
+    var credit = $('p-credit').value.trim();
+    $('p-msg').textContent = 'Processing ' + files.length + ' photo(s)…';
+    var start = nextPhotoNumber() + prepped.length;
+    var chain = Promise.resolve();
+    files.forEach(function (f, k) {
+      chain = chain.then(function () { return shrink(f); }).then(function (blob) {
+        var withExif = credit ? addArtist(blob, credit) : Promise.resolve(blob);
+        return withExif.then(function (b) {
+          var name = pad(start + k) + '.jpg';
+          prepped.push({ name: name, blob: b });
+          var d = document.createElement('div');
+          d.innerHTML = '<img src="' + URL.createObjectURL(b) + '"><span>' + name + '</span>';
+          $('p-thumbs').appendChild(d);
+        });
+      });
+    });
+    chain.then(function () {
+      $('p-msg').innerHTML = '<span class="ok">' + prepped.length + ' ready</span>' + (credit ? ' · credited to ' + esc(credit) : ' · <span class="warn">no photographer set — credits will be blank</span>');
+      $('p-zip').disabled = false;
+    }).catch(function (err) { $('p-msg').innerHTML = '<span class="warn">' + esc(err.message || err) + '</span>'; });
+  }
+  // resize to 2000px long edge, JPEG 0.85, honouring the phone's rotation flag
+  function shrink(file) {
+    var load = window.createImageBitmap ? createImageBitmap(file, { imageOrientation: 'from-image' }) :
+      new Promise(function (res, rej) { var im = new Image(); im.onload = function () { res(im); }; im.onerror = rej; im.src = URL.createObjectURL(file); });
+    return load.then(function (im) {
+      var w = im.width, h = im.height, sc = Math.min(1, 2000 / Math.max(w, h));
+      var c = document.createElement('canvas'); c.width = Math.round(w * sc); c.height = Math.round(h * sc);
+      var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+      x.imageSmoothingQuality = 'high'; x.drawImage(im, 0, 0, c.width, c.height);
+      return new Promise(function (res) { c.toBlob(function (b) { res(b); }, 'image/jpeg', 0.85); });
+    });
+  }
+  // insert an EXIF APP1 segment with Artist = name, right after the JPEG SOI marker
+  function addArtist(blob, name) {
+    return blob.arrayBuffer().then(function (buf) {
+      var src = new Uint8Array(buf);
+      var enc = new TextEncoder();
+      var text = enc.encode(name); var str = new Uint8Array(text.length + 1); str.set(text);   // NUL-terminated
+      // TIFF: header(8) + IFD count(2) + 1 entry(12) + next IFD(4) + string
+      var tiff = new Uint8Array(8 + 2 + 12 + 4 + str.length);
+      var dv = new DataView(tiff.buffer);
+      tiff[0] = 0x49; tiff[1] = 0x49; dv.setUint16(2, 42, true); dv.setUint32(4, 8, true);
+      dv.setUint16(8, 1, true);
+      dv.setUint16(10, 0x013B, true); dv.setUint16(12, 2, true); dv.setUint32(14, str.length, true); dv.setUint32(18, 26, true);
+      dv.setUint32(22, 0, true);
+      tiff.set(str, 26);
+      var app1len = 2 + 6 + tiff.length;
+      var seg = new Uint8Array(2 + app1len);
+      seg[0] = 0xFF; seg[1] = 0xE1; seg[2] = app1len >> 8; seg[3] = app1len & 0xFF;
+      seg.set([0x45, 0x78, 0x69, 0x66, 0, 0], 4); seg.set(tiff, 10);
+      var out = new Uint8Array(src.length + seg.length);
+      out.set(src.subarray(0, 2), 0); out.set(seg, 2); out.set(src.subarray(2), 2 + seg.length);
+      return new Blob([out], { type: 'image/jpeg' });
+    });
+  }
+  // ZIP (store, no compression) — enough for a folder of JPEGs
+  var CRC = (function () { var t = []; for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  function crc32(u8) { var c = 0xFFFFFFFF; for (var i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+  function makeZip() {
+    var s = shows[current], folder = s.date || 'photos';
+    Promise.all(prepped.map(function (p) { return p.blob.arrayBuffer(); })).then(function (bufs) {
+      var parts = [], central = [], offset = 0, enc = new TextEncoder();
+      var now = new Date(), dt = ((now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1)) & 0xFFFF,
+          dd = (((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate()) & 0xFFFF;
+      bufs.forEach(function (buf, i) {
+        var data = new Uint8Array(buf), name = enc.encode(folder + '/' + prepped[i].name), crc = crc32(data);
+        var lh = new Uint8Array(30 + name.length), v = new DataView(lh.buffer);
+        v.setUint32(0, 0x04034b50, true); v.setUint16(4, 20, true); v.setUint16(6, 0x0800, true); v.setUint16(8, 0, true);
+        v.setUint16(10, dt, true); v.setUint16(12, dd, true); v.setUint32(14, crc, true); v.setUint32(18, data.length, true); v.setUint32(22, data.length, true);
+        v.setUint16(26, name.length, true); v.setUint16(28, 0, true); lh.set(name, 30);
+        var ch = new Uint8Array(46 + name.length), c = new DataView(ch.buffer);
+        c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true);
+        c.setUint16(12, dt, true); c.setUint16(14, dd, true); c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true);
+        c.setUint16(28, name.length, true); c.setUint16(30, 0, true); c.setUint16(32, 0, true); c.setUint16(34, 0, true); c.setUint16(36, 0, true);
+        c.setUint32(38, 0, true); c.setUint32(42, offset, true); ch.set(name, 46);
+        parts.push(lh, data); central.push(ch); offset += lh.length + data.length;
+      });
+      var cdSize = central.reduce(function (a, b) { return a + b.length; }, 0);
+      var end = new Uint8Array(22), e = new DataView(end.buffer);
+      e.setUint32(0, 0x06054b50, true); e.setUint16(4, 0, true); e.setUint16(6, 0, true); e.setUint16(8, central.length, true); e.setUint16(10, central.length, true);
+      e.setUint32(12, cdSize, true); e.setUint32(16, offset, true); e.setUint16(20, 0, true);
+      download(folder + '.zip', new Blob(parts.concat(central, [end]), { type: 'application/zip' }));
+      // bump the show's photo count to include the new files
+      if (!Array.isArray(s.photos)) { s.photos = (parseInt($('f-photos').value, 10) || 0) + prepped.length; $('f-photos').value = s.photos; }
+      $('p-msg').innerHTML = '<span class="ok">Zipped ' + prepped.length + '.</span> Unzip into assets/shows/ — photos count set to ' + (Array.isArray(s.photos) ? s.photos.length : s.photos) + '. Now download shows.js.';
+      prepped = []; $('p-thumbs').innerHTML = ''; $('p-zip').disabled = true; renderList();
+    });
+  }
+
+  renderList();
+})();
+</script>
+</body>
+</html>

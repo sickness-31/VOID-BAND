@@ -21,7 +21,8 @@
   data-empty   text                    message shown when the list is empty
 
   Per-show fields it reads: date, venue, city, event (optional label),
-  bill (full lineup, printed as-is), ticketUrl, youtubeId, photos.
+  bill (full lineup, printed as-is), ticketUrl, youtubeId, photos,
+  clips (video files in the show folder), videos (YouTube ids/URLs).
 
   data-photos  "true"                  show the photo strip for past shows
                                        that have photos (click opens a lightbox)
@@ -84,6 +85,22 @@
     return out;
   }
 
+  // Everything in a show's gallery, in order: photos, clips, YouTube.
+  //   {kind:'image', src}  {kind:'clip', src}  {kind:'yt', id, src, thumb}
+  function galleryItems(show) {
+    var dir = 'assets/shows/' + show.date + '/';
+    var items = photoUrls(show).map(function (u) { return { kind: 'image', src: u }; });
+    (Array.isArray(show.clips) ? show.clips : []).filter(Boolean).forEach(function (f) {
+      items.push({ kind: 'clip', src: dir + f });
+    });
+    (Array.isArray(show.videos) ? show.videos : []).forEach(function (v) {
+      var id = videoId(v);
+      if (id) items.push({ kind: 'yt', id: id, src: 'https://www.youtube.com/watch?v=' + id,
+                           thumb: 'https://img.youtube.com/vi/' + id + '/hqdefault.jpg' });
+    });
+    return items;
+  }
+
   function getShows(mode) {
     var all = (window.VOID_SHOWS || []).filter(function (s) {
       return s && typeof s.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s.date);
@@ -104,7 +121,7 @@
     var vid = videoId(show.youtubeId);
     var bill = Array.isArray(show.bill) ? show.bill.filter(Boolean) : [];
     var hasVideo = opts.video && opts.mode === 'past' && !!vid;
-    var photos = (opts.photos && opts.mode === 'past') ? photoUrls(show) : [];
+    var gallery = (opts.photos && opts.mode === 'past') ? galleryItems(show) : [];
     var html = '<div class="show-row' + (hasVideo ? ' has-video' : '') + '">';
     html += '<span class="show-date">' + esc(show.date) + '</span>';
     html += '<div class="show-info">';
@@ -139,14 +156,23 @@
         'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>' +
         '</div>';
     }
-    if (photos.length) {
+    if (gallery.length) {
       // thumbnail strip spans the full row width (see .show-photos in CSS)
+      var alt = 'VO!D at ' + esc(show.venue) + ', ' + esc(show.date);
       html += '<div class="show-photos">';
-      for (var p = 0; p < photos.length; p++) {
-        html += '<a href="' + esc(photos[p]) + '" class="show-photo" ' +
-          'data-lightbox="' + esc(show.date) + '" data-index="' + p + '">' +
-          '<img src="' + esc(photos[p]) + '" alt="VO!D at ' + esc(show.venue) + ', ' + esc(show.date) + '" loading="lazy">' +
-          '</a>';
+      for (var p = 0; p < gallery.length; p++) {
+        var it = gallery[p];
+        html += '<a href="' + esc(it.src) + '" class="show-photo' + (it.kind === 'image' ? '' : ' is-video') + '" ' +
+          'data-kind="' + it.kind + '" data-index="' + p + '"' + (it.id ? ' data-id="' + esc(it.id) + '"' : '') + '>';
+        if (it.kind === 'image') {
+          html += '<img src="' + esc(it.src) + '" alt="' + alt + '" loading="lazy">';
+        } else if (it.kind === 'clip') {
+          // first frame of the file is the thumbnail (#t=0.1 makes Safari draw it too)
+          html += '<video src="' + esc(it.src) + '#t=0.1" muted playsinline preload="metadata" aria-label="' + alt + ' (video)"></video>';
+        } else {
+          html += '<img src="' + esc(it.thumb) + '" alt="' + alt + ' (video)" loading="lazy">';
+        }
+        html += '</a>';
       }
       html += '</div>';
     }
@@ -178,45 +204,65 @@
   /*
     LIGHTBOX - one overlay for the whole page. Clicking a .show-photo
     opens it; left/right (keys or click) move within that show's
-    photos; Esc or clicking the dark area closes it.
+    gallery (photos, clips and YouTube videos in one sequence); Esc or
+    clicking the dark area closes it. Moving on or closing stops any
+    playing video.
   */
-  var lb = { el: null, img: null, urls: [], i: 0 };
+  var lb = { el: null, img: null, video: null, frame: null, items: [], i: 0 };
 
+  function lbStopMedia() {
+    lb.video.pause(); lb.video.removeAttribute('src'); lb.video.load();
+    lb.frame.removeAttribute('src');
+    lb.img.removeAttribute('src');
+  }
   function lbShow(i) {
-    lb.i = (i + lb.urls.length) % lb.urls.length;
-    lb.img.src = lb.urls[lb.i];
-    lb.el.querySelector('.lightbox-count').textContent = (lb.i + 1) + ' / ' + lb.urls.length;
-    // photographer, from the JPEG's metadata (assets/js/credits.js), if loaded
+    lb.i = (i + lb.items.length) % lb.items.length;
+    var it = lb.items[lb.i];
+    lbStopMedia();
+    lb.img.hidden = it.kind !== 'image';
+    lb.video.hidden = it.kind !== 'clip';
+    lb.frame.hidden = it.kind !== 'yt';
+    if (it.kind === 'image') lb.img.src = it.src;
+    else if (it.kind === 'clip') { lb.video.src = it.src; lb.video.play().catch(function () {}); }
+    else lb.frame.src = 'https://www.youtube.com/embed/' + it.id + '?autoplay=1';
+    lb.el.querySelector('.lightbox-count').textContent = (lb.i + 1) + ' / ' + lb.items.length;
+    // photographer, from the JPEG's metadata (assets/js/credits.js) - photos only
     var credit = lb.el.querySelector('.lightbox-credit');
     credit.textContent = '';
-    if (window.VOID_CREDITS) {
-      var url = lb.urls[lb.i];
+    if (it.kind === 'image' && window.VOID_CREDITS) {
+      var url = it.src;
       window.VOID_CREDITS.get(url).then(function (name) {
-        if (name && lb.urls[lb.i] === url) credit.textContent = 'Photo: ' + name;
+        if (name && lb.items[lb.i] && lb.items[lb.i].src === url) credit.textContent = 'Photo: ' + name;
       });
     }
   }
   function lbClose() {
     lb.el.hidden = true;
-    lb.img.src = '';
+    lbStopMedia();
     document.body.style.overflow = '';
   }
-  function lbOpen(urls, i) {
+  function lbOpen(items, i) {
     if (!lb.el) {
       lb.el = document.createElement('div');
       lb.el.className = 'lightbox';
       lb.el.innerHTML =
         '<button type="button" class="lightbox-prev" aria-label="Previous">&larr;</button>' +
         '<img alt="">' +
+        '<video controls playsinline hidden></video>' +
+        '<iframe hidden allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen ' +
+          'referrerpolicy="strict-origin-when-cross-origin" title="Video"></iframe>' +
         '<button type="button" class="lightbox-next" aria-label="Next">&rarr;</button>' +
         '<button type="button" class="lightbox-close" aria-label="Close">&times;</button>' +
         '<span class="lightbox-count"></span>' +
         '<span class="lightbox-credit"></span>';
       document.body.appendChild(lb.el);
       lb.img = lb.el.querySelector('img');
+      lb.video = lb.el.querySelector('video');
+      lb.frame = lb.el.querySelector('iframe');
       lb.el.addEventListener('click', function (e) {
         if (e.target.classList.contains('lightbox-prev')) lbShow(lb.i - 1);
         else if (e.target.classList.contains('lightbox-next') || e.target === lb.img) lbShow(lb.i + 1);
+        else if (e.target === lb.video || e.target === lb.frame) return;   // let the player handle it
         else lbClose();
       });
       document.addEventListener('keydown', function (e) {
@@ -226,7 +272,7 @@
         else if (e.key === 'ArrowRight') lbShow(lb.i + 1);
       });
     }
-    lb.urls = urls;
+    lb.items = items;
     lb.el.hidden = false;
     document.body.style.overflow = 'hidden';
     lbShow(i);
@@ -238,9 +284,13 @@
     e.preventDefault();
     var strip = a.parentElement;
     var links = strip.querySelectorAll('a.show-photo');
-    var urls = [];
-    for (var i = 0; i < links.length; i++) urls.push(links[i].getAttribute('href'));
-    lbOpen(urls, parseInt(a.getAttribute('data-index'), 10) || 0);
+    var items = [];
+    for (var i = 0; i < links.length; i++) {
+      items.push({ kind: links[i].getAttribute('data-kind') || 'image',
+                   src: links[i].getAttribute('href'),
+                   id: links[i].getAttribute('data-id') || '' });
+    }
+    lbOpen(items, parseInt(a.getAttribute('data-index'), 10) || 0);
   }
 
   function init() {
