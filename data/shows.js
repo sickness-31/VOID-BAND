@@ -32,8 +32,9 @@
                               multitrack video. This is the part of the
                               YouTube URL after "v=" — for
                               https://www.youtube.com/watch?v=_7-afHWL_mc
-                              the id is "_7-afHWL_mc". Leave "" until the
-                              video is up.
+                              the id is "_7-afHWL_mc". Pasting the whole
+                              URL also works. Leave "" until the video
+                              is up.
     photos     12             optional. Number of photos for a PAST show.
                               Files go in assets/shows/<date>/ named
                               01.jpg, 02.jpg, ... up to that number, e.g.
@@ -106,7 +107,7 @@ window.VOID_SHOWS = [
     event: "DECIMATE FEST FUNDRAISER",
     bill: ["Hombre", "Axohxin","Disorderly Conduct","Another Time Around","VO!D"],
     ticketUrl: "",
-    youtubeId: "https://www.youtube.com/watch?v=_7-afHWL_mc",
+    youtubeId: "_7-afHWL_mc",
     photos: 0
   },
   {
@@ -117,7 +118,7 @@ window.VOID_SHOWS = [
     bill: ["VO!D","The 21st Agenda","Feel and Flow"],
     ticketUrl: "",
     youtubeId: "",
-    photos: 0
+    photos: 7
   },
   {
     date: "2025-09-11",
