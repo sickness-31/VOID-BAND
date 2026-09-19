@@ -40,6 +40,29 @@ Example: body { background: black; } means "make the page background black"
   /* font families stored as variables for easy swapping */
   --display:  'Bebas Neue', sans-serif;   /* headers, labels, nav */
   --body:     'Space Mono', monospace;    /* paragraphs, descriptions */
+
+  /* secondary text colour — --mid is for borders and decoration, this is
+     for anything you have to read (passes contrast on the dark background) */
+  --mid-text: #8A8A8A;
+
+  /* SMALL TEXT SIZES — the four sizes used by labels, captions and body
+     copy. Phone sizes here; the desktop rule below scales them up 25%. */
+  --fs-2xs: 10px;              /* photo captions only */
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-md: 13px;
+  --fs-lg: 14px;
+}
+
+/* desktop: +25% on the small text sizes (same breakpoint as the nav) */
+@media (min-width: 901px) {
+  :root {
+    --fs-2xs: 11.5px;
+    --fs-xs: 13.75px;
+    --fs-sm: 15px;
+    --fs-md: 16.25px;
+    --fs-lg: 17.5px;
+  }
 }
 
 /* 
@@ -62,7 +85,7 @@ body {
   background: var(--black);
   color: var(--dirty);          /* default text color for the whole page */
   font-family: var(--body);
-  font-size: 13px;
+  font-size: var(--fs-lg);
   line-height: 1.7;             /* space between lines of text */
   overflow-x: hidden;           /* prevents horizontal scrollbar */
 }
@@ -108,7 +131,7 @@ position: fixed means it stays visible as you scroll
 }
 
 .nav-logo img {
-  height: 28px;                 /* CHANGE: nav logo size */
+  height: 34px;                 /* CHANGE: nav logo size */
   display: block;
   filter: invert(1);            /* black logo -> white, same trick as the footer */
   opacity: 0.85;
@@ -126,9 +149,9 @@ position: fixed means it stays visible as you scroll
 
 .nav-links a {
   font-family: var(--display);
-  font-size: 12px;
+  font-size: var(--fs-md);
   letter-spacing: 0.3em;
-  color: var(--mid);
+  color: var(--mid-text);
   text-decoration: none;
   transition: color 0.15s;      /* smooth color change on hover (0.15 seconds) */
 }
@@ -137,6 +160,27 @@ position: fixed means it stays visible as you scroll
 .nav-links a:hover {
   color: var(--dirty);
 }
+
+/* three-bar menu button — hidden on desktop, shown by the 900px rule below */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--dirty);
+  margin: 4px 0;
+  transition: transform 0.15s, opacity 0.15s;
+}
+/* turns into an X when open */
+#nav.open .nav-toggle span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+#nav.open .nav-toggle span:nth-child(2) { opacity: 0; }
+#nav.open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
 /*
 ================================================================
@@ -188,7 +232,7 @@ HERO — the first full-screen section the visitor sees
 
 .hero-eyebrow {
   font-family: var(--display);
-  font-size: 12px;
+  font-size: var(--fs-md);
   letter-spacing: 0.5em;
   color: var(--blood);
   margin-bottom: 1rem;
@@ -226,7 +270,7 @@ HERO — the first full-screen section the visitor sees
 .hero-tagline {
   font-family: var(--body);
   font-size: clamp(11px, 1.2vw, 13px);
-  color: var(--mid);
+  color: var(--mid-text);
   font-style: italic;
   letter-spacing: 0.05em;
 }
@@ -284,7 +328,7 @@ section {
 /* small red label above section titles — like "DISCOGRAPHY" above "Music" */
 .section-label {
   font-family: var(--display);
-  font-size: 12px;
+  font-size: var(--fs-lg);
   letter-spacing: 0.6em;
   color: var(--blood);
   margin-bottom: 2rem;
@@ -318,7 +362,7 @@ MUSIC SECTION
 
 .release-meta {
   font-family: var(--display);
-  font-size: 12px;
+  font-size: var(--fs-lg);
   letter-spacing: 0.4em;
   color: var(--blood);
   margin-bottom: 1rem;
@@ -334,8 +378,8 @@ MUSIC SECTION
 }
 
 .release-description {
-  font-size: 12px;
-  color: var(--mid);
+  font-size: var(--fs-md);
+  color: var(--mid-text);
   line-height: 1.9;
   font-style: italic;
   margin-bottom: 2rem;
@@ -345,9 +389,9 @@ MUSIC SECTION
 /* secondary streaming link below the Spotify embed */
 .stream-also {
   font-family: var(--display);
-  font-size: 11px;
+  font-size: var(--fs-sm);
   letter-spacing: 0.3em;
-  color: var(--mid);
+  color: var(--mid-text);
   text-decoration: none;
   border-bottom: 1px solid var(--mid);
   padding-bottom: 2px;
@@ -423,14 +467,14 @@ LIVE SECTION
 }
 
 .show-location {
-  font-size: 11px;
-  color: var(--mid);
+  font-size: var(--fs-sm);
+  color: var(--mid-text);
   font-style: italic;
 }
 
 .show-ticket {
   font-family: var(--display);
-  font-size: 11px;
+  font-size: var(--fs-sm);
   letter-spacing: 0.3em;
   color: var(--blood);
   text-decoration: none;
@@ -448,9 +492,9 @@ LIVE SECTION
 /* shown when there are no upcoming dates */
 .no-shows {
   padding: 3rem 0;
-  color: var(--mid);
+  color: var(--mid-text);
   font-style: italic;
-  font-size: 12px;
+  font-size: var(--fs-md);
 }
 
 /* wrapper for the YouTube embed iframe */
@@ -520,7 +564,7 @@ ABOUT SECTION
 .about-text {}
 
 .about-bio p {
-  font-size: 13px;
+  font-size: var(--fs-lg);
   line-height: 2;
   color: var(--dirty);
   opacity: 0.85;
@@ -553,8 +597,8 @@ ABOUT SECTION
 }
 
 .member-role {
-  font-size: 11px;
-  color: var(--mid);
+  font-size: var(--fs-sm);
+  color: var(--mid-text);
   font-style: italic;
 }
 
@@ -590,9 +634,9 @@ MERCH SECTION
   align-items: center;
   justify-content: center;
   font-family: var(--display);
-  font-size: 11px;
+  font-size: var(--fs-sm);
   letter-spacing: 0.4em;
-  color: var(--mid);
+  color: var(--mid-text);
   margin-bottom: 1.25rem;
   border: 1px solid #222;
 }
@@ -606,8 +650,8 @@ MERCH SECTION
 }
 
 .merch-desc {
-  font-size: 11px;
-  color: var(--mid);
+  font-size: var(--fs-sm);
+  color: var(--mid-text);
   font-style: italic;
   line-height: 1.7;
   margin-bottom: 1rem;
@@ -615,7 +659,7 @@ MERCH SECTION
 
 .merch-price {
   font-family: var(--display);
-  font-size: 12px;
+  font-size: var(--fs-md);
   letter-spacing: 0.3em;
   color: var(--blood);
 }
@@ -630,7 +674,7 @@ MERCH SECTION
 
 .merch-store-link {
   font-family: var(--display);
-  font-size: 13px;
+  font-size: var(--fs-lg);
   letter-spacing: 0.3em;
   color: var(--dirty);
   text-decoration: none;
@@ -645,8 +689,8 @@ MERCH SECTION
 }
 
 .merch-note {
-  font-size: 11px;
-  color: var(--mid);
+  font-size: var(--fs-sm);
+  color: var(--mid-text);
   font-style: italic;
 }
 
@@ -668,7 +712,7 @@ CONTACT SECTION
 
 .contact-label {
   font-family: var(--display);
-  font-size: 12px;
+  font-size: var(--fs-lg);
   letter-spacing: 0.4em;
   color: var(--blood);
   display: block;
@@ -676,7 +720,7 @@ CONTACT SECTION
 }
 
 .contact-value {
-  font-size: 13px;
+  font-size: var(--fs-lg);
   color: var(--dirty);
 }
 
@@ -698,7 +742,7 @@ CONTACT SECTION
   border-bottom: 1px solid var(--blood);
   padding-bottom: 1px;
   font-family: var(--display);
-  font-size: 13px;
+  font-size: var(--fs-lg);
   letter-spacing: 0.2em;
   transition: color 0.15s, border-color 0.15s;
 }
@@ -735,8 +779,8 @@ CONTACT SECTION
 /* the ↗ arrow that appears on the right of each social link */
 .social-link::after {
   content: '↗';
-  font-size: 11px;
-  color: var(--mid);
+  font-size: var(--fs-sm);
+  color: var(--mid-text);
 }
 
 /*
@@ -754,7 +798,7 @@ footer {
 
 /* the footer logo image — small, dim, bottom-left */
 .footer-logo img {
-  height: 48px;                 /* CHANGE: adjust height to taste */
+  height: 58px;                 /* CHANGE: adjust height to taste */
   opacity: 0.15;                /* very faint — increase to make more visible */
   filter: invert(1);            /* inverts colors — makes black logo white */
   transition: opacity 0.2s;
@@ -769,8 +813,8 @@ footer {
 }
 
 .footer-copy {
-  font-size: 10px;
-  color: var(--mid);
+  font-size: var(--fs-xs);
+  color: var(--mid-text);
   letter-spacing: 0.2em;
   font-style: italic;
   display: block;
@@ -779,7 +823,7 @@ footer {
 
 .footer-tagline {
   font-family: var(--display);
-  font-size: 11px;
+  font-size: var(--fs-sm);
   letter-spacing: 0.3em;
   color: var(--dim);
 }
@@ -824,9 +868,36 @@ apply these styles instead"
     gap: 3rem;
   }
 
-  /* hide nav links on mobile — a hamburger menu would go here eventually */
+}
+
+/*
+  MOBILE MENU — 900px and narrower. The link row would overflow the
+  screen here, so it becomes a panel under the bar, opened by .nav-toggle
+  (assets/js/nav.js adds/removes the .open class on #nav).
+*/
+@media (max-width: 900px) {
+  #nav {
+    flex-wrap: wrap;             /* lets the panel drop below the logo/button row */
+  }
+  .nav-toggle {
+    display: block;
+  }
   .nav-links {
     display: none;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    margin-top: 1rem;
+    border-top: 1px solid var(--dim);
+  }
+  #nav.open .nav-links {
+    display: flex;
+  }
+  .nav-links a {
+    display: block;
+    padding: 1rem 0;             /* big tap targets */
+    font-size: var(--fs-lg);
+    border-bottom: 1px solid var(--dim);
   }
 }
 
@@ -858,7 +929,7 @@ section.page-top {
 /* Sub-heading inside a section, e.g. "UPCOMING" / "PAST" on shows.html */
 .section-sub {
   font-family: var(--display);
-  font-size: 12px;
+  font-size: var(--fs-lg);
   letter-spacing: 0.6em;
   color: var(--blood);
   margin: 4rem 0 1.5rem;
@@ -871,9 +942,9 @@ section.page-top {
 /* Small text link with the underline treatment used elsewhere on the site */
 .text-link {
   font-family: var(--display);
-  font-size: 11px;
+  font-size: var(--fs-sm);
   letter-spacing: 0.3em;
-  color: var(--mid);
+  color: var(--mid-text);
   text-decoration: none;
   border-bottom: 1px solid var(--mid);
   padding-bottom: 2px;
@@ -896,7 +967,7 @@ section.page-top {
 /* The bordered button style already used by .merch-store-link, made reusable */
 .btn-outline {
   font-family: var(--display);
-  font-size: 13px;
+  font-size: var(--fs-lg);
   letter-spacing: 0.3em;
   color: var(--dirty);
   text-decoration: none;
@@ -919,8 +990,8 @@ section.page-top {
 .todo {
   border: 1px dashed var(--blood);
   padding: 1.25rem 1.5rem;
-  color: var(--mid);
-  font-size: 12px;
+  color: var(--mid-text);
+  font-size: var(--fs-md);
   font-style: italic;
   line-height: 1.8;
 }
@@ -929,7 +1000,7 @@ section.page-top {
   display: block;
   font-family: var(--display);
   font-style: normal;
-  font-size: 12px;
+  font-size: var(--fs-lg);
   letter-spacing: 0.4em;
   color: var(--blood);
   margin-bottom: 0.5rem;
@@ -993,6 +1064,14 @@ section {
 #live    .section-bg { background-image: url('../images/bg-live.jpg'); }
 #merch   .section-bg { background-image: url('../images/bg-merch.jpg'); }
 #contact .section-bg { background-image: url('../images/bg-contact.jpg'); }
+/* EPK page — same idea, one per section */
+#epk-top     .section-bg { background-image: url('../images/bg-epk-top.jpg'); }
+#epk-bio     .section-bg { background-image: url('../images/bg-epk-bio.jpg'); }
+#epk-media   .section-bg { background-image: url('../images/bg-epk-media.jpg'); }
+#epk-photos  .section-bg { background-image: url('../images/bg-epk-photos.jpg'); }
+#epk-logos   .section-bg { background-image: url('../images/bg-epk-logos.jpg'); }
+#epk-history .section-bg { background-image: url('../images/bg-epk-history.jpg'); }
+#epk-contact .section-bg { background-image: url('../images/bg-epk-contact.jpg'); }
 
 
 /*
@@ -1006,15 +1085,15 @@ The show rows themselves reuse .show-row / .show-date / .show-venue /
 /* Festival / tour name — small red label above the venue */
 .show-event {
   font-family: var(--display);
-  font-size: 12px;
+  font-size: var(--fs-lg);
   letter-spacing: 0.4em;
   color: var(--blood);
 }
 
 /* Full lineup, shown under the city on the same row */
 .show-bill {
-  font-size: 11px;
-  color: var(--mid);
+  font-size: var(--fs-sm);
+  color: var(--mid-text);
   letter-spacing: 0.05em;
 }
 
@@ -1104,9 +1183,9 @@ The show rows themselves reuse .show-row / .show-date / .show-venue /
   bottom: 3.25rem;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 11px;
+  font-size: var(--fs-sm);
   font-style: italic;
-  color: var(--mid);
+  color: var(--mid-text);
   white-space: nowrap;
 }
 .lightbox-count {
@@ -1115,9 +1194,9 @@ The show rows themselves reuse .show-row / .show-date / .show-venue /
   left: 50%;
   transform: translateX(-50%);
   font-family: var(--display);
-  font-size: 12px;
+  font-size: var(--fs-md);
   letter-spacing: 0.3em;
-  color: var(--mid);
+  color: var(--mid-text);
 }
 
 /* phones: video drops under the text, full width. Must come AFTER the rule above. */
@@ -1141,11 +1220,19 @@ order a booker asks for them.
 */
 
 /* Logo in place of the EPK title */
+/* header row: logo on the left, QR on the right */
+.epk-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin: 0 0 2.5rem;
+}
 .epk-logo {
   display: block;
   width: min(480px, 70vw);      /* CHANGE: logo size on the EPK page */
   height: auto;
-  margin: 0 0 2.5rem;
 }
 
 /* Quick-facts grid under the EPK title */
@@ -1162,14 +1249,14 @@ order a booker asks for them.
 }
 .epk-fact-label {
   font-family: var(--display);
-  font-size: 12px;
+  font-size: var(--fs-lg);
   letter-spacing: 0.4em;
   color: var(--blood);
   display: block;
   margin-bottom: 0.5rem;
 }
 .epk-fact-value {
-  font-size: 13px;
+  font-size: var(--fs-lg);
   color: var(--dirty);
   line-height: 1.6;
 }
@@ -1190,7 +1277,7 @@ order a booker asks for them.
 
 /* Bio text */
 .epk-bio p {
-  font-size: 13px;
+  font-size: var(--fs-lg);
   line-height: 2;
   color: var(--dirty);
   opacity: 0.85;
@@ -1229,11 +1316,11 @@ order a booker asks for them.
 }
 .press-meta {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  font-size: 11px;
-  color: var(--mid);
+  flex-direction: column;       /* caption, then the Download link beneath it */
+  align-items: flex-start;
+  gap: 0.35rem;
+  font-size: var(--fs-2xs);
+  color: var(--mid-text);
   font-style: italic;
 }
 .press-meta .text-link {
@@ -1266,20 +1353,14 @@ order a booker asks for them.
   object-fit: contain;
 }
 
-/* Booking section: contact on the left, QR on the right */
-.booking-grid {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 3rem;
-  align-items: start;
-}
+/* QR code (sits in the EPK header) */
 .qr-img {
   display: block;
   width: 160px;                 /* CHANGE: QR size on screen */
   height: 160px;
   margin-bottom: 0.5rem;
 }
-.qr-block .press-meta { gap: 0.75rem; justify-content: flex-start; }
+.qr-block .press-meta { flex-direction: row; gap: 0.75rem; }   /* the two QR download links stay side by side */
 
 /* Elements that only show up on paper / PDF */
 .print-only { display: none; }
@@ -1289,7 +1370,6 @@ order a booker asks for them.
 }
 @media (max-width: 500px) {
   .epk-facts { grid-template-columns: 1fr; }
-  .booking-grid { grid-template-columns: 1fr; }
 }
 
 
@@ -1314,12 +1394,16 @@ Either way: no nav, no embeds (replaced by their URLs).
   }
   body { font-size: 9.5px; line-height: 1.4; color: var(--dirty); padding: 8mm 10mm; }
 
+  /* the PDF was tuned with the old fixed sizes; don't let the screen bump reach it */
+  :root { --fs-2xs: 9px; --fs-xs: 10px; --fs-sm: 11px; --fs-md: 12px; --fs-lg: 13px; }
+
   /* LIGHT variant — set by the PDF Version (Light) button on epk.html */
   html.print-light {
     --black: #FFFFFF;
     --dirty: #111111;
     --dark:  #F2F2F2;
     --mid:   #555555;
+    --mid-text: #555555;
     --dim:   #DDDDDD;
   }
 
@@ -1341,7 +1425,7 @@ Either way: no nav, no embeds (replaced by their URLs).
   .rule { margin: 0; }
 
   /* header: title small, facts in a tight 4-up grid */
-  .epk-logo { width: 55mm; margin-bottom: 0.4rem; }
+  .epk-logo { width: 55mm; }
   html.print-light .epk-logo { filter: invert(1); }   /* white logo on a white page otherwise */
   .epk-facts { grid-template-columns: repeat(4, 1fr); gap: 1px; margin-bottom: 0; }
   .epk-fact { padding: 0.4rem 0.6rem; break-inside: avoid; }
@@ -1363,8 +1447,9 @@ Either way: no nav, no embeds (replaced by their URLs).
   .logo-grid { grid-template-columns: repeat(5, 1fr); gap: 0.35rem; }
   .logo-tile { padding: 0.4rem; border: 1px solid var(--dim); aspect-ratio: 3 / 2; margin-bottom: 0.2rem; }
 
-  /* show history: always starts on page 2, two readable columns */
-  #epk-history { break-before: page; }
+  /* PDF is page 1 only: show history and booking stay on the site.
+     (The email is in the facts grid and the QR is in the header.) */
+  #epk-history, #epk-contact { display: none; }
   .show-list { border-top: none; display: grid; grid-template-columns: 1fr 1fr; column-gap: 2rem; }
   .show-row { padding: 0.45rem 0; grid-template-columns: 62px 1fr; gap: 0.6rem; align-items: start; break-inside: avoid; }
   .show-row:hover { padding-left: 0; }
@@ -1376,12 +1461,8 @@ Either way: no nav, no embeds (replaced by their URLs).
   .show-bill { font-size: 8px; }
   .show-ticket, .show-video { display: none; }
 
-  /* booking: sits under the show history on page 2, QR to the right */
-  #epk-contact .contact-block { display: inline-block; margin: 0 2rem 0 0; }
-  .qr-img { width: 28mm; height: 28mm; }
-  .qr-block .press-meta span { font-size: 7.5px; }
-  .contact-label { font-size: 8px; margin-bottom: 0.1rem; }
-  .contact-value { font-size: 9px; }
+  .epk-header { margin-bottom: 0.4rem; align-items: flex-end; }
+  .qr-img { width: 22mm; height: 22mm; margin: 0; }
 
   .todo { display: none; }          /* notes-to-self don't go to bookers */
 

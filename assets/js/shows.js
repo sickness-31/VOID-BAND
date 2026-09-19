@@ -58,6 +58,16 @@
       .replace(/"/g, '&quot;');
   }
 
+  // The id is the part after "v=". If a whole YouTube URL got pasted in
+  // instead, pull the id back out of it so the embed still works.
+  function videoId(v) {
+    var s = String(v == null ? '' : v).trim();
+    if (!s) return '';
+    var m = /(?:v=|\/embed\/|youtu\.be\/|\/shorts\/|\/live\/)([A-Za-z0-9_-]{11})/.exec(s);
+    if (m) return m[1];
+    return /^[A-Za-z0-9_-]{11}$/.test(s) ? s : '';
+  }
+
   // photos: 12  -> assets/shows/<date>/01.jpg ... 12.jpg
   // photos: ["a.jpg", "b.jpg"] -> assets/shows/<date>/a.jpg, ...
   function photoUrls(show) {
@@ -91,8 +101,9 @@
   }
 
   function renderRow(show, opts) {
+    var vid = videoId(show.youtubeId);
     var bill = Array.isArray(show.bill) ? show.bill.filter(Boolean) : [];
-    var hasVideo = opts.video && opts.mode === 'past' && !!show.youtubeId;
+    var hasVideo = opts.video && opts.mode === 'past' && !!vid;
     var photos = (opts.photos && opts.mode === 'past') ? photoUrls(show) : [];
     var html = '<div class="show-row' + (hasVideo ? ' has-video' : '') + '">';
     html += '<span class="show-date">' + esc(show.date) + '</span>';
@@ -113,16 +124,16 @@
         var label = show.ticketUrl ? 'TICKETS' : 'CONTACT US';
         var extra = show.ticketUrl ? ' target="_blank" rel="noopener"' : '';
         html += '<a href="' + esc(href) + '" class="show-ticket"' + extra + '>' + label + '</a>';
-      } else if (show.youtubeId && !opts.video) {
+      } else if (vid && !opts.video) {
         // Past show with a video, but this list isn't embedding — link out.
-        html += '<a href="https://www.youtube.com/watch?v=' + esc(show.youtubeId) +
+        html += '<a href="https://www.youtube.com/watch?v=' + esc(vid) +
                 '" class="show-ticket" target="_blank" rel="noopener">WATCH</a>';
       }
     }
     if (hasVideo) {
       // player sits in the row's third column (see .show-row.has-video in CSS)
       html += '<div class="show-video">' +
-        '<iframe src="https://www.youtube.com/embed/' + esc(show.youtubeId) + '" ' +
+        '<iframe src="https://www.youtube.com/embed/' + esc(vid) + '" ' +
         'title="VO!D live at ' + esc(show.venue) + ', ' + esc(show.date) + '" ' +
         'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
         'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>' +

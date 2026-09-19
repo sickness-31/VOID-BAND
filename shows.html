@@ -35,7 +35,11 @@
   <!-- NAVIGATION — same links as index.html, pointed back at the homepage -->
   <nav id="nav">
     <a href="index.html" class="nav-logo"><img src="assets/images/logo.png" alt="VO!D"></a>
-    <ul class="nav-links">
+    <!-- mobile menu button (shown at 900px and narrower; see assets/js/nav.js) -->
+    <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="nav-links">
       <li><a href="index.html#music">Music</a></li>
       <li><a href="shows.html">Shows</a></li>
       <li><a href="index.html#about">About</a></li>
@@ -87,7 +91,9 @@
 
   <!-- data first, then the renderer that reads it -->
   <script src="data/shows.js"></script>
+  <script src="data/credits.js"></script>
   <script src="assets/js/credits.js"></script>
   <script src="assets/js/shows.js"></script>
+  <script src="assets/js/nav.js"></script>
 </body>
 </html>
