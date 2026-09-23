@@ -1160,13 +1160,23 @@ Products come from data/merch.js; see assets/js/merch.js.
   cursor: pointer;
 }
 .cart-remove:hover { color: var(--blood); }
+.cart-totals { padding: 1rem 0 1.5rem; }
+.cart-subline {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-md);
+  color: var(--mid-text);
+  padding: 0.15rem 0;
+}
+.cart-subline[hidden] { display: none; }
+.cart-subline em { font-style: italic; }
 .cart-total-line {
   display: flex;
   justify-content: space-between;
   font-family: var(--display);
   font-size: var(--fs-lg);
   letter-spacing: 0.2em;
-  padding: 1rem 0 1.5rem;
+  padding-top: 0.5rem;
 }
 
 .cart-field { display: block; margin-bottom: 1.25rem; }
@@ -1177,6 +1187,16 @@ Products come from data/merch.js; see assets/js/merch.js.
   letter-spacing: 0.3em;
   color: var(--blood);
   margin-bottom: 0.4rem;
+}
+.cart-field select {
+  width: 100%;
+  background: var(--dark);
+  color: var(--dirty);
+  border: 1px solid var(--dim);
+  font-family: var(--body);
+  font-size: var(--fs-md);
+  padding: 0.55rem 0.65rem;
+  outline: none;
 }
 .cart-field input[type="text"],
 .cart-field textarea {

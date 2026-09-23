@@ -372,7 +372,11 @@
       <p class="cart-refline">Reference <b id="cart-ref"></b></p>
 
       <div id="cart-lines"></div>
-      <p class="cart-total-line">Total <b id="cart-total"></b></p>
+      <div class="cart-totals">
+        <p class="cart-subline" id="cart-subline" hidden><span>Subtotal</span><b id="cart-subtotal"></b></p>
+        <p class="cart-subline" id="cart-shipline" hidden><span>Shipping <em>(estimated)</em></span><b id="cart-shipping"></b></p>
+        <p class="cart-total-line"><span>Total</span><b id="cart-total"></b></p>
+      </div>
 
       <label class="cart-field"><span>Name</span>
         <input type="text" id="cart-name" autocomplete="name"></label>
@@ -396,7 +400,11 @@
           <label class="cart-field"><span>Postal code</span>
             <input type="text" id="cart-postal" autocomplete="postal-code"></label>
           <label class="cart-field"><span>Country</span>
-            <input type="text" id="cart-country" value="Canada" autocomplete="country-name"></label>
+            <select id="cart-country" autocomplete="country-name">
+              <option value="canada">Canada</option>
+              <option value="unitedStates">United States</option>
+              <option value="other">Elsewhere</option>
+            </select></label>
         </div>
       </div>
 

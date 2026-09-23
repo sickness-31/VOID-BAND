@@ -76,11 +76,28 @@
     return (CFG.orderPrefix || 'ORDER') + '-' + out;
   }
   function count() { return cart.lines.reduce(function (n, l) { return n + l.qty; }, 0); }
-  function total() {
+  function subtotal() {
     return cart.lines.reduce(function (n, l) {
       var p = find(l.id);
       return n + (p ? p.price * l.qty : 0);
     }, 0);
+  }
+
+  /*
+    Estimated postage. Returns a number, or null when there's no rate for
+    where they are — the band quotes those by email. Pickup is always 0.
+  */
+  function shippingCost() {
+    var picked = document.querySelector('input[name="fulfil"]:checked');
+    if (!picked || picked.value !== 'ship') return 0;
+    var rates = CFG.shipping || {};
+    if (rates.freeOver != null && subtotal() >= rates.freeOver) return 0;
+    var rate = rates[val('cart-country') || 'canada'];
+    return (typeof rate === 'number') ? rate : null;
+  }
+
+  function total() {
+    return subtotal() + (shippingCost() || 0);
   }
   function lineOf(id, label) {
     for (var i = 0; i < cart.lines.length; i++) {
@@ -181,7 +198,7 @@
     bar.hidden = n === 0;
     if (n) {
       bar.querySelector('.cart-summary').textContent =
-        n + (n === 1 ? ' item' : ' items') + ' · ' + money(total());
+        n + (n === 1 ? ' item' : ' items') + ' · ' + money(subtotal());
     }
   }
   function paint() { paintList(); paintBar(); paintReview(); }
@@ -200,8 +217,7 @@
         '</div>';
     });
     box.innerHTML = h;
-    var t = document.getElementById('cart-total');
-    if (t) t.textContent = money(total());
+    paintTotals();
     var r = document.getElementById('cart-ref');
     if (r) r.textContent = cart.ref || '';
     var e = document.getElementById('cart-email');
@@ -211,6 +227,15 @@
   function val(id) {
     var el = document.getElementById(id);
     return el ? el.value.trim() : '';
+  }
+
+  // the country <select> stores a rate key ('unitedStates'); the buyer
+  // should see the readable label in their order
+  function countryLabel() {
+    var el = document.getElementById('cart-country');
+    if (!el) return '';
+    var opt = el.options[el.selectedIndex];
+    return opt ? opt.textContent.trim() : '';
   }
 
   // Shipping needs a usable address; an order without one is no use to the band.
@@ -229,6 +254,27 @@
     return gaps;
   }
 
+  // Subtotal / shipping / total. The first two only appear once shipping applies.
+  function paintTotals() {
+    var ship = shippingCost();
+    var picked = document.querySelector('input[name="fulfil"]:checked');
+    var isShip = !!picked && picked.value === 'ship';
+    var subLine = document.getElementById('cart-subline');
+    var shipLine = document.getElementById('cart-shipline');
+    var t = document.getElementById('cart-total');
+    if (subLine) {
+      subLine.hidden = !isShip;
+      var sv = document.getElementById('cart-subtotal');
+      if (sv) sv.textContent = money(subtotal());
+    }
+    if (shipLine) {
+      shipLine.hidden = !isShip;
+      var shv = document.getElementById('cart-shipping');
+      if (shv) shv.textContent = (ship === null) ? 'we’ll quote you' : (ship === 0 ? 'free' : money(ship));
+    }
+    if (t) t.textContent = money(total()) + (isShip && ship === null ? ' + shipping' : '');
+  }
+
   // The message the buyer sends. Same text for the email and the clipboard.
   function orderText() {
     var ship = document.querySelector('input[name="fulfil"]:checked');
@@ -240,7 +286,16 @@
       var p = find(l.id); if (!p) return;
       out.push(l.qty + ' x ' + p.name + (l.label ? ' (' + l.label + ')' : '') + ' - ' + money(p.price * l.qty));
     });
-    out.push('', 'Total: ' + money(total()), '');
+    var ship = shippingCost();
+    out.push('');
+    if (mode === 'ship') {
+      out.push('Subtotal: ' + money(subtotal()));
+      out.push('Shipping (estimated): ' + (ship === null ? 'to be quoted' : (ship === 0 ? 'free' : money(ship))));
+      out.push('Total: ' + money(total()) + (ship === null ? ' + shipping' : ''));
+    } else {
+      out.push('Total: ' + money(subtotal()));
+    }
+    out.push('');
     out.push('Name: ' + name.trim());
     out.push('Fulfilment: ' + (mode === 'ship' ? 'Shipping' : 'Pickup at next show'));
     if (mode === 'ship') {
@@ -249,7 +304,7 @@
         if (line.trim()) out.push('  ' + line.trim());
       });
       out.push('  ' + val('cart-city') + ', ' + val('cart-province') + '  ' + val('cart-postal'));
-      out.push('  ' + val('cart-country'));
+      out.push('  ' + countryLabel());
     }
     if (note.trim()) out.push('Notes: ' + note.trim());
     out.push('', 'Please confirm availability and send e-Transfer details.');
@@ -377,6 +432,11 @@
     if (e.target.name !== 'fulfil') return;
     var wrap = document.getElementById('cart-address-wrap');
     if (wrap) wrap.hidden = e.target.value !== 'ship';
+    paintTotals();
+  });
+
+  document.addEventListener('change', function (e) {
+    if (e.target.id === 'cart-country') paintTotals();
   });
 
   document.addEventListener('input', function (e) {

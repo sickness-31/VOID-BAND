@@ -140,9 +140,22 @@ window.SITE = {
   name: "VO!D",
   email: "void.empr@gmail.com",
   orderPrefix: "VOID",
-  currency: "$"
+  currency: "$",
+  shipping: {
+    canada: 15,
+    unitedStates: 25,
+    other: null,      // null = "we'll quote you"
+    freeOver: null    // e.g. 100 = free shipping over $100
+  }
 };
 ```
+
+### Shipping estimates
+The numbers in `shipping` show as **estimates** when someone picks Shipping — you confirm the real cost in your reply, before they pay.
+
+To set them: pack one shirt and one hoodie in a poly mailer, weigh and measure both, and price those two shapes at the counter. Use the higher one. Leave `other` as `null` unless you ship internationally often enough to have a number.
+
+`freeOver: 100` makes shipping free on orders over $100. Leave it `null` until you know your margins.
 
 ---
 
