@@ -1207,6 +1207,14 @@ Products come from data/merch.js; see assets/js/merch.js.
   margin-bottom: 0.5rem;
 }
 .cart-how a { color: var(--dirty); }
+.cart-sent {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--blood);
+  font-size: var(--fs-sm);
+  color: var(--dirty);
+}
+.cart-sent[hidden] { display: none; }
 
 @media (max-width: 700px) {
   #cart-bar { padding: 0.75rem 5vw; }

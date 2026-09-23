@@ -62,16 +62,17 @@
   function load() {
     try {
       var raw = JSON.parse(localStorage.getItem(KEY) || '{}');
-      if (!raw || !Array.isArray(raw.lines)) return { ref: '', lines: [] };
+      if (!raw || !Array.isArray(raw.lines)) return { ref: '', lines: [], sent: false };
+      raw.sent = !!raw.sent;
       return raw;
-    } catch (e) { return { ref: '', lines: [] }; }
+    } catch (e) { return { ref: '', lines: [], sent: false }; }
   }
   function save() {
     try { localStorage.setItem(KEY, JSON.stringify(cart)); } catch (e) {}
   }
   function makeRef() {
     var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', out = '';
-    for (var i = 0; i < 4; i++) out += chars[Math.floor(Math.random() * chars.length)];
+    for (var i = 0; i < 6; i++) out += chars[Math.floor(Math.random() * chars.length)];
     return (CFG.orderPrefix || 'ORDER') + '-' + out;
   }
   function count() { return cart.lines.reduce(function (n, l) { return n + l.qty; }, 0); }
@@ -89,6 +90,8 @@
   }
   function add(id, label) {
     var p = find(id); if (!p) return;
+    // the last order was already sent, so this is a new one
+    if (cart.sent) { cart = { ref: '', lines: [], sent: false }; }
     var have = lineOf(id, label), inCart = have ? have.qty : 0;
     if (inCart >= stockOf(p, label)) return false;    // never oversell
     if (!cart.ref) cart.ref = makeRef();
@@ -98,7 +101,7 @@
   }
   function remove(i) {
     cart.lines.splice(i, 1);
-    if (!cart.lines.length) cart.ref = '';
+    if (!cart.lines.length) { cart.ref = ''; cart.sent = false; }
     save(); paintBar(); paintReview();
   }
 
@@ -226,12 +229,24 @@
     return out.join('\n');
   }
 
+  // called once the buyer has actually sent the order
+  function markSent() {
+    cart.sent = true;
+    save();
+    var msg = document.getElementById('cart-sent');
+    if (msg) msg.hidden = false;
+  }
+
   function openOverlay(on) {
     var ov = document.getElementById('cart-overlay');
     if (!ov) return;
     ov.hidden = !on;
     document.body.style.overflow = on ? 'hidden' : '';
-    if (on) paintReview();
+    if (on) {
+      paintReview();
+      var msg = document.getElementById('cart-sent');
+      if (msg) msg.hidden = !cart.sent;
+    }
   }
 
   /* ---------------- events ---------------- */
@@ -274,6 +289,7 @@
 
     if (t.closest && t.closest('#cart-mail')) {
       var subject = (CFG.name ? CFG.name + ' ' : '') + 'merch order ' + cart.ref;
+      markSent();
       window.location.href = 'mailto:' + encodeURIComponent(CFG.email || '') +
         '?subject=' + encodeURIComponent(subject) +
         '&body=' + encodeURIComponent(orderText());
@@ -282,7 +298,10 @@
 
     if (t.closest && t.closest('#cart-copy')) {
       var txt = orderText(), msg = document.getElementById('cart-copied');
-      var done = function () { if (msg) { msg.textContent = 'Copied. Paste it into an email to ' + (CFG.email || '') + '.'; } };
+      var done = function () {
+        if (msg) msg.textContent = 'Copied. Paste it into an email to ' + (CFG.email || '') + '.';
+        markSent();
+      };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(txt).then(done, function () { fallbackCopy(txt, done); });
       } else { fallbackCopy(txt, done); }
