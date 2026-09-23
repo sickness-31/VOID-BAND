@@ -267,49 +267,19 @@
   
 
   <!-- ================================================
-       MERCH — one .merch-card per product
+       MERCH — products come from data/merch.js (edit with tools/merch.html)
        ================================================ -->
   <section id="merch">
     <!-- optional background: assets/images/bg-merch.jpg -->
     <div class="section-bg"></div>
-    <span class="section-label">COMING SOON</span>
+    <span class="section-label">Store</span>
     <h2 class="section-title">Merch</h2>
 
-    <div class="merch-grid">
-
-
-      <div class="merch-card">
-        <!-- CHANGE: replace the placeholder div with <img src="..."> when there's a product photo -->
-        <div class="merch-img">T-SHIRT</div>
-
-        <p class="merch-title">BLEACH TEE</p>
-
-        <p class="merch-desc">COMING SOON</p>
-
-        <span class="merch-price">COMING SOON</span>
-      </div>
-
-      <div class="merch-card">
-        <div class="merch-img">COMING SOON</div>
-        <p class="merch-title">COMING SOON</p>
-        <p class="merch-desc">COMING SOON</p>
-        <span class="merch-price">COMING SOON</span>
-      </div>
-
-      <div class="merch-card">
-        <div class="merch-img">COMING SOON</div>
-        <p class="merch-title">COMING SOON</p>
-        <p class="merch-desc">COMING SOON</p>
-        <span class="merch-price">COMING SOON</span>
-      </div>
-
-    </div>
+    <!-- products render here from data/merch.js -->
+    <div data-merch></div>
 
     <div class="merch-cta">
-      <!-- CHANGE: store link -->
-      <a href="#" class="merch-store-link">Store COMING SOON ↗</a>
-
-      <p class="merch-note">COMING SOON</p>
+      <p class="merch-note">Orders are confirmed by email, then paid by e-Transfer. Pickup at a show or shipped.</p>
     </div>
   </section>
 
@@ -387,6 +357,52 @@
   <hr class="rule">
 
   <!-- ================================================
+       CART — bar appears when something is added; the overlay is the
+       review screen. Both are filled in by assets/js/merch.js.
+       ================================================ -->
+  <div id="cart-bar" hidden>
+    <span class="cart-summary"></span>
+    <button type="button" id="cart-open" class="btn-outline">REVIEW ORDER</button>
+  </div>
+
+  <div id="cart-overlay" hidden>
+    <div class="cart-panel">
+      <button type="button" id="cart-close" class="cart-x" aria-label="Close">&times;</button>
+      <span class="section-label">Your order</span>
+      <p class="cart-refline">Reference <b id="cart-ref"></b></p>
+
+      <div id="cart-lines"></div>
+      <p class="cart-total-line">Total <b id="cart-total"></b></p>
+
+      <label class="cart-field"><span>Name</span>
+        <input type="text" id="cart-name" autocomplete="name"></label>
+
+      <div class="cart-field">
+        <span>Getting it to you</span>
+        <label class="cart-radio"><input type="radio" name="fulfil" value="pickup" checked> Pickup at next show</label>
+        <label class="cart-radio"><input type="radio" name="fulfil" value="ship"> Shipping</label>
+      </div>
+
+      <label class="cart-field" id="cart-address-wrap" hidden><span>Shipping address</span>
+        <textarea id="cart-address" autocomplete="street-address"></textarea></label>
+
+      <label class="cart-field"><span>Notes (optional)</span>
+        <textarea id="cart-note"></textarea></label>
+
+      <p class="cart-how">Send this order to <a id="cart-email" href="#"></a>. We confirm stock, then reply with
+        e-Transfer details. Nothing is charged until you send it.</p>
+
+      <div class="link-row">
+        <button type="button" id="cart-mail" class="btn-outline">OPEN EMAIL</button>
+        <button type="button" id="cart-copy" class="btn-outline">COPY ORDER</button>
+      </div>
+      <p class="note" id="cart-copied"></p>
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <!-- ================================================
        FOOTER
        ================================================ -->
   <footer>
@@ -452,10 +468,13 @@
 
   </script>
 
+  <script src="data/site.js"></script>
   <script src="data/shows.js"></script>
+  <script src="data/merch.js"></script>
   <script src="data/credits.js"></script>
   <script src="assets/js/credits.js"></script>
   <script src="assets/js/shows.js"></script>
+  <script src="assets/js/merch.js"></script>
   <script src="assets/js/nav.js"></script>
 </body>
 </html>

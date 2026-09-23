@@ -1014,6 +1014,205 @@ section {
 #epk-contact .section-bg { background-image: url('../images/bg-epk-contact.jpg'); }
 
 
+
+/*
+================================================================
+MERCH — product cards and the order cart.
+Products come from data/merch.js; see assets/js/merch.js.
+================================================================
+*/
+.merch-photo {
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--dim);
+  margin-bottom: 2px;
+}
+.merch-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(60%);
+  transition: filter 0.3s;
+}
+.merch-card:hover .merch-photo img { filter: grayscale(0%); }
+
+.merch-thumbs { display: flex; gap: 2px; margin-bottom: 1.25rem; }
+.merch-thumb {
+  width: 44px; height: 44px;
+  padding: 0; border: 1px solid transparent;
+  background: none; cursor: pointer; overflow: hidden;
+}
+.merch-thumb.on { border-color: var(--blood); }
+.merch-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.6; }
+.merch-thumb.on img { opacity: 1; }
+
+.merch-card.is-out { opacity: 0.55; }
+
+.merch-variants { display: flex; flex-wrap: wrap; gap: 4px; margin: 1rem 0 0.75rem; }
+.merch-variant {
+  font-family: var(--display);
+  font-size: var(--fs-md);
+  letter-spacing: 0.15em;
+  color: var(--mid-text);
+  background: none;
+  border: 1px solid var(--dim);
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.merch-variant[aria-pressed="true"] { color: var(--dirty); border-color: var(--dirty); }
+.merch-variant.is-out {
+  text-decoration: line-through;
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.merch-left {
+  font-size: var(--fs-2xs);
+  font-style: italic;
+  color: var(--blood);
+  margin-bottom: 0.5rem;
+}
+.merch-add {
+  font-family: var(--display);
+  font-size: var(--fs-md);
+  letter-spacing: 0.3em;
+  color: var(--dirty);
+  background: none;
+  border: 1px solid var(--dirty);
+  padding: 0.6rem 1.5rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.merch-add:hover { background: var(--dirty); color: var(--black); }
+
+/* bar pinned to the bottom once something is in the cart */
+#cart-bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 6vw;
+  background: rgba(10,10,10,0.95);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--blood);
+}
+#cart-bar[hidden] { display: none; }
+.cart-summary {
+  font-family: var(--display);
+  font-size: var(--fs-lg);
+  letter-spacing: 0.2em;
+  color: var(--dirty);
+}
+
+#cart-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 200;
+  background: rgba(10,10,10,0.96);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 2rem 1rem;
+}
+#cart-overlay[hidden] { display: none; }
+.cart-panel {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  background: var(--black);
+  border: 1px solid var(--dim);
+  padding: 2rem;
+}
+.cart-x {
+  position: absolute;
+  top: 0.75rem; right: 1rem;
+  background: none; border: none;
+  color: var(--dirty);
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.6;
+}
+.cart-x:hover { opacity: 1; }
+.cart-refline { font-size: var(--fs-md); color: var(--mid-text); margin-bottom: 1.5rem; }
+.cart-refline b { color: var(--dirty); font-family: var(--display); letter-spacing: 0.15em; }
+
+.cart-line {
+  display: grid;
+  grid-template-columns: 34px 1fr auto 28px;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--dim);
+  font-size: var(--fs-md);
+}
+.cart-qty { color: var(--mid-text); }
+.cart-name em { color: var(--mid-text); font-style: italic; }
+.cart-price { font-family: var(--display); letter-spacing: 0.1em; }
+.cart-remove {
+  background: none; border: none;
+  color: var(--mid-text);
+  font-size: 18px; line-height: 1;
+  cursor: pointer;
+}
+.cart-remove:hover { color: var(--blood); }
+.cart-total-line {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--display);
+  font-size: var(--fs-lg);
+  letter-spacing: 0.2em;
+  padding: 1rem 0 1.5rem;
+}
+
+.cart-field { display: block; margin-bottom: 1.25rem; }
+.cart-field > span {
+  display: block;
+  font-family: var(--display);
+  font-size: var(--fs-md);
+  letter-spacing: 0.3em;
+  color: var(--blood);
+  margin-bottom: 0.4rem;
+}
+.cart-field input[type="text"],
+.cart-field textarea {
+  width: 100%;
+  background: var(--dark);
+  color: var(--dirty);
+  border: 1px solid var(--dim);
+  font-family: var(--body);
+  font-size: var(--fs-md);
+  padding: 0.55rem 0.65rem;
+  outline: none;
+}
+.cart-field input:focus, .cart-field textarea:focus { border-color: var(--mid); }
+.cart-field textarea { min-height: 62px; resize: vertical; }
+.cart-radio {
+  display: block;
+  font-size: var(--fs-md);
+  color: var(--dirty);
+  margin-bottom: 0.25rem;
+  cursor: pointer;
+}
+.cart-radio input { accent-color: var(--blood); margin-right: 0.5rem; }
+.cart-how {
+  font-size: var(--fs-sm);
+  color: var(--mid-text);
+  font-style: italic;
+  line-height: 1.7;
+  margin-bottom: 0.5rem;
+}
+.cart-how a { color: var(--dirty); }
+
+@media (max-width: 700px) {
+  #cart-bar { padding: 0.75rem 5vw; }
+  .cart-panel { padding: 1.5rem 1.25rem; }
+}
+
 /*
 ================================================================
 SHOWS PAGE
@@ -1385,7 +1584,8 @@ html.print-light swaps to black-on-white.
     --dim:   #DDDDDD;
   }
 
-  #nav, footer, .no-print, iframe, .hero-bg, .hero-overlay, .section-bg, .show-photos, .lightbox, .qr-mobile { display: none !important; }
+  #nav, footer, .no-print, iframe, .hero-bg, .hero-overlay, .section-bg, .show-photos, .lightbox, .qr-mobile,
+  #cart-bar, #cart-overlay { display: none !important; }
   .epk-header .qr-block { display: block !important; }   /* header QR prints at every width */
   .print-only { display: block; font-size: 9px; color: var(--mid); }
 

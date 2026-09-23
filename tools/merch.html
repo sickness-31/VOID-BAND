@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<!--
+  ====================================================================
+  MERCH EDITOR
+  tools/merch.html
+
+  Add, edit and remove merch without touching code, and prep product
+  photos. NOT part of the website — nothing links here.
+
+  HOW IT WORKS
+  1. It loads ../data/merch.js (the store).
+  2. You edit in the form. Nothing is saved anywhere yet.
+  3. "DOWNLOAD merch.js" gives you the new file — save it over
+     data/merch.js, commit, push.
+
+  PHOTO PREP (bottom of the editor)
+  Drop product photos in → resized to 2000px, numbered, and zipped in a
+  folder named after the item id. Unzip into assets/merch/.
+
+  AFTER A SALE: lower the stock number here and download again.
+  ====================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merch Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0A0A0A; --dirty: #E8E0D0; --blood: #8B0000;
+    --dark: #1A1A1A;  --mid: #4A4A4A;   --dim: #2A2A2A; --mid-text: #8A8A8A;
+    --display: 'Bebas Neue', sans-serif; --body: 'Space Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--black); color: var(--dirty); font-family: var(--body); font-size: 13px; line-height: 1.6; }
+  .app { display: grid; grid-template-columns: 340px 1fr; min-height: 100vh; }
+  .list { border-right: 1px solid var(--dim); display: flex; flex-direction: column; }
+  .list-head { padding: 1.5rem 1.5rem 1rem; }
+  h1 { font-family: var(--display); font-size: 28px; letter-spacing: 0.1em; }
+  .sub { font-size: 11px; color: var(--mid-text); font-style: italic; margin: 0.25rem 0 1rem; }
+  .rows { overflow-y: auto; flex: 1; border-top: 1px solid var(--dim); }
+  .irow { padding: 0.9rem 1.5rem; border-bottom: 1px solid var(--dim); cursor: pointer; }
+  .irow:hover { background: var(--dark); }
+  .irow.on { background: var(--dark); border-left: 2px solid var(--blood); padding-left: calc(1.5rem - 2px); }
+  .irow .n { font-family: var(--display); font-size: 17px; letter-spacing: 0.05em; }
+  .irow .m { font-size: 11px; color: var(--mid-text); font-style: italic; }
+  .irow .t { font-family: var(--display); font-size: 9px; letter-spacing: 0.3em; color: var(--blood); }
+  .irow.off .n { opacity: 0.45; text-decoration: line-through; }
+  .editor { padding: 1.5rem 2rem; overflow-y: auto; max-width: 820px; }
+  .lbl { display: block; font-family: var(--display); font-size: 12px; letter-spacing: 0.4em; color: var(--blood); margin: 1.25rem 0 0.4rem; }
+  .lbl small { color: var(--mid-text); letter-spacing: 0.1em; font-family: var(--body); font-size: 10px; }
+  input[type=text], input[type=number], textarea {
+    width: 100%; background: var(--dark); color: var(--dirty); border: 1px solid var(--dim);
+    font-family: var(--body); font-size: 12px; padding: 0.55rem 0.65rem; outline: none; color-scheme: dark;
+  }
+  input:focus, textarea:focus { border-color: var(--mid); }
+  input.bad { border-color: var(--blood); }
+  textarea { min-height: 60px; resize: vertical; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  .btn { font-family: var(--display); font-size: 13px; letter-spacing: 0.3em; color: var(--dirty); background: none; border: 1px solid var(--dirty); padding: 0.7rem 1.2rem; cursor: pointer; }
+  .btn:hover { background: var(--dirty); color: var(--black); }
+  .btn.red { color: var(--blood); border-color: var(--blood); }
+  .btn.red:hover { background: var(--blood); color: var(--dirty); }
+  .btn.small { font-size: 11px; padding: 0.35rem 0.7rem; letter-spacing: 0.2em; }
+  .btn.big { width: 100%; padding: 1rem; font-size: 15px; }
+  .bar { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-top: 1.5rem; }
+  .note { font-size: 10.5px; color: var(--mid-text); font-style: italic; margin-top: 0.4rem; }
+  .warn { color: var(--blood); font-style: normal; }
+  .ok { color: #7aa87a; font-style: normal; }
+  .rule { border: none; border-top: 1px solid var(--blood); margin: 2rem 0 0.5rem; }
+  h2 { font-family: var(--display); font-size: 22px; letter-spacing: 0.08em; margin-top: 1.5rem; }
+  .vrow { display: grid; grid-template-columns: 1fr 110px 36px; gap: 0.5rem; margin-bottom: 0.4rem; align-items: center; }
+  .vrow button { background: none; border: 1px solid var(--dim); color: var(--mid-text); cursor: pointer; height: 34px; }
+  .vrow button:hover { color: var(--blood); border-color: var(--blood); }
+  .chk { display: flex; align-items: center; gap: 0.5rem; font-size: 12px; color: var(--mid-text); margin-top: 1rem; }
+  .chk input { accent-color: var(--blood); }
+  .drop { border: 1px dashed var(--mid); padding: 1.5rem; text-align: center; color: var(--mid-text); font-size: 11px; font-style: italic; margin-top: 0.5rem; cursor: pointer; }
+  .drop.over { border-color: var(--blood); color: var(--dirty); }
+  .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 4px; margin-top: 0.75rem; }
+  .thumbs div { aspect-ratio: 1; background: var(--dim); overflow: hidden; position: relative; }
+  .thumbs img { width: 100%; height: 100%; object-fit: cover; }
+  .thumbs span { position: absolute; left: 4px; bottom: 2px; font-family: var(--display); font-size: 11px; text-shadow: 0 1px 3px #000; }
+  .empty { color: var(--mid-text); font-style: italic; padding: 3rem 2rem; }
+  @media (max-width: 860px) { .app { grid-template-columns: 1fr; } .list { border-right: none; border-bottom: 1px solid var(--dim); max-height: 40vh; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="list">
+    <div class="list-head">
+      <h1>MERCH EDITOR</h1>
+      <p class="sub">Edits ../data/merch.js — nothing saves until you download</p>
+      <button class="btn" id="new">+ NEW ITEM</button>
+    </div>
+    <div class="rows" id="rows"></div>
+  </div>
+
+  <div class="editor" id="editor">
+    <p class="empty">Pick an item on the left, or add a new one.</p>
+  </div>
+</div>
+
+<template id="form">
+  <div class="two">
+    <div><span class="lbl">Name</span><input type="text" id="f-name"></div>
+    <div><span class="lbl">Price <small>numbers only</small></span><input type="number" id="f-price" min="0" step="1"></div>
+  </div>
+  <span class="lbl">ID <small>lowercase-with-dashes; also the photo folder name</small></span>
+  <input type="text" id="f-id">
+  <span class="lbl">Description <small>optional</small></span>
+  <textarea id="f-desc"></textarea>
+
+  <span class="lbl">Sizes / versions <small>leave empty for items with no options</small></span>
+  <div id="f-variants"></div>
+  <button type="button" class="btn small" id="v-add">+ ADD SIZE</button>
+
+  <div class="two" id="f-plain-wrap">
+    <div><span class="lbl">Stock <small>used when there are no sizes</small></span><input type="number" id="f-stock" min="0" step="1"></div>
+    <div><span class="lbl">Photos <small>numbered files in assets/merch/&lt;id&gt;/</small></span><input type="number" id="f-photos" min="0" step="1"></div>
+  </div>
+
+  <label class="chk"><input type="checkbox" id="f-active"> Show on the site</label>
+  <p class="note" id="f-msg"></p>
+  <div class="bar">
+    <button class="btn" id="f-apply">APPLY TO LIST</button>
+    <button class="btn red" id="f-delete">DELETE ITEM</button>
+  </div>
+
+  <hr class="rule">
+  <h2>PHOTO PREP</h2>
+  <p class="note">Drop product photos. Each is resized to 2000px, numbered from <b id="p-from"></b>, and zipped into a folder named after the item id.</p>
+  <div class="drop" id="p-drop">Drop photos here, or click to choose<input type="file" id="p-file" accept="image/jpeg,image/png" multiple hidden></div>
+  <div class="thumbs" id="p-thumbs"></div>
+  <div class="bar">
+    <button class="btn" id="p-zip" disabled>DOWNLOAD ZIP</button>
+    <span class="note" id="p-msg"></span>
+  </div>
+
+  <hr class="rule">
+  <button class="btn big" id="dl">DOWNLOAD merch.js</button>
+  <p class="note">Save it over <b>data/merch.js</b>, then commit and push. If you prepped photos, unzip into <b>assets/merch/</b>.</p>
+</template>
+
+<script src="../data/merch.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+
+  var stock = (window.SITE_MERCH || []).map(function (p) {
+    return {
+      id: p.id || '', name: p.name || '', price: Number(p.price) || 0,
+      description: p.description || '', photos: parseInt(p.photos, 10) || 0,
+      variants: Array.isArray(p.variants) ? p.variants.map(function (v) {
+        return { label: v.label || '', stock: parseInt(v.stock, 10) || 0 };
+      }) : [],
+      stock: parseInt(p.stock, 10) || 0,
+      active: p.active !== false
+    };
+  });
+  var current = -1, prepped = [];
+
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function slug(s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+  function totalStock(p) {
+    return p.variants.length
+      ? p.variants.reduce(function (n, v) { return n + (parseInt(v.stock, 10) || 0); }, 0)
+      : (parseInt(p.stock, 10) || 0);
+  }
+
+  /* ---------------- list ---------------- */
+  function renderList() {
+    var h = '';
+    stock.forEach(function (p, i) {
+      var n = totalStock(p);
+      var tags = [];
+      if (p.variants.length) tags.push(p.variants.length + ' sizes');
+      tags.push(n + ' in stock');
+      if (p.photos) tags.push(p.photos + ' photos');
+      h += '<div class="irow' + (i === current ? ' on' : '') + (p.active ? '' : ' off') + '" data-i="' + i + '">' +
+        '<span class="n">' + esc(p.name || '(no name)') + '</span><br>' +
+        '<span class="m">$' + p.price + (n === 0 ? ' · SOLD OUT' : '') + '</span><br>' +
+        '<span class="t">' + tags.join(' · ') + '</span></div>';
+    });
+    $('rows').innerHTML = h || '<p class="empty">No items yet.</p>';
+  }
+  $('rows').addEventListener('click', function (e) {
+    var row = e.target.closest('.irow'); if (!row) return;
+    open(parseInt(row.getAttribute('data-i'), 10));
+  });
+  $('new').addEventListener('click', function () {
+    stock.push({ id: '', name: '', price: 0, description: '', photos: 0, variants: [], stock: 0, active: true });
+    open(stock.length - 1);
+  });
+
+  /* ---------------- editor ---------------- */
+  function open(i) {
+    current = i; prepped = [];
+    var p = stock[i];
+    $('editor').innerHTML = '';
+    $('editor').appendChild($('form').content.cloneNode(true));
+    $('f-name').value = p.name; $('f-price').value = p.price; $('f-id').value = p.id;
+    $('f-desc').value = p.description; $('f-stock').value = p.stock;
+    $('f-photos').value = p.photos; $('f-active').checked = p.active;
+    renderVariants(p.variants);
+    $('p-from').textContent = pad(p.photos + 1) + '.jpg';
+
+    // suggest an id from the name while it's still blank
+    $('f-name').addEventListener('input', function () {
+      if (!$('f-id').value.trim()) $('f-id').value = slug(this.value);
+    });
+    $('v-add').addEventListener('click', function () {
+      var rows = readVariants(); rows.push({ label: '', stock: 0 }); renderVariants(rows);
+    });
+    $('f-apply').addEventListener('click', apply);
+    $('f-delete').addEventListener('click', function () {
+      if (!confirm('Delete this item from the list?')) return;
+      stock.splice(current, 1); current = -1; renderList();
+      $('editor').innerHTML = '<p class="empty">Deleted. Pick another item or add a new one.</p>';
+    });
+    $('dl').addEventListener('click', download);
+    wirePrep();
+    renderList();
+    window.scrollTo(0, 0);
+  }
+
+  function renderVariants(rows) {
+    var box = $('f-variants'), h = '';
+    rows.forEach(function (v, i) {
+      h += '<div class="vrow">' +
+        '<input type="text" class="v-label" placeholder="S / M / One Size" value="' + esc(v.label) + '">' +
+        '<input type="number" class="v-stock" min="0" step="1" placeholder="stock" value="' + (parseInt(v.stock, 10) || 0) + '">' +
+        '<button type="button" class="v-del" data-i="' + i + '" aria-label="Remove">&times;</button></div>';
+    });
+    box.innerHTML = h;
+    box.querySelectorAll('.v-del').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var rows2 = readVariants(); rows2.splice(parseInt(this.getAttribute('data-i'), 10), 1); renderVariants(rows2);
+      });
+    });
+    $('f-plain-wrap').querySelector('#f-stock').disabled = rows.length > 0;
+  }
+  function readVariants() {
+    return [].map.call($('f-variants').querySelectorAll('.vrow'), function (r) {
+      return { label: r.querySelector('.v-label').value.trim(), stock: parseInt(r.querySelector('.v-stock').value, 10) || 0 };
+    });
+  }
+
+  function apply() {
+    var p = stock[current], bad = [];
+    var name = $('f-name').value.trim(), id = slug($('f-id').value.trim() || name);
+    if (!name) bad.push('f-name');
+    if (!id) bad.push('f-id');
+    var dupe = stock.some(function (o, i) { return i !== current && o.id === id; });
+    bad.forEach(function (x) { $(x).classList.add('bad'); });
+    if (bad.length) { $('f-msg').innerHTML = '<span class="warn">Name and ID are required.</span>'; return; }
+    if (dupe) { $('f-msg').innerHTML = '<span class="warn">Another item already uses that ID.</span>'; return; }
+    var vars = readVariants().filter(function (v) { return v.label; });
+    p.name = name; p.id = id; p.price = Number($('f-price').value) || 0;
+    p.description = $('f-desc').value.trim();
+    p.photos = Math.max(0, parseInt($('f-photos').value, 10) || 0);
+    p.variants = vars;
+    p.stock = vars.length ? 0 : Math.max(0, parseInt($('f-stock').value, 10) || 0);
+    p.active = $('f-active').checked;
+    $('f-id').value = id;
+    $('f-msg').innerHTML = '<span class="ok">Applied.</span> Download merch.js when you\'re done.';
+    $('p-from').textContent = pad(p.photos + 1) + '.jpg';
+    renderList();
+  }
+
+  /* ---------------- output ---------------- */
+  var HEADER = [
+    '/*', '  ====================================================================', '  MERCH CATALOGUE', '  data/merch.js', '',
+    '  THIS IS THE ONLY FILE YOU EDIT TO ADD, CHANGE OR REMOVE MERCH.',
+    '  Easiest way: open tools/merch.html in a browser.', '',
+    '  Photos go in assets/merch/<id>/ numbered 01.jpg, 02.jpg, ...', '',
+    '  FIELDS:',
+    '    id           "bleach-tee"   required. Lowercase, dashes, no spaces.',
+    '    name         "Bleach Tee"   required.',
+    '    price        35             required. Numbers only, no symbol.',
+    '    description  "..."          optional.',
+    '    photos       2              how many numbered photos exist.',
+    '    variants     [ ... ]        optional sizes, each with its own stock.',
+    '    stock        12             used ONLY when there are no variants.',
+    '    active       true           false hides it without deleting it.', '',
+    '  STOCK IS NOT AUTOMATIC. Lower it yourself after fulfilling an order.',
+    '  ====================================================================', '*/', ''
+  ].join('\n');
+  function js(v) { return JSON.stringify(v); }
+  function serialize() {
+    var out = HEADER + 'window.SITE_MERCH = [\n';
+    stock.forEach(function (p) {
+      out += '  {\n' +
+        '    id: ' + js(p.id) + ',\n' +
+        '    name: ' + js(p.name) + ',\n' +
+        '    price: ' + js(p.price) + ',\n' +
+        '    description: ' + js(p.description) + ',\n' +
+        '    photos: ' + js(p.photos) + ',\n' +
+        (p.variants.length ? '    variants: ' + js(p.variants) + ',\n' : '') +
+        (p.variants.length ? '' : '    stock: ' + js(p.stock) + ',\n') +
+        '    active: ' + js(p.active) + '\n' +
+        '  },\n';
+    });
+    out += '\n  // ---- paste new items above this line ----\n];\n';
+    return out;
+  }
+  function saveAs(name, blob) {
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+  function download() {
+    var broken = stock.filter(function (p) { return !p.id || !p.name; });
+    if (broken.length) { alert(broken.length + ' item(s) are missing a name or ID. Fix and Apply them first.'); return; }
+    saveAs('merch.js', new Blob([serialize()], { type: 'text/javascript' }));
+  }
+
+  /* ---------------- photo prep ---------------- */
+  function pad(n) { return n < 10 ? '0' + n : String(n); }
+  function wirePrep() {
+    var drop = $('p-drop'), file = $('p-file');
+    drop.addEventListener('click', function () { file.click(); });
+    ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
+    ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
+    drop.addEventListener('drop', function (e) { addFiles(e.dataTransfer.files); });
+    file.addEventListener('change', function () { addFiles(this.files); this.value = ''; });
+    $('p-zip').addEventListener('click', makeZip);
+  }
+  function addFiles(list) {
+    var files = [].slice.call(list).filter(function (f) { return /^image\/(jpeg|png)$/.test(f.type); });
+    if (!files.length) return;
+    var p = stock[current];
+    var start = (parseInt($('f-photos').value, 10) || 0) + prepped.length + 1;
+    $('p-msg').textContent = 'Processing ' + files.length + ' photo(s)…';
+    var chain = Promise.resolve();
+    files.forEach(function (f, k) {
+      chain = chain.then(function () { return shrink(f); }).then(function (blob) {
+        var name = pad(start + k) + '.jpg';
+        prepped.push({ name: name, blob: blob });
+        var d = document.createElement('div');
+        d.innerHTML = '<img src="' + URL.createObjectURL(blob) + '"><span>' + name + '</span>';
+        $('p-thumbs').appendChild(d);
+      });
+    });
+    chain.then(function () {
+      $('p-msg').innerHTML = '<span class="ok">' + prepped.length + ' ready</span>';
+      $('p-zip').disabled = false;
+    }).catch(function (err) { $('p-msg').innerHTML = '<span class="warn">' + esc(err.message || err) + '</span>'; });
+  }
+  function shrink(file) {
+    var load = window.createImageBitmap
+      ? createImageBitmap(file, { imageOrientation: 'from-image' })
+      : new Promise(function (res, rej) { var im = new Image(); im.onload = function () { res(im); }; im.onerror = rej; im.src = URL.createObjectURL(file); });
+    return load.then(function (im) {
+      var sc = Math.min(1, 2000 / Math.max(im.width, im.height));
+      var c = document.createElement('canvas');
+      c.width = Math.round(im.width * sc); c.height = Math.round(im.height * sc);
+      var x = c.getContext('2d');
+      x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+      x.imageSmoothingQuality = 'high'; x.drawImage(im, 0, 0, c.width, c.height);
+      return new Promise(function (res) { c.toBlob(res, 'image/jpeg', 0.85); });
+    });
+  }
+  var CRC = (function () { var t = []; for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  function crc32(u8) { var c = 0xFFFFFFFF; for (var i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+  function makeZip() {
+    var folder = stock[current].id || 'merch';
+    Promise.all(prepped.map(function (p) { return p.blob.arrayBuffer(); })).then(function (bufs) {
+      var parts = [], central = [], offset = 0, enc = new TextEncoder();
+      var now = new Date(),
+          dt = ((now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1)) & 0xFFFF,
+          dd = (((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate()) & 0xFFFF;
+      bufs.forEach(function (buf, i) {
+        var data = new Uint8Array(buf), name = enc.encode(folder + '/' + prepped[i].name), crc = crc32(data);
+        var lh = new Uint8Array(30 + name.length), v = new DataView(lh.buffer);
+        v.setUint32(0, 0x04034b50, true); v.setUint16(4, 20, true); v.setUint16(6, 0x0800, true); v.setUint16(8, 0, true);
+        v.setUint16(10, dt, true); v.setUint16(12, dd, true); v.setUint32(14, crc, true);
+        v.setUint32(18, data.length, true); v.setUint32(22, data.length, true);
+        v.setUint16(26, name.length, true); v.setUint16(28, 0, true); lh.set(name, 30);
+        var ch = new Uint8Array(46 + name.length), c2 = new DataView(ch.buffer);
+        c2.setUint32(0, 0x02014b50, true); c2.setUint16(4, 20, true); c2.setUint16(6, 20, true);
+        c2.setUint16(8, 0x0800, true); c2.setUint16(10, 0, true);
+        c2.setUint16(12, dt, true); c2.setUint16(14, dd, true); c2.setUint32(16, crc, true);
+        c2.setUint32(20, data.length, true); c2.setUint32(24, data.length, true);
+        c2.setUint16(28, name.length, true); c2.setUint32(42, offset, true); ch.set(name, 46);
+        parts.push(lh, data); central.push(ch); offset += lh.length + data.length;
+      });
+      var cdSize = central.reduce(function (a, b) { return a + b.length; }, 0);
+      var end = new Uint8Array(22), e = new DataView(end.buffer);
+      e.setUint32(0, 0x06054b50, true); e.setUint16(8, central.length, true); e.setUint16(10, central.length, true);
+      e.setUint32(12, cdSize, true); e.setUint32(16, offset, true);
+      saveAs(folder + '.zip', new Blob(parts.concat(central, [end]), { type: 'application/zip' }));
+      var total = (parseInt($('f-photos').value, 10) || 0) + prepped.length;
+      $('f-photos').value = total; stock[current].photos = total;
+      $('p-msg').innerHTML = '<span class="ok">Zipped ' + prepped.length + '.</span> Unzip into assets/merch/ — photo count set to ' + total + '.';
+      prepped = []; $('p-thumbs').innerHTML = ''; $('p-zip').disabled = true; renderList();
+    });
+  }
+
+  renderList();
+})();
+</script>
+</body>
+</html>
