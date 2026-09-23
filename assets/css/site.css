@@ -1207,6 +1207,9 @@ Products come from data/merch.js; see assets/js/merch.js.
   margin-bottom: 0.5rem;
 }
 .cart-how a { color: var(--dirty); }
+.cart-two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.cart-field input.bad, .cart-field textarea.bad { border-color: var(--blood); }
+.cart-warn { color: var(--blood); font-style: normal; }
 .cart-sent {
   margin-top: 1rem;
   padding: 0.75rem 1rem;
@@ -1218,6 +1221,7 @@ Products come from data/merch.js; see assets/js/merch.js.
 
 @media (max-width: 700px) {
   #cart-bar { padding: 0.75rem 5vw; }
+  .cart-two { grid-template-columns: 1fr; gap: 0; }
   .cart-panel { padding: 1.5rem 1.25rem; }
 }
 

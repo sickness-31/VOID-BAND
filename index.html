@@ -383,8 +383,22 @@
         <label class="cart-radio"><input type="radio" name="fulfil" value="ship"> Shipping</label>
       </div>
 
-      <label class="cart-field" id="cart-address-wrap" hidden><span>Shipping address</span>
-        <textarea id="cart-address" autocomplete="street-address"></textarea></label>
+      <div id="cart-address-wrap" hidden>
+        <label class="cart-field"><span>Street address</span>
+          <textarea id="cart-address" rows="2" autocomplete="street-address"></textarea></label>
+        <div class="cart-two">
+          <label class="cart-field"><span>City</span>
+            <input type="text" id="cart-city" autocomplete="address-level2"></label>
+          <label class="cart-field"><span>Province / State</span>
+            <input type="text" id="cart-province" placeholder="AB" autocomplete="address-level1"></label>
+        </div>
+        <div class="cart-two">
+          <label class="cart-field"><span>Postal code</span>
+            <input type="text" id="cart-postal" autocomplete="postal-code"></label>
+          <label class="cart-field"><span>Country</span>
+            <input type="text" id="cart-country" value="Canada" autocomplete="country-name"></label>
+        </div>
+      </div>
 
       <label class="cart-field"><span>Notes (optional)</span>
         <textarea id="cart-note"></textarea></label>

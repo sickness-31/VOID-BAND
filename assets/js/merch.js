@@ -208,13 +208,33 @@
     if (e) { e.textContent = CFG.email || ''; e.href = 'mailto:' + (CFG.email || ''); }
   }
 
+  function val(id) {
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+
+  // Shipping needs a usable address; an order without one is no use to the band.
+  function missingAddress() {
+    var ship = document.querySelector('input[name="fulfil"]:checked');
+    if (!ship || ship.value !== 'ship') return [];
+    var need = [['cart-address', 'street address'], ['cart-city', 'city'],
+                ['cart-province', 'province'], ['cart-postal', 'postal code']];
+    var gaps = [];
+    need.forEach(function (n) {
+      var el = document.getElementById(n[0]);
+      if (!el) return;
+      if (val(n[0])) { el.classList.remove('bad'); }
+      else { el.classList.add('bad'); gaps.push(n[1]); }
+    });
+    return gaps;
+  }
+
   // The message the buyer sends. Same text for the email and the clipboard.
   function orderText() {
     var ship = document.querySelector('input[name="fulfil"]:checked');
     var mode = ship ? ship.value : 'pickup';
-    var name = (document.getElementById('cart-name') || {}).value || '';
-    var addr = (document.getElementById('cart-address') || {}).value || '';
-    var note = (document.getElementById('cart-note') || {}).value || '';
+    var name = val('cart-name');
+    var note = val('cart-note');
     var out = ['Order ' + cart.ref, ''];
     cart.lines.forEach(function (l) {
       var p = find(l.id); if (!p) return;
@@ -223,18 +243,34 @@
     out.push('', 'Total: ' + money(total()), '');
     out.push('Name: ' + name.trim());
     out.push('Fulfilment: ' + (mode === 'ship' ? 'Shipping' : 'Pickup at next show'));
-    if (mode === 'ship') out.push('Address: ' + addr.trim());
+    if (mode === 'ship') {
+      out.push('Address:');
+      val('cart-address').split('\n').forEach(function (line) {
+        if (line.trim()) out.push('  ' + line.trim());
+      });
+      out.push('  ' + val('cart-city') + ', ' + val('cart-province') + '  ' + val('cart-postal'));
+      out.push('  ' + val('cart-country'));
+    }
     if (note.trim()) out.push('Notes: ' + note.trim());
     out.push('', 'Please confirm availability and send e-Transfer details.');
     return out.join('\n');
   }
 
-  // called once the buyer has actually sent the order
-  function markSent() {
+  /*
+    Marks the order as handed off, which is what stops the next order
+    reusing this reference. 'how' changes the wording: the email button
+    really does send it, Copy only puts it on the clipboard.
+  */
+  function markSent(how) {
     cart.sent = true;
     save();
     var msg = document.getElementById('cart-sent');
-    if (msg) msg.hidden = false;
+    if (!msg) return;
+    msg.textContent = how === 'mail'
+      ? 'Order sent \u2014 we\u2019ll confirm by email. Adding anything else starts a new order.'
+      : 'Order copied. Paste it into an email to ' + (CFG.email || '') + ' \u2014 it isn\u2019t sent until you do. '
+        + 'Adding anything else starts a new order.';
+    msg.hidden = false;
   }
 
   function openOverlay(on) {
@@ -288,8 +324,10 @@
     if (t.id === 'cart-overlay') { openOverlay(false); return; }
 
     if (t.closest && t.closest('#cart-mail')) {
+      var gaps = missingAddress();
+      if (gaps.length) { showGaps(gaps); return; }
       var subject = (CFG.name ? CFG.name + ' ' : '') + 'merch order ' + cart.ref;
-      markSent();
+      markSent('mail');
       window.location.href = 'mailto:' + encodeURIComponent(CFG.email || '') +
         '?subject=' + encodeURIComponent(subject) +
         '&body=' + encodeURIComponent(orderText());
@@ -297,10 +335,12 @@
     }
 
     if (t.closest && t.closest('#cart-copy')) {
+      var gaps2 = missingAddress();
+      if (gaps2.length) { showGaps(gaps2); return; }
       var txt = orderText(), msg = document.getElementById('cart-copied');
       var done = function () {
-        if (msg) msg.textContent = 'Copied. Paste it into an email to ' + (CFG.email || '') + '.';
-        markSent();
+        if (msg) msg.textContent = '';
+        markSent('copy');
       };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(txt).then(done, function () { fallbackCopy(txt, done); });
@@ -308,6 +348,11 @@
       return;
     }
   });
+
+  function showGaps(gaps) {
+    var msg = document.getElementById('cart-copied');
+    if (msg) msg.innerHTML = '<span class="cart-warn">Still needed: ' + gaps.join(', ') + '.</span>';
+  }
 
   // brief label change so a click is visibly acknowledged
   function flash(btn, text) {
@@ -332,6 +377,11 @@
     if (e.target.name !== 'fulfil') return;
     var wrap = document.getElementById('cart-address-wrap');
     if (wrap) wrap.hidden = e.target.value !== 'ship';
+  });
+
+  document.addEventListener('input', function (e) {
+    if (!e.target.closest || !e.target.closest('#cart-address-wrap')) return;
+    e.target.classList.remove('bad');
   });
 
   document.addEventListener('keydown', function (e) {
