@@ -451,7 +451,7 @@ LIVE SECTION
 .merch-soon {
   padding: 4rem 0;
   font-family: var(--display);
-  font-size: var(--fs-lg);
+  font-size: calc(var(--fs-lg) * 2);
   letter-spacing: 0.6em;
   color: var(--blood);
   text-align: center;
