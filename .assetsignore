@@ -4,3 +4,6 @@
 wrangler.jsonc
 README.md
 CNAME
+
+# Editors are used locally only - they are not part of the site.
+tools
