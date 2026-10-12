@@ -4,6 +4,11 @@
   // The Worker's name in the dashboard must match "name" below or builds fail.
   "name": "void-band",
   "compatibility_date": "2026-10-12",
+  // The site is reached at thevoid.band only. The workers.dev and version
+  // URLs are separate hostnames, so the Access policy on /tools does not
+  // cover them - leaving them on would expose the tools.
+  "workers_dev": false,
+  "preview_urls": false,
   "assets": {
     "directory": "."
   }
