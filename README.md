@@ -22,7 +22,10 @@ Save the file, commit, push — the site updates within about 60 seconds.
 
 ## Common updates
 
-### Add a show
+### Add a show (no code)
+Open **`tools/shows.html`** in a browser. Pick a show or click **+ NEW SHOW**, fill the form, **APPLY**, then **DOWNLOAD shows.js** and save it over `data/shows.js`. Commit and push. The same page has **Photo Prep**: drop the camera files for a show, type the photographer, and it hands you a zip of resized, credited, numbered files to unzip into `assets/shows/` (then `python tools/credits.py`).
+
+### Add a show (by hand)
 Open `data/shows.js`. Copy one `{ ... },` block, paste it anywhere in the list, fill in the fields:
 
 ```js
@@ -56,6 +59,16 @@ photos: 2,
 
 They show as a thumbnail strip under the show on `shows.html`; clicking one opens it full-size with arrow keys to move through. Keep them web-sized (~1600px long edge). To add one later, drop in the next number and bump the count.
 
+### Add videos to a show's gallery
+Two kinds, both optional, both listed on the show in `data/shows.js`:
+
+```js
+clips:  ["clip-01.mp4"],          // video FILES in assets/shows/<date>/ — short fan clips
+videos: ["_7-afHWL_mc"],          // YouTube ids or pasted URLs — full sets, longer footage
+```
+
+They appear in the strip after the photos with a play badge and open in the same lightbox. There's also `instagram: ["https://www.instagram.com/p/…"]` for post links — those show as small "Instagram ↗" chips under the lineup rather than embedding anything. Clips: H.264 1080p, aim for under 20 seconds / 20 MB each (HandBrake does this); GitHub refuses files over 100 MB and the repo gets slow long before that — anything longer belongs on YouTube. YouTube tiles need the live site or a local server to play (same as the embeds).
+
 ### Remove a show
 Delete its `{ ... },` block from `data/shows.js`.
 
@@ -79,13 +92,70 @@ Images in `assets/images/` are named by their slot on the page, not by what's in
 
 Full-res originals for the EPK downloads live in `assets/press/`. Those are named by content because a promoter sees the filename when they save it.
 
+### Shrink photos for the web
+Camera files are 5–15 MB each and make the site slow. After dropping photos into `assets/images/` or a show folder, run:
+
+```bash
+powershell -ExecutionPolicy Bypass -File tools\shrink.ps1 assets\shows\2026-03-06
+```
+
+Resizes in place to 2000px on the long side, keeps the photographer metadata, and tells you which files have no Authors set. It refuses to touch `assets\press\` (the full-res originals). Then `python tools\credits.py`.
+
 ### Section backgrounds
 Every homepage section (About, Music, Live, Merch, Contact) can have a faint photo behind it. Drop a file named `bg-about.jpg`, `bg-music.jpg`, `bg-live.jpg`, `bg-merch.jpg`, or `bg-contact.jpg` into `assets/images/` and it appears on refresh. Delete the file and it's gone. If a file isn't there, the section is just black — nothing to switch off.
 
 Opacity and desaturation are set once in `assets/css/site.css` under `SECTION BACKGROUNDS` (`.section-bg`). Same rules as photos: web-sized JPGs.
 
-### Add a product to merch
-Find the merch grid. Copy one `<div class="merch-card">` block, paste it, update the title, description, and price.
+## Merch and orders
+
+### How an order works
+1. Someone adds items to the cart on the site and hits **Review order**.
+2. They get an order reference (like `VOID-8F3K`), fill in their name and whether they want pickup or shipping, and send it to you — by email button or by copying the text.
+3. **You check the item is still there**, then reply with your e-Transfer details (and a shipping cost, if they're shipping).
+4. They send the e-Transfer with the reference in the message.
+5. You mark it paid, send the item, and **lower the stock** in `tools/merch.html`.
+
+Nothing is charged automatically and no card details are involved. The cart lives only in the buyer's browser — no server, no database, nothing stored about them anywhere.
+
+**Turn on Interac auto-deposit** for the email in `data/site.js`, or every order comes with a security question to sort out.
+
+### Add or change merch
+Open **`tools/merch.html`** in a browser. Add an item, set the price, add sizes with their own stock, then **DOWNLOAD merch.js** and save it over `data/merch.js`. Commit and push.
+
+Items with no sizes (CDs, stickers, posters) just get a single **Stock** number. Items with sizes get one row per size, each with its own count — a size at 0 shows struck through on the site, and an item with nothing left shows **SOLD OUT** but stays visible.
+
+### Product photos
+Same page, bottom section: drop the photos for an item, and you get a zip named after the item's ID. Unzip it into `assets/merch/` so the files land in `assets/merch/<id>/01.jpg`. The photo count is set for you.
+
+The first photo is the one shown on the card; the rest become thumbnails underneath it.
+
+### After a sale
+Stock is **not** automatic. Once you've sent something, open the merch editor, lower the number, download and commit. If you forget, the site will happily take an order for something you don't have.
+
+### Who to send orders to
+`data/site.js` holds the email orders go to, the order-reference prefix, and the currency symbol:
+
+```js
+window.SITE = {
+  name: "VO!D",
+  email: "void.empr@gmail.com",
+  orderPrefix: "VOID",
+  currency: "$",
+  shipping: {
+    canada: 15,
+    unitedStates: 25,
+    other: null,      // null = "we'll quote you"
+    freeOver: null    // e.g. 100 = free shipping over $100
+  }
+};
+```
+
+### Shipping estimates
+The numbers in `shipping` show as **estimates** when someone picks Shipping — you confirm the real cost in your reply, before they pay.
+
+To set them: pack one shirt and one hoodie in a poly mailer, weigh and measure both, and price those two shapes at the counter. Use the higher one. Leave `other` as `null` unless you ship internationally often enough to have a number.
+
+`freeOver: 100` makes shipping free on orders over $100. Leave it `null` until you know your margins.
 
 ---
 
@@ -99,10 +169,16 @@ void-band/
 ├── CNAME                   ← custom domain (add your domain name here)
 ├── README.md               ← this file
 ├── data/
+│   ├── site.js             ← band email, order prefix, currency
 │   ├── shows.js            ← THE show list. Edit this to add shows.
+│   ├── merch.js            ← THE store. Edit this to add merch.
 │   └── credits.js          ← photo credits, GENERATED by tools/credits.py (don't hand-edit)
 ├── tools/
-│   └── credits.py          ← run after adding photos: python tools/credits.py
+│   ├── credits.py          ← run after adding photos: python tools/credits.py
+│   ├── shows.html          ← show editor + photo prep (open in a browser; not part of the site)
+│   ├── merch.html          ← merch editor + photo prep
+│   ├── shrink.ps1          ← resize a folder of photos to web size, keeps credits
+│   └── post-maker.html     ← Instagram/Facebook image maker (open in a browser; not part of the site)
 └── assets/
     ├── css/
     │   └── site.css        ← all styles, shared by every page

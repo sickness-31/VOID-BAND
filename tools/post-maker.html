@@ -17,8 +17,8 @@
   - Everything is drawn with the Canvas API (no libraries), so the
     letter-spacing is exact and Export gives you a real PNG.
 
-  CONFIG below is the band-specific stuff. If this repo is ever turned
-  into a template, that block is what moves into a shared config file.
+  Band-specific values (name, footer, colours, fonts, logo) are in the
+  CONFIG block at the top of the script.
   ====================================================================
 -->
 <html lang="en">
@@ -138,9 +138,7 @@
 (function () {
   'use strict';
 
-  /* ================================================================
-     CONFIG — the band-specific bits. Everything else is generic.
-     ================================================================ */
+  /* CONFIG — band-specific values */
   var CONFIG = {
     name: 'VO!D',
     footer: '@void.yyc  ·  sickness-31.github.io/VOID-BAND',
