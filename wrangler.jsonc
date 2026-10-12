@@ -1,0 +1,10 @@
+{
+  // Cloudflare Workers config. The site is plain static files, so there's no
+  // build step and no Worker script — just the folder served as-is.
+  // The Worker's name in the dashboard must match "name" below or builds fail.
+  "name": "void-band",
+  "compatibility_date": "2026-10-12",
+  "assets": {
+    "directory": "."
+  }
+}
