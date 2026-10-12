@@ -18,7 +18,13 @@
   <meta name="description" content="VO!D electronic press kit — bio, music, live video, press photos, logos, and booking contact. Calgary, Alberta.">
   <meta property="og:title" content="VO!D — Press Kit">
   <meta property="og:description" content="Bio, music, photos, and booking contact.">
-  <meta property="og:image" content="assets/images/og-image.jpg">
+  <!-- Absolute URL required, or Discord, Facebook and iMessage
+       will not show the preview image. -->
+  <meta property="og:image" content="https://thevoid.band/assets/images/og-image.jpg">
+  <meta property="og:url" content="https://thevoid.band/epk">
+
+  <!-- Tells search engines this is the real address, not a copy. -->
+  <link rel="canonical" href="https://thevoid.band/epk">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -58,7 +64,7 @@
       <img class="epk-logo" src="assets/images/epk-logo.png" alt="VO!D">
       <div class="qr-block">
         <!-- QR to the site (assets/press/qr-site.*). Regenerate if the URL changes. -->
-        <img src="assets/press/qr-site.svg" alt="QR code: sickness-31.github.io/VOID-BAND" class="qr-img">
+        <img src="assets/press/qr-site.svg" alt="QR code: thevoid.band" class="qr-img">
         <div class="press-meta">
           <a href="assets/press/qr-site.svg" download class="text-link">SVG ↓</a>
           <a href="assets/press/qr-site.png" download class="text-link">PNG ↓</a>
@@ -347,12 +353,12 @@
       <span class="contact-label">Web</span>
       <p class="contact-value">
         <!-- CHANGE: site URL (regenerate the QR if it changes) -->
-        <a href="https://sickness-31.github.io/VOID-BAND/">sickness-31.github.io/VOID-BAND</a>
+        <a href="https://thevoid.band/">thevoid.band</a>
       </p>
     </div>
     <!-- phones: QR shows here instead of in the header -->
     <div class="qr-block qr-mobile">
-      <img src="assets/press/qr-site.svg" alt="QR code: sickness-31.github.io/VOID-BAND" class="qr-img">
+      <img src="assets/press/qr-site.svg" alt="QR code: thevoid.band" class="qr-img">
       <div class="press-meta">
         <a href="assets/press/qr-site.svg" download class="text-link">SVG ↓</a>
         <a href="assets/press/qr-site.png" download class="text-link">PNG ↓</a>

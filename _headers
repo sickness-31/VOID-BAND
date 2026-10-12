@@ -1,0 +1,11 @@
+# Cloudflare serves .js and .css without a charset, so viewing a file
+# directly shows UTF-8 characters (dashes, arrows) as mojibake.
+
+/assets/js/*
+  Content-Type: text/javascript; charset=utf-8
+
+/data/*
+  Content-Type: text/javascript; charset=utf-8
+
+/assets/css/*
+  Content-Type: text/css; charset=utf-8

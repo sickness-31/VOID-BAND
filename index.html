@@ -22,8 +22,13 @@
   <meta name="description" content="VO!D — Nu Death / Hardcore from Calgary, Alberta. born of the universe, we come from nothing.">
   <meta property="og:title" content="VO!D">
   <meta property="og:description" content="born of the universe, we come from nothing.">
-  <!-- CHANGE: link-preview image -->
-  <meta property="og:image" content="assets/images/og-image.jpg">
+  <!-- CHANGE: link-preview image. Must be an absolute URL or Discord,
+       Facebook and iMessage will not show it. -->
+  <meta property="og:image" content="https://thevoid.band/assets/images/og-image.jpg">
+  <meta property="og:url" content="https://thevoid.band/">
+
+  <!-- Tells search engines this is the real address, not a copy. -->
+  <link rel="canonical" href="https://thevoid.band/">
 
   <!-- Fonts: Bebas Neue (headings), Space Mono (body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -267,7 +272,7 @@
   
 
   <!-- ================================================
-       MERCH — products come from data/merch.js (edit with tools/merch.html)
+       MERCH — products come from data/merch.js
        ================================================ -->
   <section id="merch">
     <!-- optional background: assets/images/bg-merch.jpg -->

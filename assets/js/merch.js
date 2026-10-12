@@ -7,7 +7,7 @@
   and renders products into any element with a data-merch attribute.
 
   YOU SHOULD NOT NEED TO EDIT THIS FILE TO CHANGE MERCH.
-  Edit data/merch.js instead, or use tools/merch.html.
+  Edit data/merch.js instead.
 
   HOW ORDERING WORKS
   The cart lives in the visitor's browser only. On Review they get an
@@ -183,7 +183,7 @@
     if (!targets.length) return;
     var list = items(), html;
     if (!list.length) {
-      html = '<p class="no-shows">Nothing in the store right now. Check back soon.</p>';
+      html = '<p class="merch-soon">COMING SOON</p>';
     } else {
       html = '<div class="merch-grid">' + list.map(card).join('') + '</div>';
     }

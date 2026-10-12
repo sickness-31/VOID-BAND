@@ -447,6 +447,16 @@ LIVE SECTION
   font-size: var(--fs-md);
 }
 
+/* Shown in place of the merch grid while the catalogue is empty. */
+.merch-soon {
+  padding: 4rem 0;
+  font-family: var(--display);
+  font-size: var(--fs-lg);
+  letter-spacing: 0.6em;
+  color: var(--blood);
+  text-align: center;
+}
+
 /* wrapper for the YouTube embed iframe */
 .youtube-embed {
   border-radius: 0;             /* keep it square to match the aesthetic */

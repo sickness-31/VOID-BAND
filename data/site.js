@@ -7,6 +7,7 @@
   whole site follows.
 
     name         shown in order emails and file names
+    url          canonical address, used in link previews
     email        where merch orders are sent
     orderPrefix  order references look like VOID-8F3K
     currency     symbol shown before prices
@@ -23,6 +24,7 @@
 
 window.SITE = {
   name: "VO!D",
+  url: "https://thevoid.band/",
   email: "void.empr@gmail.com",
   orderPrefix: "VOID",
   currency: "$",

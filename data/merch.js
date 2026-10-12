@@ -4,7 +4,6 @@
   data/merch.js
 
   THIS IS THE ONLY FILE YOU EDIT TO ADD, CHANGE OR REMOVE MERCH.
-  Easiest way: open tools/merch.html in a browser.
 
   Photos go in assets/merch/<id>/ numbered 01.jpg, 02.jpg, ...
 
@@ -26,30 +25,15 @@
     active       true           false hides it without deleting it.
 
   STOCK IS NOT AUTOMATIC. After you fulfil an order, lower the number
-  here (or in tools/merch.html) yourself.
+  here yourself.
+
+  An empty list shows COMING SOON in place of the grid.
 
   Lines starting with // are comments; the browser ignores them.
   ====================================================================
 */
 
 window.SITE_MERCH = [
-
-  // Example item so the page has something to show. Edit it into a real
-  // product, or delete the whole block once you have your own.
-  {
-    id: "example-item",
-    name: "Example Item — edit or delete me",
-    price: 0,
-    description: "Open tools/merch.html to replace this with real merch.",
-    photos: 0,
-    variants: [
-      { label: "S", stock: 2 },
-      { label: "M", stock: 1 },
-      { label: "L", stock: 0 }
-    ],
-    stock: 0,
-    active: true
-  },
 
   // ---- paste new items above this line ----
 ];
